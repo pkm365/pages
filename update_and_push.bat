@@ -1,4 +1,5 @@
 @echo off
+chcp 65001
 echo 正在更新导航页...
 python generate_nav.py
 
