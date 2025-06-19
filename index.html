@@ -2,467 +2,70 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>工业AI智能化转型演示平台</title>
+    <title>文章列表 | AI Demo Pages</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Noto Sans SC', 'Inter', sans-serif;
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
-            min-height: 100vh;
-            margin: 0;
-            padding: 0;
-        }
-        
-        .main-container {
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(10px);
-            margin: 2rem;
-            border-radius: 20px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-            overflow: hidden;
-        }
-        
-        .hero-section {
-            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
-            color: white;
-            padding: 4rem 2rem;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .hero-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
-            opacity: 0.3;
-        }
-        
-        .hero-content {
-            position: relative;
-            z-index: 1;
-        }
-        
-        .main-title {
-            font-size: 3rem;
-            font-weight: 800;
-            margin-bottom: 1rem;
-            background: linear-gradient(45deg, #ffffff, #e0e7ff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        
-        .subtitle {
-            font-size: 1.25rem;
-            opacity: 0.9;
-            margin-bottom: 2rem;
-        }
-        
-        .navigation-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 2rem;
-            padding: 3rem 2rem;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-        
-        .nav-card {
-            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-            border-radius: 16px;
-            padding: 2rem;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(59, 130, 246, 0.1);
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            cursor: pointer;
-        }
-        
-        .nav-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
-        }
-        
-        .nav-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 40px -5px rgba(59, 130, 246, 0.2);
-            border-color: rgba(59, 130, 246, 0.3);
-        }
-        
-        .card-number {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
-            color: white;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 1.1rem;
-        }
-        
-        .card-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            display: block;
-        }
-        
-        .card-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #1e40af;
-            margin-bottom: 1rem;
-            line-height: 1.3;
-        }
-        
-        .card-description {
-            color: #64748b;
-            line-height: 1.6;
-            margin-bottom: 1.5rem;
-        }
-        
-        .card-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            margin-bottom: 1rem;
-        }
-        
-        .tag {
-            background: rgba(59, 130, 246, 0.1);
-            color: #1e40af;
-            padding: 0.25rem 0.75rem;
-            border-radius: 12px;
-            font-size: 0.8rem;
-            font-weight: 500;
-        }
-        
-        .card-button {
-            background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            font-weight: 600;
-            text-decoration: none;
-            display: inline-block;
-            transition: all 0.3s ease;
-            border: none;
-            cursor: pointer;
-            width: 100%;
-            text-align: center;
-        }
-        
-        .card-button:hover {
-            background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
-            transform: translateY(-2px);
-        }
-        
-        .progress-indicator {
-            background: #f1f5f9;
-            padding: 2rem;
-            text-align: center;
-        }
-        
-        .progress-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #1e40af;
-            margin-bottom: 1rem;
-        }
-        
-        .progress-steps {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 1rem;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        
-        .progress-step {
-            background: #e2e8f0;
-            color: #64748b;
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            font-weight: 500;
-            position: relative;
-        }
-        
-        .progress-arrow {
-            color: #3b82f6;
-            font-size: 1.5rem;
-            margin: 0 0.5rem;
-        }
-        
-        /* 响应式设计 */
-        @media (max-width: 768px) {
-            .main-container {
-                margin: 1rem;
-                border-radius: 16px;
-            }
-            
-            .hero-section {
-                padding: 3rem 1rem;
-            }
-            
-            .main-title {
-                font-size: 2rem;
-            }
-            
-            .navigation-grid {
-                grid-template-columns: 1fr;
-                padding: 2rem 1rem;
-                gap: 1.5rem;
-            }
-            
-            .progress-steps {
-                flex-direction: column;
-            }
-            
-            .progress-arrow {
-                transform: rotate(90deg);
-            }
-        }
-        
-        /* 动画效果 */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        .animate-fade-in-up {
-            animation: fadeInUp 0.6s ease-out;
-        }
-    </style>
 </head>
-<body>
-    <div class="main-container">
-        <!-- 英雄区域 -->
-        <section class="hero-section">
-            <div class="hero-content">
-                <h1 class="main-title">工业AI智能化转型</h1>
-                <p class="subtitle">从组织进化到技术实现的完整演示平台</p>
-                <p class="text-lg opacity-80 max-w-3xl mx-auto">
-                    探索AI时代工业智能化转型的完整路径，从理论认知到实践落地，
-                    深入了解组织进化、技术架构、实施要素和挑战应对的全方位解决方案。
-                </p>
-            </div>
-        </section>
+<body class="bg-slate-100 min-h-screen flex flex-col">
+    <header class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-6 shadow-md">
+        <h1 class="text-3xl font-bold text-center">文章列表</h1>
+    </header>
 
-        <!-- 演示进度指示器 -->
-        <section class="progress-indicator">
-            <h2 class="progress-title">演示流程</h2>
-            <div class="progress-steps">
-                <div class="progress-step">理论基础</div>
-                <div class="progress-arrow">→</div>
-                <div class="progress-step">组织进化</div>
-                <div class="progress-arrow">→</div>
-                <div class="progress-step">技术架构</div>
-                <div class="progress-arrow">→</div>
-                <div class="progress-step">实施要素</div>
-                <div class="progress-arrow">→</div>
-                <div class="progress-step">挑战应对</div>
-                <div class="progress-arrow">→</div>
-                <div class="progress-step">体系升级</div>
-            </div>
-        </section>
+    <main class="flex-1 container mx-auto px-4 py-8">
+        <table class="w-full bg-white shadow-md rounded-lg overflow-hidden">
+            <thead class="bg-slate-50">
+                <tr>
+                    <th class="px-4 py-2 text-left text-gray-700">日期</th>
+                    <th class="px-4 py-2 text-left text-gray-700">标题</th>
+                </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td class="px-4 py-2 text-gray-600">2025-06-19</td>
+                <td class="px-4 py-2"><a class="text-blue-700 underline" href="sleep.html" target="_blank">睡眠的架构：可视化指南</a></td>
+            </tr>
+            <tr>
+                <td class="px-4 py-2 text-gray-600">2025-06-19</td>
+                <td class="px-4 py-2"><a class="text-blue-700 underline" href="teim.html" target="_blank">从组织赋能到技术协同</a></td>
+            </tr>
+            <tr>
+                <td class="px-4 py-2 text-gray-600">2025-06-19</td>
+                <td class="px-4 py-2"><a class="text-blue-700 underline" href="resolution.html" target="_blank">企业可持续发展模型TeiM</a></td>
+            </tr>
+            <tr>
+                <td class="px-4 py-2 text-gray-600">2025-06-19</td>
+                <td class="px-4 py-2"><a class="text-blue-700 underline" href="root mode upgrade.html" target="_blank">推动&quot;根模式&quot;的体系升级</a></td>
+            </tr>
+            <tr>
+                <td class="px-4 py-2 text-gray-600">2025-06-19</td>
+                <td class="px-4 py-2"><a class="text-blue-700 underline" href="data missing.html" target="_blank">走向AI时代的数据挑战</a></td>
+            </tr>
+            <tr>
+                <td class="px-4 py-2 text-gray-600">2025-06-19</td>
+                <td class="px-4 py-2"><a class="text-blue-700 underline" href="ccpm.html" target="_blank">交互式关键链项目管理学习应用</a></td>
+            </tr>
+            <tr>
+                <td class="px-4 py-2 text-gray-600">2025-06-19</td>
+                <td class="px-4 py-2"><a class="text-blue-700 underline" href="QG.html" target="_blank">交互式软件开发质量门 (QG0-QG5)</a></td>
+            </tr>
+            <tr>
+                <td class="px-4 py-2 text-gray-600">2025-06-19</td>
+                <td class="px-4 py-2"><a class="text-blue-700 underline" href="AI implement key elements.html" target="_blank">工业AI落地要素</a></td>
+            </tr>
+            <tr>
+                <td class="px-4 py-2 text-gray-600">2025-06-19</td>
+                <td class="px-4 py-2"><a class="text-blue-700 underline" href="AI learning paradigm.html" target="_blank">AI时代组织进化</a></td>
+            </tr>
+            <tr>
+                <td class="px-4 py-2 text-gray-600">2025-06-19</td>
+                <td class="px-4 py-2"><a class="text-blue-700 underline" href="AI framework.html" target="_blank">工业AI应用平台架构深度解析</a></td>
+            </tr>
+            </tbody>
+        </table>
+    </main>
 
-        <!-- 导航卡片网格 -->
-        <section class="navigation-grid">
-            <!-- 1. AI时代组织进化 -->
-            <div class="nav-card animate-fade-in-up" onclick="navigateToPage('AI learning paradigm.html')">
-                <div class="card-number">1</div>
-                <span class="card-icon">🧠</span>
-                <h3 class="card-title">AI时代组织进化成功范式</h3>
-                <p class="card-description">
-                    探索"想到与做到离多远"的核心问题，深入理解认知、知识、实践三要素的循环互动关系，
-                    为组织智能化转型奠定理论基础。
-                </p>
-                <div class="card-tags">
-                    <span class="tag">组织进化</span>
-                    <span class="tag">认知模型</span>
-                    <span class="tag">理论基础</span>
-                </div>
-                <button class="card-button">开始探索 →</button>
-            </div>
-
-            <!-- 2. 从组织赋能到技术协同 -->
-            <div class="nav-card animate-fade-in-up" onclick="navigateToPage('teim.html')" style="animation-delay: 0.1s">
-                <div class="card-number">2</div>
-                <span class="card-icon">🔄</span>
-                <h3 class="card-title">从组织赋能到技术协同</h3>
-                <p class="card-description">
-                    展示T、e、i、M四个时代的演进历程，理解从传统问题解决方式到智能化协同的转变过程，
-                    掌握技术发展的时代脉络。
-                </p>
-                <div class="card-tags">
-                    <span class="tag">时代演进</span>
-                    <span class="tag">技术协同</span>
-                    <span class="tag">发展历程</span>
-                </div>
-                <button class="card-button">查看演进 →</button>
-            </div>
-
-            <!-- 3. 工业AI应用平台架构 -->
-            <div class="nav-card animate-fade-in-up" onclick="navigateToPage('AI framework.html')" style="animation-delay: 0.2s">
-                <div class="card-number">3</div>
-                <span class="card-icon">🏗️</span>
-                <h3 class="card-title">工业AI应用平台架构深度解析</h3>
-                <p class="card-description">
-                    深入了解工业AI平台的分层架构设计，从自动化层到AI应用层的完整技术栈，
-                    掌握智能工厂建设的核心技术框架。
-                </p>
-                <div class="card-tags">
-                    <span class="tag">平台架构</span>
-                    <span class="tag">技术栈</span>
-                    <span class="tag">智能工厂</span>
-                </div>
-                <button class="card-button">深入架构 →</button>
-            </div>
-
-            <!-- 4. 工业AI落地要素 -->
-            <div class="nav-card animate-fade-in-up" onclick="navigateToPage('AI implement key elements.html')" style="animation-delay: 0.3s">
-                <div class="card-number">4</div>
-                <span class="card-icon">🎯</span>
-                <h3 class="card-title">工业AI落地核心要素</h3>
-                <p class="card-description">
-                    分析AI落地困难的根本原因，对比传统AI三要素与工业AI的差异，
-                    理解数字模型、知识模型、嵌入式模型的重要性。
-                </p>
-                <div class="card-tags">
-                    <span class="tag">落地要素</span>
-                    <span class="tag">模型设计</span>
-                    <span class="tag">实施难点</span>
-                </div>
-                <button class="card-button">了解要素 →</button>
-            </div>
-
-            <!-- 5. 数据挑战与应对 -->
-            <div class="nav-card animate-fade-in-up" onclick="navigateToPage('data missing.html')" style="animation-delay: 0.4s">
-                <div class="card-number">5</div>
-                <span class="card-icon">📊</span>
-                <h3 class="card-title">走向AI时代的数据挑战</h3>
-                <p class="card-description">
-                    揭示"缺数据"问题的本质，分析知识浓度、数据质量、流程设计、体系架构四大挑战，
-                    提供从数据到智能的演进路径。
-                </p>
-                <div class="card-tags">
-                    <span class="tag">数据挑战</span>
-                    <span class="tag">质量问题</span>
-                    <span class="tag">解决方案</span>
-                </div>
-                <button class="card-button">应对挑战 →</button>
-            </div>
-
-            <!-- 6. 根模式体系升级 -->
-            <div class="nav-card animate-fade-in-up" onclick="navigateToPage('root mode upgrade.html')" style="animation-delay: 0.5s">
-                <div class="card-number">6</div>
-                <span class="card-icon">⚡</span>
-                <h3 class="card-title">推动"根模式"的体系升级</h3>
-                <p class="card-description">
-                    展示M、i、e系列的体系整合，理解TPM、TPS、TQM等核心流程的协同关系，
-                    实现从系统化到体系化的根本性升级。
-                </p>
-                <div class="card-tags">
-                    <span class="tag">体系升级</span>
-                    <span class="tag">流程协同</span>
-                    <span class="tag">根模式</span>
-                </div>
-                <button class="card-button">体系升级 →</button>
-            </div>
-        </section>
-
-        <!-- 页脚 -->
-        <footer class="text-center py-8 bg-gray-50 border-t border-gray-200">
-            <p class="text-gray-600 font-medium">工业AI智能化转型演示平台</p>
-            <p class="text-gray-500 text-sm mt-2">探索智能时代的可持续竞争力 · 2025</p>
-        </footer>
-    </div>
-
-    <script>
-        // 页面导航函数
-        function navigateToPage(pageUrl) {
-            // 添加点击动画效果
-            event.currentTarget.style.transform = 'scale(0.95)';
-            setTimeout(() => {
-                window.open(pageUrl, '_blank');
-                event.currentTarget.style.transform = '';
-            }, 150);
-        }
-
-        // 页面加载动画
-        document.addEventListener('DOMContentLoaded', () => {
-            const cards = document.querySelectorAll('.nav-card');
-            
-            // 为卡片添加观察器，实现滚动动画
-            const observerOptions = {
-                threshold: 0.1,
-                rootMargin: '0px 0px -50px 0px'
-            };
-
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.style.opacity = '1';
-                        entry.target.style.transform = 'translateY(0)';
-                    }
-                });
-            }, observerOptions);
-
-            // 初始化卡片状态
-            cards.forEach((card, index) => {
-                card.style.opacity = '0';
-                card.style.transform = 'translateY(30px)';
-                card.style.transition = `all 0.6s ease ${index * 0.1}s`;
-                observer.observe(card);
-            });
-
-            // 添加键盘导航支持
-            document.addEventListener('keydown', (e) => {
-                if (e.key >= '1' && e.key <= '6') {
-                    const cardIndex = parseInt(e.key) - 1;
-                    const card = cards[cardIndex];
-                    if (card) {
-                        card.click();
-                    }
-                }
-            });
-        });
-
-        // 添加页面统计功能
-        let visitCount = localStorage.getItem('visitCount') || 0;
-        visitCount++;
-        localStorage.setItem('visitCount', visitCount);
-        
-        // 添加快捷键提示
-        setTimeout(() => {
-            console.log('💡 提示：您可以使用数字键 1-6 快速导航到对应页面！');
-        }, 2000);
-    </script>
+    <footer class="text-center text-sm text-gray-500 py-4">
+        自动生成 · 运行 <code>python generate_nav.py</code> 刷新
+    </footer>
 </body>
 </html>
