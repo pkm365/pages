@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>缩放点积注意力机制可视化</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', 'Noto Sans SC', sans-serif;
+            background-color: #f8fafc;
+        }
+        .matrix-container {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            justify-content: center;
+        }
+        .vector {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            padding: 8px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            background-color: white;
+            box-shadow: 0 1px 3px 0 rgba(0,0,0,0.1);
+            transition: all 0.3s ease-in-out;
+        }
+        .cell {
+            width: 50px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+            color: white;
+            transition: all 0.3s ease-in-out;
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+        .q-color { background-color: #3b82f6; } /* Blue */
+        .k-color { background-color: #f97316; } /* Orange */
+        .v-color { background-color: #16a34a; } /* Green */
+        .score-color { background-color: #6b7280; } /* Gray */
+        .scaled-color { background-color: #6d28d9; } /* Violet */
+        .softmax-color { background-color: #db2777; } /* Pink */
+        .output-color { background-color: #ca8a04; } /* Yellow-Brown */
+
+        .op-symbol {
+            font-size: 24px;
+            font-weight: bold;
+            color: #4b5563;
+            margin: 0 16px;
+        }
+        .stage-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        .stage-container {
+            min-height: 150px;
+            padding: 1rem;
+            background-color: #f9fafb;
+            border-radius: 0.75rem;
+            margin-bottom: 1rem;
+            border: 1px solid #e5e7eb;
+            transition: opacity 0.5s ease-in-out;
+        }
+        .step-arrow {
+            font-size: 2rem;
+            color: #9ca3af;
+            margin: 20px 0;
+            text-align: center;
+            font-weight: 100;
+        }
+        .formula {
+            font-family: 'Times New Roman', Times, serif;
+            font-style: italic;
+            color: #4b5563;
+            margin-top: 8px;
+            text-align: center;
+        }
+        .tooltip {
+            position: absolute;
+            background-color: #1f2937;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.2s;
+            z-index: 10;
+            white-space: nowrap;
+        }
+        .has-tooltip:hover .tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
+        .softmax-bar-container {
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            gap: 8px;
+            height: 80px;
+            padding: 0 16px;
+        }
+        .softmax-bar {
+            width: 40px;
+            background-color: #db2777;
+            border-radius: 4px 4px 0 0;
+            transition: height 0.5s ease-in-out;
+            position: relative;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 p-4 sm:p-8">
+
+    <div class="max-w-7xl mx-auto">
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-slate-900">缩放点积注意力 (Scaled Dot-Product Attention)</h1>
+            <p class="mt-2 text-slate-600">一步步观察注意力机制如何计算上下文向量</p>
+            <div class="mt-6">
+                <button id="start-btn" class="bg-blue-600 text-white font-semibold py-2 px-6 rounded-lg shadow-md hover:bg-blue-700 transition-all">
+                    开始计算 / 重新计算
+                </button>
+            </div>
+        </div>
+
+        <!-- 1. Inputs -->
+        <div id="stage-inputs" class="stage-container opacity-0">
+            <h2 class="stage-title">1. 输入向量 (Inputs)</h2>
+            <div class="flex flex-wrap justify-center items-center gap-8">
+                <div>
+                    <h3 class="text-center font-semibold mb-2">Query (你的问题)</h3>
+                    <div id="q-vector-container" class="matrix-container"></div>
+                </div>
+                <div>
+                    <h3 class="text-center font-semibold mb-2">Keys (内容的标签)</h3>
+                    <div id="k-matrix-container" class="matrix-container"></div>
+                </div>
+                <div>
+                    <h3 class="text-center font-semibold mb-2">Values (内容本身)</h3>
+                    <div id="v-matrix-container" class="matrix-container"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="arrow-1" class="step-arrow opacity-0">↓</div>
+
+        <!-- 2. Dot Product Scores -->
+        <div id="stage-scores" class="stage-container opacity-0">
+            <h2 class="stage-title">2. 计算点积分数 (Q · K<sup>T</sup>)</h2>
+            <p class="text-center text-slate-500 mb-4">衡量 Query 和每个 Key 的相关性</p>
+            <div class="flex justify-center items-center flex-wrap">
+                <div id="q-for-score" class="matrix-container"></div>
+                <div class="op-symbol">·</div>
+                <div id="k-for-score" class="matrix-container"></div>
+                <div class="op-symbol">=</div>
+                <div id="scores-container" class="matrix-container"></div>
+            </div>
+        </div>
+
+        <div id="arrow-2" class="step-arrow opacity-0">↓</div>
+
+        <!-- 3. Scale -->
+        <div id="stage-scale" class="stage-container opacity-0">
+            <h2 class="stage-title">3. 缩放 (Scale)</h2>
+            <p class="text-center text-slate-500 mb-4">除以维度的平方根, 防止梯度消失</p>
+            <div class="flex justify-center items-center flex-wrap">
+                <div id="scores-for-scale" class="matrix-container"></div>
+                 <div class="flex flex-col items-center">
+                    <div class="op-symbol">/</div>
+                    <div class="formula">√d<sub>k</sub></div>
+                 </div>
+                <div id="sqrt-dk-container" class="matrix-container"></div>
+                <div class="op-symbol">=</div>
+                <div id="scaled-scores-container" class="matrix-container"></div>
+            </div>
+        </div>
+
+        <div id="arrow-3" class="step-arrow opacity-0">↓</div>
+
+        <!-- 4. Softmax -->
+        <div id="stage-softmax" class="stage-container opacity-0">
+            <h2 class="stage-title">4. Softmax 归一化</h2>
+            <p class="text-center text-slate-500 mb-4">将分数转换为概率分布, 实现“聚焦”</p>
+            <div class="flex justify-center items-center flex-wrap">
+                 <div id="scaled-for-softmax" class="matrix-container"></div>
+                 <div class="op-symbol">→</div>
+                 <div class="flex flex-col items-center">
+                    <div id="softmax-container" class="softmax-bar-container"></div>
+                    <div id="softmax-values-container" class="matrix-container mt-2"></div>
+                 </div>
+            </div>
+        </div>
+
+        <div id="arrow-4" class="step-arrow opacity-0">↓</div>
+        
+        <!-- 5. Weighted Sum -->
+        <div id="stage-output" class="stage-container opacity-0">
+            <h2 class="stage-title">5. 加权求和得到输出 (Σ weights · V)</h2>
+            <p class="text-center text-slate-500 mb-4">根据注意力权重, 从 Values 中提取信息</p>
+            <div class="flex justify-center items-center flex-wrap">
+                <div id="softmax-for-output" class="matrix-container"></div>
+                <div class="op-symbol">·</div>
+                <div id="v-for-output" class="matrix-container"></div>
+                <div class="op-symbol">=</div>
+                <div id="output-container" class="matrix-container"></div>
+            </div>
+        </div>
+    </div>
+
+<script>
+const D_K = 3; // Dimension of vectors
+const NUM_TOKENS = 4; // Number of key/value pairs
+
+const qVecContainer = document.getElementById('q-vector-container');
+const kMatContainer = document.getElementById('k-matrix-container');
+const vMatContainer = document.getElementById('v-matrix-container');
+
+const qForScore = document.getElementById('q-for-score');
+const kForScore = document.getElementById('k-for-score');
+const scoresContainer = document.getElementById('scores-container');
+
+const scoresForScale = document.getElementById('scores-for-scale');
+const sqrtDkContainer = document.getElementById('sqrt-dk-container');
+const scaledScoresContainer = document.getElementById('scaled-scores-container');
+
+const scaledForSoftmax = document.getElementById('scaled-for-softmax');
+const softmaxContainer = document.getElementById('softmax-container');
+const softmaxValuesContainer = document.getElementById('softmax-values-container');
+
+const softmaxForOutput = document.getElementById('softmax-for-output');
+const vForOutput = document.getElementById('v-for-output');
+const outputContainer = document.getElementById('output-container');
+
+const startBtn = document.getElementById('start-btn');
+
+// --- Helper Functions ---
+
+function createVector(values, colorClass, tooltipText = '') {
+    const vectorEl = document.createElement('div');
+    vectorEl.className = 'vector relative has-tooltip';
+    values.forEach(v => {
+        const cell = document.createElement('div');
+        cell.className = `cell ${colorClass}`;
+        cell.textContent = v.toFixed(2);
+        vectorEl.appendChild(cell);
+    });
+    if (tooltipText) {
+        const tooltip = document.createElement('div');
+        tooltip.className = 'tooltip';
+        tooltip.textContent = tooltipText;
+        vectorEl.appendChild(tooltip);
+    }
+    return vectorEl;
+}
+
+function createMatrix(matrix, colorClass, tooltipPrefix = '') {
+    const container = document.createElement('div');
+    container.className = 'matrix-container';
+    matrix.forEach((vec, i) => {
+        container.appendChild(createVector(vec, colorClass, `${tooltipPrefix} #${i+1}`));
+    });
+    return container;
+}
+
+function createScalar(value, colorClass, tooltipText = '') {
+    const vectorEl = document.createElement('div');
+    vectorEl.className = 'vector relative has-tooltip';
+    const cell = document.createElement('div');
+    cell.className = `cell ${colorClass}`;
+    cell.textContent = value.toFixed(2);
+    vectorEl.appendChild(cell);
+    if (tooltipText) {
+        const tooltip = document.createElement('div');
+        tooltip.className = 'tooltip';
+        tooltip.textContent = tooltipText;
+        vectorEl.appendChild(tooltip);
+    }
+    return vectorEl;
+}
+
+function createSoftmaxVis(values, colorClass) {
+    softmaxContainer.innerHTML = '';
+    softmaxValuesContainer.innerHTML = '';
+    const maxValue = Math.max(...values);
+    values.forEach(v => {
+        const bar = document.createElement('div');
+        bar.className = 'softmax-bar has-tooltip relative';
+        bar.style.height = `${(v / (maxValue || 1)) * 100}%`;
+        const tooltip = document.createElement('div');
+        tooltip.className = 'tooltip';
+        tooltip.textContent = `权重: ${v.toFixed(3)}`;
+        bar.appendChild(tooltip);
+        softmaxContainer.appendChild(bar);
+
+        const valEl = createScalar(v, colorClass);
+        softmaxValuesContainer.appendChild(valEl);
+    });
+}
+
+
+function generateRandomVector(size) {
+    return Array.from({ length: size }, () => Math.random() * 2 - 1);
+}
+
+function dotProduct(vecA, vecB) {
+    return vecA.reduce((sum, val, i) => sum + val * vecB[i], 0);
+}
+
+function softmax(arr) {
+    const max = Math.max(...arr);
+    const exps = arr.map(x => Math.exp(x - max));
+    const sumExps = exps.reduce((a, b) => a + b, 0);
+    return exps.map(e => e / sumExps);
+}
+
+// --- Animation Logic ---
+
+async function runAnimation() {
+    startBtn.disabled = true;
+    startBtn.textContent = '计算中...';
+    
+    // 0. Reset and hide all
+    const stages = document.querySelectorAll('.stage-container, .step-arrow');
+    stages.forEach(el => el.classList.add('opacity-0'));
+    await new Promise(r => setTimeout(r, 100));
+
+    // 1. Generate data
+    const q = generateRandomVector(D_K);
+    const k = Array.from({ length: NUM_TOKENS }, () => generateRandomVector(D_K));
+    const v = Array.from({ length: NUM_TOKENS }, () => generateRandomVector(D_K));
+
+    // 2. Render Inputs
+    qVecContainer.innerHTML = '';
+    qVecContainer.appendChild(createVector(q, 'q-color', 'Query'));
+    kMatContainer.innerHTML = '';
+    kMatContainer.appendChild(createMatrix(k, 'k-color', 'Key'));
+    vMatContainer.innerHTML = '';
+    vMatContainer.appendChild(createMatrix(v, 'v-color', 'Value'));
+    document.getElementById('stage-inputs').classList.remove('opacity-0');
+    await new Promise(r => setTimeout(r, 1000));
+    document.getElementById('arrow-1').classList.remove('opacity-0');
+    await new Promise(r => setTimeout(r, 500));
+
+    // 3. Calculate and render scores
+    const scores = k.map(k_i => dotProduct(q, k_i));
+    qForScore.innerHTML = '';
+    qForScore.appendChild(createVector(q, 'q-color'));
+    kForScore.innerHTML = '';
+    kForScore.appendChild(createMatrix(k, 'k-color'));
+    scoresContainer.innerHTML = ''; // Clear previous
+    document.getElementById('stage-scores').classList.remove('opacity-0');
+    await new Promise(r => setTimeout(r, 500));
+    scores.forEach(s => {
+        scoresContainer.appendChild(createScalar(s, 'score-color'));
+    });
+    await new Promise(r => setTimeout(r, 1000));
+    document.getElementById('arrow-2').classList.remove('opacity-0');
+    await new Promise(r => setTimeout(r, 500));
+    
+    // 4. Scale scores
+    const sqrtDk = Math.sqrt(D_K);
+    const scaledScores = scores.map(s => s / sqrtDk);
+    scoresForScale.innerHTML = '';
+    scores.forEach(s => scoresForScale.appendChild(createScalar(s, 'score-color')));
+    sqrtDkContainer.innerHTML = '';
+    sqrtDkContainer.appendChild(createScalar(sqrtDk, 'k-color', `√${D_K}`));
+    scaledScoresContainer.innerHTML = '';
+    document.getElementById('stage-scale').classList.remove('opacity-0');
+    await new Promise(r => setTimeout(r, 500));
+    scaledScores.forEach(s => {
+        scaledScoresContainer.appendChild(createScalar(s, 'scaled-color'));
+    });
+    await new Promise(r => setTimeout(r, 1000));
+    document.getElementById('arrow-3').classList.remove('opacity-0');
+    await new Promise(r => setTimeout(r, 500));
+
+    // 5. Softmax
+    const weights = softmax(scaledScores);
+    scaledForSoftmax.innerHTML = '';
+    scaledScores.forEach(s => scaledForSoftmax.appendChild(createScalar(s, 'scaled-color')));
+    softmaxContainer.innerHTML = '';
+    softmaxValuesContainer.innerHTML = '';
+    document.getElementById('stage-softmax').classList.remove('opacity-0');
+    await new Promise(r => setTimeout(r, 500));
+    createSoftmaxVis(weights, 'softmax-color');
+    await new Promise(r => setTimeout(r, 1000));
+    document.getElementById('arrow-4').classList.remove('opacity-0');
+    await new Promise(r => setTimeout(r, 500));
+
+    // 6. Calculate Output
+    const output = Array(D_K).fill(0);
+    v.forEach((v_i, i) => {
+        v_i.forEach((val, j) => {
+            output[j] += val * weights[i];
+        });
+    });
+    softmaxForOutput.innerHTML = '';
+    weights.forEach(w => softmaxForOutput.appendChild(createScalar(w, 'softmax-color')));
+    vForOutput.innerHTML = '';
+    vForOutput.appendChild(createMatrix(v, 'v-color'));
+    outputContainer.innerHTML = '';
+    document.getElementById('stage-output').classList.remove('opacity-0');
+    await new Promise(r => setTimeout(r, 500));
+    outputContainer.appendChild(createVector(output, 'output-color', '最终输出'));
+    
+    startBtn.disabled = false;
+    startBtn.textContent = '开始计算 / 重新计算';
+}
+
+startBtn.addEventListener('click', runAnimation);
+
+</script>
+</body>
+</html>
