@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>工业AI落地要素</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8; /* 淡雅的背景色 */
+        }
+        .main-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        .title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #1a202c;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        .subtitle {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: #2d3748;
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        .diagram-container {
+            display: flex;
+            align-items: center; /* 垂直居中对齐diagram-box和箭头 */
+            justify-content: space-around;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        .diagram-box {
+            background-color: #e2e8f0;
+            padding: 1rem; /* 减少内边距以给绝对定位元素更多参考空间 */
+            border-radius: 12px;
+            /* text-align: center; /* 对于绝对定位的子元素不再那么重要 */
+            width: 45%;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            position: relative; /* 关键：为子元素的绝对定位提供参考 */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            min-height: 320px; /* 确保足够的高度容纳环绕的节点 */
+        }
+        .diagram-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.12);
+        }
+        .center-circle {
+            background-color: #4a5568;
+            color: white;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 600;
+            box-shadow: 0 0 15px rgba(74, 85, 104, 0.5);
+            position: absolute; /* 绝对定位中心圆 */
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%); /* 精确居中 */
+        }
+        .element-node {
+            background-color: #cbd5e0;
+            color: #2d3748;
+            padding: 0.75rem 1.5rem; /* 稍微加宽节点 */
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
+            position: absolute; /* 关键：绝对定位节点 */
+            text-align: center;
+            min-width: 80px; /* 保证一定最小宽度 */
+        }
+        .element-node:hover {
+            background-color: #a0aec0;
+        }
+
+        /* AI图示中节点的特定位置 */
+        .node-top {
+            top: 20%; /* 节点中心在父容器20%高度处 */
+            left: 50%;
+            transform: translate(-50%, -50%); /* 使节点自身中心对齐指定点 */
+        }
+        .node-bottom-left {
+            top: 80%; /* 节点中心在父容器80%高度处 */
+            left: 25%; /* 节点中心在父容器25%宽度处 */
+            transform: translate(-50%, -50%);
+        }
+        .node-bottom-right {
+            top: 80%; /* 节点中心在父容器80%高度处 */
+            left: 75%; /* 节点中心在父容器75%宽度处 */
+            transform: translate(-50%, -50%);
+        }
+
+        .arrow {
+            font-size: 4rem;
+            color: #4a5568;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0; /* 防止箭头被压缩 */
+        }
+        .definitions-container {
+            background-color: #edf2f7;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-top: 2rem;
+        }
+        .definitions-title {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: #1a202c;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        .definition-item {
+            background-color: #ffffff;
+            padding: 1.25rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+            transition: box-shadow 0.3s ease;
+        }
+        .definition-item:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .definition-item strong {
+            color: #2c5282;
+            font-weight: 600;
+        }
+
+        /* 移动端适配 */
+        @media (max-width: 768px) {
+            .diagram-container {
+                flex-direction: column;
+                gap: 1.5rem; /* 调整移动端间距 */
+            }
+            .diagram-box {
+                width: 90%;
+                min-height: 280px; /* 移动端可适当减小最小高度 */
+                padding: 0.5rem; /* 调整移动端内边距 */
+            }
+            .center-circle {
+                width: 80px; /* 移动端中心圆减小 */
+                height: 80px;
+                font-size: 1.25rem;
+            }
+            .element-node {
+                font-size: 0.9rem;
+                padding: 0.6rem 1rem; /* 移动端节点内边距减小 */
+                min-width: 70px;
+            }
+            /* 调整移动端节点位置百分比，使其更紧凑 */
+            .node-top { top: 18%; }
+            .node-bottom-left { top: 82%; left: 22%; }
+            .node-bottom-right { top: 82%; left: 78%; }
+
+            .arrow {
+                transform: rotate(90deg);
+                margin: 1.5rem 0; /* 调整箭头间距 */
+                font-size: 3rem;
+            }
+            .title { font-size: 2rem; }
+            .subtitle { font-size: 1.5rem; }
+            .definitions-title { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <h1 class="title">工业AI落地之所以难是因为缺乏核心要素</h1>
+        <h2 class="subtitle">全链条AI协同升级</h2>
+
+        <div class="diagram-container">
+            <div class="diagram-box">
+                <div class="center-circle">AI</div>
+                <div class="element-node node-top">算据</div>
+                <div class="element-node node-bottom-left">算法</div>
+                <div class="element-node node-bottom-right">算力</div>
+            </div>
+
+            <div class="arrow">
+                <span>&#10140;</span> </div>
+
+            <div class="diagram-box">
+                <div class="center-circle">工业AI</div>
+                <div class="element-node node-top">数字模型</div>
+                <div class="element-node node-bottom-left">知识模型</div>
+                <div class="element-node node-bottom-right">嵌入式模型</div>
+            </div>
+        </div>
+
+        <div class="definitions-container">
+            <h3 class="definitions-title">模型定义</h3>
+            <div class="definition-item">
+                <p><strong>数字模型:</strong> 将业务语言转换为数字模型，精准映射在数字世界。</p>
+            </div>
+            <div class="definition-item">
+                <p><strong>知识模型:</strong> 碎片化信息转化为结构化知识。</p>
+            </div>
+            <div class="definition-item">
+                <p><strong>嵌入式模型:</strong> AI通过硬件嵌入到物理场景，实现“即插即用”。</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // JavaScript不是必需的，因为布局是通过CSS实现的
+        console.log("工业AI落地要素可视化页面已加载（布局更新）");
+    </script>
+</body>
+</html>

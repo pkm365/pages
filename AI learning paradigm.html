@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI时代组织进化</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Visualization & Content Choices:
+    - Report Info: Main title "想到与做到离多远".
+      - Goal: Set context.
+      - Viz/Presentation: `<h1>` text.
+      - Interaction: None.
+      - Justification: Standard heading.
+      - Library/Method: HTML.
+    - Report Info: Subtitle "AI时代组织进化成功范式".
+      - Goal: Introduce core model.
+      - Viz/Presentation: `<h2>` text.
+      - Interaction: None.
+      - Justification: Standard subheading.
+      - Library/Method: HTML.
+    - Report Info: Diagram of "组织进化" encompassing "认知," "知识," "实践" with icons and "X" connectors, and two dashed infinity-like loops.
+      - Goal: Visually represent the model, its components, and their interconnected, overlapping nature.
+      - Viz/Presentation: HTML `div` elements styled with Tailwind CSS. A large outer green oval (`main-oval-container`). Inside, three smaller component ovals for "认知," "知识," "实践" with text and Unicode icons (💜, 🧠, ✊). Text elements for "×". Two absolutely positioned `div` elements styled as dashed blue ovals (`border-dashed border-blue-400 rounded-full`) are placed behind the components to create the visual effect of the infinity loops connecting (认知-知识) and (知识-实践).
+      - Interaction: On hover over "认知," "知识," or "实践" ovals: 1. Display a tooltip/text box with a brief explanation. 2. Apply a visual highlight (scale, shadow).
+      - Justification: HTML/CSS for diagrammatic representation, adhering to NO SVG/Mermaid. Hover interactions for engagement. Dashed ovals approximate the infinity loops.
+      - Library/Method: HTML, Tailwind CSS, Vanilla JS.
+    - Report Info: Formula "组织进化 = 认知 × 知识 × 实践".
+      - Goal: Clearly state the core relationship.
+      - Viz/Presentation: `<p>` text.
+      - Interaction: None.
+      - Justification: Direct textual representation.
+      - Library/Method: HTML.
+    - Report Info: Concluding statement "认知、知识、实践，循环往复，螺旋上升，方得真知".
+      - Goal: Summarize the dynamic process.
+      - Viz/Presentation: `<footer>` or `<p>` text.
+      - Interaction: None.
+      - Justification: Reinforces the model's dynamism.
+      - Library/Method: HTML.
+    - CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+        }
+        .oval-shape {
+            border-radius: 50%;
+        }
+        .component-oval {
+            min-width: 80px; /* Adjusted min-width */
+            height: 80px;    /* Adjusted height */
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        @media (min-width: 640px) { /* sm breakpoint */
+            .component-oval {
+                min-width: 96px;
+                height: 96px;
+            }
+        }
+        @media (min-width: 768px) { /* md breakpoint */
+            .component-oval {
+                min-width: 112px;
+                height: 112px;
+            }
+        }
+        .component-oval:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+        }
+        .main-oval-container { /* This is the main green oval background */
+            width: 90%;
+            max-width: 800px; 
+            padding-top: 15%; /* Aspect ratio for oval shape (height is 15% of width) */
+            position: relative; /* For absolute positioning of children like dashed ovals and content */
+        }
+        .main-oval-content { /* This div will hold the actual flex content (cognition, knowledge, practice) */
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            align-items: center; /* Vertically center items */
+            justify-content: space-around; /* Distribute items */
+        }
+        .icon-text span {
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-neutral-800 flex flex-col items-center justify-center min-h-screen p-4 selection:bg-green-200 selection:text-green-800">
+
+    <div class="w-full max-w-4xl text-center">
+        <header class="my-8">
+            <h1 class="text-4xl md:text-5xl font-bold text-neutral-700">想到与做到离多远</h1>
+        </header>
+
+        <main class="w-full bg-white p-6 sm:p-8 md:p-10 rounded-xl shadow-xl">
+            <section id="model" class="mb-10">
+                <h2 class="text-2xl md:text-3xl font-semibold text-green-700 mb-4">AI时代组织进化 ——— 成功范式</h2>
+                <p class="text-sm md:text-base text-neutral-600 mb-8 px-4">
+                    本应用旨在通过一个交互式图表，清晰地阐释AI时代组织进化的核心理念。您将看到构成组织进化的三个关键要素——认知、知识与实践——以及它们之间相互作用、共同驱动组织螺旋上升获得真知的过程。通过将鼠标悬停在图表的不同部分，您可以更深入地了解每个概念的含义。
+                </p>
+
+                <div class="flex flex-col items-center justify-center my-8 md:my-12">
+                    <div class="main-oval-container bg-green-100 border-2 border-green-400 oval-shape">
+                        <div class="absolute top-1/2 left-[30%] -translate-x-1/2 -translate-y-1/2 w-[40%] h-[90%] max-h-[120px] border-2 border-dashed border-blue-400 rounded-full z-0 opacity-75 hidden sm:block"></div>
+                        <div class="absolute top-1/2 left-[70%] -translate-x-1/2 -translate-y-1/2 w-[40%] h-[90%] max-h-[120px] border-2 border-dashed border-blue-400 rounded-full z-0 opacity-75 hidden sm:block"></div>
+
+                        <div class="main-oval-content p-2 sm:p-4 flex-col sm:flex-row space-y-2 sm:space-y-0">
+                            <div id="cognition" class="component-item flex flex-col items-center text-center p-1 sm:p-2 rounded-lg cursor-default w-full sm:w-auto relative z-10">
+                                <div class="component-oval bg-purple-100 border-2 border-purple-400 flex flex-col items-center justify-center text-purple-700 oval-shape shadow-md">
+                                    <span class="text-2xl sm:text-3xl md:text-4xl icon-text"><span>💜</span></span>
+                                    <span class="mt-1 font-semibold text-xs sm:text-sm md:text-base">认知</span>
+                                </div>
+                            </div>
+
+                            <div class="text-xl sm:text-2xl md:text-3xl font-bold text-green-700 self-center mx-1 sm:mx-2 relative z-10 hidden sm:block">×</div>
+
+                            <div id="knowledge" class="component-item flex flex-col items-center text-center p-1 sm:p-2 rounded-lg cursor-default w-full sm:w-auto relative z-10">
+                                <div class="component-oval bg-pink-100 border-2 border-pink-400 flex flex-col items-center justify-center text-pink-700 oval-shape shadow-md">
+                                    <span class="text-2xl sm:text-3xl md:text-4xl icon-text"><span>🧠</span></span>
+                                    <span class="mt-1 font-semibold text-xs sm:text-sm md:text-base">知识</span>
+                                </div>
+                            </div>
+                            
+                            <div class="text-xl sm:text-2xl md:text-3xl font-bold text-green-700 self-center mx-1 sm:mx-2 relative z-10 hidden sm:block">×</div>
+
+                            <div id="practice" class="component-item flex flex-col items-center text-center p-1 sm:p-2 rounded-lg cursor-default w-full sm:w-auto relative z-10">
+                                <div class="component-oval bg-sky-100 border-2 border-sky-400 flex flex-col items-center justify-center text-sky-700 oval-shape shadow-md">
+                                    <span class="text-2xl sm:text-3xl md:text-4xl icon-text"><span>✊</span></span>
+                                    <span class="mt-1 font-semibold text-xs sm:text-sm md:text-base">实践</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                     <p class="text-xl md:text-2xl font-semibold text-neutral-700 mt-8">
+                        组织进化 = 认知 × 知识 × 实践
+                    </p>
+                </div>
+
+                <div id="explanation-box" class="mt-6 p-4 bg-slate-100 rounded-lg text-neutral-700 text-sm md:text-base min-h-[60px] flex items-center justify-center text-center transition-opacity duration-300 opacity-100">
+                    将鼠标悬停在“认知”、“知识”或“实践”上以查看说明。
+                </div>
+            </section>
+
+            <footer class="mt-12 pt-8 border-t border-slate-200">
+                <p class="text-center text-md md:text-lg font-semibold text-neutral-600">
+                    认知、知识、实践，循环往复，螺旋上升，方得真知
+                </p>
+            </footer>
+        </main>
+    </div>
+
+    <script>
+        const cognitionEl = document.getElementById('cognition');
+        const knowledgeEl = document.getElementById('knowledge');
+        const practiceEl = document.getElementById('practice');
+        const explanationBox = document.getElementById('explanation-box');
+
+        const explanations = {
+            cognition: "<strong>认知 (Cognition):</strong> 理解世界、识别机会与挑战的洞察力。它是组织进化的起点，指引方向，激发变革的意愿。",
+            knowledge: "<strong>知识 (Knowledge):</strong> 系统化的信息、理论、方法和技能。知识为认知提供支撑，是组织解决问题、实现创新的基础。",
+            practice: "<strong>实践 (Practice):</strong> 将认知与知识应用于实际行动，通过反复试验、总结经验，将理论转化为成果。实践是检验真理、驱动进化的关键环节。"
+        };
+
+        const defaultText = "将鼠标悬停在“认知”、“知识”或“实践”上以查看说明。";
+
+        function showExplanation(elementId) {
+            explanationBox.innerHTML = explanations[elementId];
+            explanationBox.classList.remove('opacity-0');
+            explanationBox.classList.add('opacity-100');
+        }
+
+        function hideExplanation() {
+            explanationBox.innerHTML = defaultText;
+            // Keep it visible, just change text
+            // explanationBox.classList.remove('opacity-100');
+            // explanationBox.classList.add('opacity-0');
+        }
+
+        cognitionEl.addEventListener('mouseenter', () => showExplanation('cognition'));
+        cognitionEl.addEventListener('mouseleave', hideExplanation);
+
+        knowledgeEl.addEventListener('mouseenter', () => showExplanation('knowledge'));
+        knowledgeEl.addEventListener('mouseleave', hideExplanation);
+
+        practiceEl.addEventListener('mouseenter', () => showExplanation('practice'));
+        practiceEl.addEventListener('mouseleave', hideExplanation);
+        
+        explanationBox.innerHTML = defaultText;
+
+    </script>
+
+</body>
+</html>
