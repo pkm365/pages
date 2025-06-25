@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>项目利润模拟器</title>
+    <title>项目利润模拟器 (含税务计算)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -38,7 +38,7 @@
     <div class="container mx-auto p-4 md:p-8">
         <header class="text-center mb-8">
             <h1 class="text-3xl md:text-4xl font-bold text-gray-900">项目利润模拟器</h1>
-            <p class="text-gray-600 mt-2">动态模拟并优化您的项目现金流与利润</p>
+            <p class="text-gray-600 mt-2">动态模拟并优化您的项目现金流与利润 (含税务逻辑)</p>
         </header>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -48,7 +48,7 @@
 
                 <!-- 基本财务信息 -->
                 <div class="space-y-4 mb-6">
-                    <h3 class="text-lg font-semibold text-gray-700">财务信息</h3>
+                    <h3 class="text-lg font-semibold text-gray-700">财务信息 (含税)</h3>
                     <div class="flex items-center space-x-2">
                         <label for="contractAmount" class="input-group-label text-sm font-medium">合同总额:</label>
                         <input type="number" id="contractAmount" value="3000000" class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500">
@@ -61,14 +61,22 @@
                         <label for="interestRate" class="input-group-label text-sm font-medium">资金年利率(%):</label>
                         <input type="number" id="interestRate" value="2" class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500">
                     </div>
+                    <div class="flex items-center space-x-2">
+                        <label for="vatRate" class="input-group-label text-sm font-medium">增值税率(%):</label>
+                        <input type="number" id="vatRate" value="13" class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500">
+                    </div>
                 </div>
 
                 <!-- 其他成本信息 -->
                 <div class="space-y-4 mb-6">
-                    <h3 class="text-lg font-semibold text-gray-700">其他成本</h3>
+                    <h3 class="text-lg font-semibold text-gray-700">其他成本 (含税)</h3>
                      <div class="flex items-center space-x-2">
                         <label for="intermediaryFee" class="input-group-label text-sm font-medium">居间费用:</label>
                         <input type="number" id="intermediaryFee" value="300000" class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <label for="intermediaryFeeTaxRate" class="input-group-label text-sm font-medium">居间费税率(%):</label>
+                        <input type="number" id="intermediaryFeeTaxRate" value="1" class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500">
                     </div>
                     <div class="flex items-center space-x-2">
                         <label for="travelCost" class="input-group-label text-sm font-medium">差旅商务成本:</label>
@@ -89,7 +97,7 @@
                     </div>
                     <div class="flex items-center space-x-2">
                         <label for="transportTime" class="input-group-label text-sm font-medium">运输阶段:</label>
-                        <input type="number" id="transportTime" value="30" class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500">
+                        <input type="number" id="transportTime" value="3" class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500">
                     </div>
                      <div class="flex items-center space-x-2">
                         <label for="debugTime" class="input-group-label text-sm font-medium">调试阶段:</label>
@@ -131,8 +139,8 @@
                         <!-- 制造商付款 -->
                         <div class="space-y-4">
                              <h3 class="text-lg font-semibold text-gray-700">制造商付款比例</h3>
-                            <div class="flex items-center space-x-2"><label class="w-20">预付款:</label><input type="number" id="m_prepayment" value="100" class="payment-input w-full p-2 border rounded-md"></div>
-                            <div class="flex items-center space-x-2"><label class="w-20">到货款:</label><input type="number" id="m_arrival" value="0" class="payment-input w-full p-2 border rounded-md"></div>
+                            <div class="flex items-center space-x-2"><label class="w-20">预付款:</label><input type="number" id="m_prepayment" value="0" class="payment-input w-full p-2 border rounded-md"></div>
+                            <div class="flex items-center space-x-2"><label class="w-20">发货款:</label><input type="number" id="m_arrival" value="100" class="payment-input w-full p-2 border rounded-md"></div>
                             <div class="flex items-center space-x-2"><label class="w-20">调试款:</label><input type="number" id="m_debug" value="0" class="payment-input w-full p-2 border rounded-md"></div>
                             <div class="flex items-center space-x-2"><label class="w-20">验收款:</label><input type="number" id="m_acceptance" value="0" class="payment-input w-full p-2 border rounded-md"></div>
                             <div class="flex items-center space-x-2"><label class="w-20">质保金:</label><input type="number" id="m_warranty" value="0" class="payment-input w-full p-2 border rounded-md"></div>
@@ -141,28 +149,28 @@
                 </div>
 
                 <!-- 结果汇总 -->
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div class="summary-card bg-white p-4 rounded-xl shadow-lg text-center">
+                <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 text-center">
+                    <div class="summary-card bg-white p-4 rounded-xl shadow-lg">
                         <h4 class="text-sm font-medium text-gray-500">峰值资金占用</h4>
                         <p id="peakCapital" class="text-2xl font-bold text-red-600">¥0</p>
                     </div>
-                     <div class="summary-card bg-white p-4 rounded-xl shadow-lg text-center">
+                     <div class="summary-card bg-white p-4 rounded-xl shadow-lg">
                         <h4 class="text-sm font-medium text-gray-500">总资金成本</h4>
                         <p id="totalInterest" class="text-2xl font-bold text-orange-500">¥0</p>
                     </div>
-                     <div class="summary-card bg-white p-4 rounded-xl shadow-lg text-center">
-                        <h4 class="text-sm font-medium text-gray-500">项目毛利</h4>
+                     <div class="summary-card bg-white p-4 rounded-xl shadow-lg">
+                        <h4 class="text-sm font-medium text-gray-500">项目毛利 (不含税)</h4>
                         <p id="grossProfit" class="text-2xl font-bold text-green-600">¥0</p>
                     </div>
-                    <div class="summary-card bg-white p-4 rounded-xl shadow-lg text-center">
-                        <h4 class="text-sm font-medium text-gray-500">项目净利</h4>
+                    <div class="summary-card bg-white p-4 rounded-xl shadow-lg">
+                        <h4 class="text-sm font-medium text-gray-500">项目净利 (税前)</h4>
                         <p id="netProfit" class="text-2xl font-bold text-blue-600">¥0</p>
                     </div>
                 </div>
 
                 <!-- 现金流量图 -->
                 <div class="bg-white p-6 rounded-xl shadow-lg">
-                    <h3 class="text-xl font-bold mb-4">现金流量图</h3>
+                    <h3 class="text-xl font-bold mb-4">含税现金流量图</h3>
                     <canvas id="cashFlowChart"></canvas>
                 </div>
             </div>
@@ -185,13 +193,16 @@
         }
 
         function calculate() {
-            // 1. 获取所有输入值
+            // 1. 获取所有含税输入值
             const contractAmount = parseFloat(document.getElementById('contractAmount').value);
             const mfgCost = parseFloat(document.getElementById('mfgCost').value);
             const interestRate = parseFloat(document.getElementById('interestRate').value) / 100;
+            const vatRate = parseFloat(document.getElementById('vatRate').value) / 100;
             const intermediaryFee = parseFloat(document.getElementById('intermediaryFee').value);
-            const travelCost = parseFloat(document.getElementById('travelCost').value);
+            const intermediaryFeeTaxRate = parseFloat(document.getElementById('intermediaryFeeTaxRate').value) / 100;
+            const travelCost = parseFloat(document.getElementById('travelCost').value); // 假设为不含税成本
 
+            // 时间线参数
             const prepTime = parseInt(document.getElementById('prepTime').value);
             const prodTime = parseInt(document.getElementById('prodTime').value);
             const transportTime = parseInt(document.getElementById('transportTime').value);
@@ -200,23 +211,11 @@
             const warrantyTime = parseInt(document.getElementById('warrantyTime').value);
             const paymentDelay = parseInt(document.getElementById('paymentDelay').value);
 
-            const c_percentages = {
-                prepayment: parseFloat(document.getElementById('c_prepayment').value) / 100,
-                arrival: parseFloat(document.getElementById('c_arrival').value) / 100,
-                debug: parseFloat(document.getElementById('c_debug').value) / 100,
-                acceptance: parseFloat(document.getElementById('c_acceptance').value) / 100,
-                warranty: parseFloat(document.getElementById('c_warranty').value) / 100,
-            };
-
-            const m_percentages = {
-                prepayment: parseFloat(document.getElementById('m_prepayment').value) / 100,
-                arrival: parseFloat(document.getElementById('m_arrival').value) / 100,
-                debug: parseFloat(document.getElementById('m_debug').value) / 100,
-                acceptance: parseFloat(document.getElementById('m_acceptance').value) / 100,
-                warranty: parseFloat(document.getElementById('m_warranty').value) / 100,
-            };
+            // 付款比例
+            const c_percentages = { prepayment: parseFloat(document.getElementById('c_prepayment').value) / 100, arrival: parseFloat(document.getElementById('c_arrival').value) / 100, debug: parseFloat(document.getElementById('c_debug').value) / 100, acceptance: parseFloat(document.getElementById('c_acceptance').value) / 100, warranty: parseFloat(document.getElementById('c_warranty').value) / 100 };
+            const m_percentages = { prepayment: parseFloat(document.getElementById('m_prepayment').value) / 100, arrival: parseFloat(document.getElementById('m_arrival').value) / 100, debug: parseFloat(document.getElementById('m_debug').value) / 100, acceptance: parseFloat(document.getElementById('m_acceptance').value) / 100, warranty: parseFloat(document.getElementById('m_warranty').value) / 100 };
             
-            // 2. 定义项目关键时间点 (Timeline)
+            // 2. 定义项目关键时间点
             const event_contractSigned = 0;
             const event_firstPaymentToMfg = prepTime;
             const event_goodsShipped = event_firstPaymentToMfg + prodTime;
@@ -224,63 +223,50 @@
             const event_debugComplete = event_goodsArrived + debugTime;
             const event_acceptanceSigned = event_debugComplete + acceptTime;
             const event_warrantyEnd = event_acceptanceSigned + warrantyTime;
-            
             const totalProjectDuration = event_warrantyEnd + paymentDelay;
 
-            // 3. 构建现金流事件数组
+            // 3. 构建含税现金流事件数组
             let cashFlows = [];
-
-            // 3.1 客户付款 (INFLOW)
-            cashFlows.push({ day: event_contractSigned + paymentDelay, amount: contractAmount * c_percentages.prepayment, label: '客户预付款' });
-            cashFlows.push({ day: event_goodsArrived + paymentDelay, amount: contractAmount * c_percentages.arrival, label: '客户到货款' });
-            cashFlows.push({ day: event_debugComplete + paymentDelay, amount: contractAmount * c_percentages.debug, label: '客户调试款' });
-            cashFlows.push({ day: event_acceptanceSigned + paymentDelay, amount: contractAmount * c_percentages.acceptance, label: '客户验收款' });
-            cashFlows.push({ day: event_warrantyEnd + paymentDelay, amount: contractAmount * c_percentages.warranty, label: '客户质保金' });
-
-            // 3.2 制造商付款 (OUTFLOW) - 假设在各阶段开始时付款
-            cashFlows.push({ day: event_firstPaymentToMfg, amount: -mfgCost * m_percentages.prepayment, label: '制造商预付款' });
-            cashFlows.push({ day: event_goodsShipped, amount: -mfgCost * m_percentages.arrival, label: '制造商到货款' });
-            cashFlows.push({ day: event_goodsArrived, amount: -mfgCost * m_percentages.debug, label: '制造商调试款' });
-            cashFlows.push({ day: event_debugComplete, amount: -mfgCost * m_percentages.acceptance, label: '制造商验收款' });
-            cashFlows.push({ day: event_acceptanceSigned, amount: -mfgCost * m_percentages.warranty, label: '制造商质保金' });
-
-            // 3.3 其他成本 (OUTFLOW)
-            // 居间费: 收到客户预付款后1个月(30天)支付
+            cashFlows.push({ day: event_contractSigned + paymentDelay, amount: contractAmount * c_percentages.prepayment });
+            cashFlows.push({ day: event_goodsArrived + paymentDelay, amount: contractAmount * c_percentages.arrival });
+            cashFlows.push({ day: event_debugComplete + paymentDelay, amount: contractAmount * c_percentages.debug });
+            cashFlows.push({ day: event_acceptanceSigned + paymentDelay, amount: contractAmount * c_percentages.acceptance });
+            cashFlows.push({ day: event_warrantyEnd + paymentDelay, amount: contractAmount * c_percentages.warranty });
+            cashFlows.push({ day: event_firstPaymentToMfg, amount: -mfgCost * m_percentages.prepayment });
+            cashFlows.push({ day: event_goodsShipped, amount: -mfgCost * m_percentages.arrival });
+            cashFlows.push({ day: event_goodsArrived, amount: -mfgCost * m_percentages.debug });
+            cashFlows.push({ day: event_debugComplete, amount: -mfgCost * m_percentages.acceptance });
+            cashFlows.push({ day: event_acceptanceSigned, amount: -mfgCost * m_percentages.warranty });
             const intermediaryFeePaymentDay = (event_contractSigned + paymentDelay) + 30;
-            cashFlows.push({ day: intermediaryFeePaymentDay, amount: -intermediaryFee, label: '居间费' });
-            // 差旅费/管理费: 项目结束时作为管理费用结算
-            cashFlows.push({ day: totalProjectDuration, amount: -travelCost, label: '差旅费/管理费' });
-
-            // 按日期排序现金流事件
+            cashFlows.push({ day: intermediaryFeePaymentDay, amount: -intermediaryFee });
+            cashFlows.push({ day: totalProjectDuration, amount: -travelCost });
             cashFlows.sort((a, b) => a.day - b.day);
 
-            // 4. 计算每日累计现金流和资金成本
+            // 4. 计算每日累计现金流和资金成本 (基于含税金额)
             let dailyBalance = new Array(totalProjectDuration + 1).fill(0);
-            let cumulativeCash = 0;
-            cashFlows.forEach(flow => {
-                if(flow.day <= totalProjectDuration){
-                    dailyBalance[flow.day] += flow.amount;
-                }
-            });
+            cashFlows.forEach(flow => { if(flow.day <= totalProjectDuration){ dailyBalance[flow.day] += flow.amount; } });
             
             let cumulativeBalances = [];
+            let cumulativeCash = 0;
             let totalInterest = 0;
             let peakCapital = 0;
             const dailyRate = interestRate / 365;
 
             for (let day = 0; day <= totalProjectDuration; day++) {
                 cumulativeCash += dailyBalance[day];
-                if (cumulativeCash < 0) {
-                    totalInterest += -cumulativeCash * dailyRate;
-                }
-                if (cumulativeCash < peakCapital) {
-                    peakCapital = cumulativeCash;
-                }
+                if (cumulativeCash < 0) { totalInterest += -cumulativeCash * dailyRate; }
+                if (cumulativeCash < peakCapital) { peakCapital = cumulativeCash; }
                 cumulativeBalances.push(cumulativeCash);
             }
 
-            // 5. 计算最终结果
-            const grossProfit = contractAmount - mfgCost - intermediaryFee - travelCost;
+            // 5. 计算利润 (基于不含税金额)
+            const revenueExTax = contractAmount / (1 + vatRate);
+            const costExTax = mfgCost / (1 + vatRate);
+            const intermediaryFeeExTax = intermediaryFee / (1 + intermediaryFeeTaxRate);
+
+            // 真实的毛利是不含税的
+            const grossProfit = revenueExTax - costExTax - intermediaryFeeExTax - travelCost;
+            // 税前净利
             const netProfit = grossProfit - totalInterest;
 
             // 6. 更新UI显示
@@ -295,62 +281,32 @@
 
         function updateChart(data, duration) {
             const labels = Array.from({ length: duration + 1 }, (_, i) => `第${i}天`);
-            
-            if (cashFlowChart) {
-                cashFlowChart.destroy();
-            }
-
+            if (cashFlowChart) { cashFlowChart.destroy(); }
             const ctx = cashFlowChartCanvas.getContext('2d');
             cashFlowChart = new Chart(ctx, {
                 type: 'line',
                 data: {
                     labels: labels,
                     datasets: [{
-                        label: '每日累计现金余额',
+                        label: '每日累计含税现金余额',
                         data: data,
                         borderColor: 'rgb(59, 130, 246)',
                         backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                        borderWidth: 2,
-                        pointRadius: 0,
-                        fill: true,
-                        tension: 0.1
+                        borderWidth: 2, pointRadius: 0, fill: true, tension: 0.1
                     }]
                 },
                 options: {
                     scales: {
-                        y: {
-                            beginAtZero: false,
-                            ticks: {
-                                callback: function(value, index, values) {
-                                    return '¥' + (value / 1000) + 'k';
-                                }
-                            }
-                        },
-                        x: {
-                             ticks: {
-                                maxTicksLimit: 15 // 限制X轴标签数量防止拥挤
-                            }
-                        }
+                        y: { beginAtZero: false, ticks: { callback: (value) => '¥' + (value / 1000) + 'k' } },
+                        x: { ticks: { maxTicksLimit: 15 } }
                     },
-                    plugins: {
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    return `余额: ${formatCurrency(context.parsed.y)}`;
-                                }
-                            }
-                        }
-                    }
+                    plugins: { tooltip: { callbacks: { label: (context) => `余额: ${formatCurrency(context.parsed.y)}` } } }
                 }
             });
         }
         
-        // 事件监听
         calculateBtn.addEventListener('click', calculate);
-
-        // 页面加载后立即计算一次
         document.addEventListener('DOMContentLoaded', calculate);
-
     </script>
 </body>
 </html>
