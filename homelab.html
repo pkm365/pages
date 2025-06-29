@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>现代化家庭网络架构指南</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background-color: #f0f4f8;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .flow-arrow {
+            position: relative;
+            width: 2px;
+            background-color: #A4C6FA;
+            margin: 0 auto;
+            height: 3rem;
+        }
+        .flow-arrow::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-top: 12px solid #A4C6FA;
+        }
+        .kpi-card {
+            background: linear-gradient(135deg, #4392F1, #0062D5);
+            border-radius: 1rem;
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 10px 20px rgba(0, 98, 213, 0.2);
+        }
+        .kpi-number {
+            font-size: 4rem;
+            font-weight: 900;
+            line-height: 1;
+        }
+        .kpi-label {
+            font-size: 1.25rem;
+            font-weight: 400;
+            margin-top: 0.5rem;
+        }
+        .tech-icon {
+            font-size: 2.5rem;
+            line-height: 1;
+        }
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: #004AAD;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        .section-subtitle {
+            font-size: 1.25rem;
+            color: #4A5568;
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 4rem auto;
+        }
+        .arch-diagram {
+            background-color: #ffffff;
+            border-radius: 1.5rem;
+            padding: 2rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
+        }
+        .arch-box {
+            border: 2px solid #cbd5e1;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            text-align: center;
+            font-weight: 600;
+        }
+        .arch-arrow {
+            font-size: 2rem;
+            color: #94a3b8;
+        }
+        .arch-line {
+            height: 2px;
+            background-color: #cbd5e1;
+            flex-grow: 1;
+        }
+        .arch-text {
+            font-size: 0.75rem;
+            font-weight: 400;
+            color: #64748b;
+        }
+        .traditional .arch-box { border-color: #fca5a5; }
+        .traditional .arch-arrow { color: #ef4444; }
+        .traditional .arch-text { color: #b91c1c; }
+        .modern .arch-box { border-color: #86efac; }
+        .modern .arch-arrow { color: #22c55e; }
+        .modern .arch-text { color: #15803d; }
+        .ssl-segment-card {
+            background-color: white;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border-top: 4px solid;
+            height: 100%;
+        }
+        .ssl-flow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin: 1rem 0;
+            font-size: 1.5rem;
+            color: #4392F1;
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <div class="container mx-auto p-4 md:p-8">
+
+        <header class="text-center my-12 md:my-16">
+            <h1 class="text-4xl md:text-6xl font-black text-[#004AAD] leading-tight">家庭网络架构的现代化演进</h1>
+            <p class="text-lg md:text-xl text-gray-600 mt-4 max-w-3xl mx-auto">从复杂、暴露的传统设置，迈向安全、优雅的云原生解决方案</p>
+        </header>
+
+        <main>
+            <section id="traditional-diagram" class="mb-20 md:mb-32">
+                <h2 class="section-title">传统架构图：复杂且暴露</h2>
+                <p class="section-subtitle">请求通过暴露的公网IP和繁杂的端口转发进入内网，每一步都增加了配置难度和安全风险。</p>
+                <div class="arch-diagram traditional">
+                    <div class="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8">
+                        <div class="arch-box">🌐<br>互联网</div>
+                        <div class="arch-arrow">→</div>
+                        <div class="arch-box">
+                            动态IP
+                            <p class="arch-text">⚠️ 需DDNS持续更新</p>
+                        </div>
+                        <div class="arch-arrow">→</div>
+                        <div class="arch-box">
+                            🚦 软路由
+                            <p class="arch-text">端口转发: 80, 443, 8808, 9092...</p>
+                        </div>
+                    </div>
+                    <div class="flex justify-center my-4">
+                        <div class="w-px h-12 bg-red-300 border-dashed border-l-2 border-red-300"></div>
+                    </div>
+                    <div class="arch-box max-w-lg mx-auto">
+                        🗄️ 群晖NAS (反向代理)
+                        <div class="mt-4 grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
+                            <div class="p-1 bg-red-50 rounded">...:8808 → 8083</div>
+                            <div class="p-1 bg-red-50 rounded">...:9092 → 9091</div>
+                            <div class="p-1 bg-red-50 rounded">...:1680 → 8001</div>
+                            <div class="p-1 bg-red-50 rounded">... (更多)</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="modern-diagram" class="mb-20 md:mb-32">
+                 <h2 class="section-title">现代化架构图：安全且优雅</h2>
+                 <p class="section-subtitle">公网IP被完全隐藏，所有流量通过单一、加密的隧道进入，配置集中，安全无忧。</p>
+                <div class="arch-diagram modern">
+                    <div class="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8">
+                       <div class="arch-box">🌐<br>互联网</div>
+                       <div class="arch-arrow">→</div>
+                       <div class="arch-box">
+                           ☁️ Cloudflare
+                           <p class="arch-text">✅ DNS/WAF/DDoS防护</p>
+                       </div>
+                       <div class="arch-arrow">→</div>
+                       <div class="arch-box">
+                           🔒 加密隧道
+                           <p class="arch-text">✅ 无需DDNS/端口转发</p>
+                       </div>
+                    </div>
+                    <div class="flex justify-center my-4">
+                        <div class="w-px h-12 bg-green-300 border-dashed border-l-2 border-green-300"></div>
+                    </div>
+                     <div class="arch-box max-w-lg mx-auto">
+                        🗄️ 群晖NAS (`cloudflared`)
+                         <div class="mt-4 grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
+                            <div class="p-1 bg-green-50 rounded">app1.domain → 8083</div>
+                            <div class="p-1 bg-green-50 rounded">app2.domain → 9091</div>
+                            <div class="p-1 bg-green-50 rounded">app3.domain → 8001</div>
+                            <div class="p-1 bg-green-50 rounded">... (更多)</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="solution" class="mb-20 md:mb-32">
+                <h2 class="section-title">核心理念：职责单一化</h2>
+                <p class="section-subtitle">引入“职责单一化”哲学，让每个组件各司其职。Cloudflare作为唯一公网入口，构建安全、高效、易于管理的全新体系。</p>
+                <div class="space-y-4">
+                    <div class="bg-white rounded-2xl shadow-lg p-6 flex items-center space-x-6 border-l-8 border-[#0062D5]">
+                        <div class="tech-icon">☁️</div>
+                        <div>
+                            <h3 class="text-xl font-bold text-[#004AAD]">Cloudflare：安全与流量入口网关</h3>
+                            <p class="text-gray-600 mt-1">DNS解析、安全防护、SSL证书、流量隧道，对外事务一手包办。</p>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-2xl shadow-lg p-6 flex items-center space-x-6 border-l-8 border-[#4392F1]">
+                        <div class="tech-icon">🛡️</div>
+                        <div>
+                            <h3 class="text-xl font-bold text-[#004AAD]">软路由：网络边界守门员</h3>
+                            <p class="text-gray-600 mt-1">回归纯粹的网络管理，负责DHCP和防火墙，不再参与应用路由。</p>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-2xl shadow-lg p-6 flex items-center space-x-6 border-l-8 border-[#66A5F5]">
+                        <div class="tech-icon">🗄️</div>
+                        <div>
+                            <h3 class="text-xl font-bold text-[#004AAD]">群晖 NAS：应用与数据中心</h3>
+                            <p class="text-gray-600 mt-1">在内网安全运行所有应用服务，通过Tunnel客户端与Cloudflare对话。</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="data-flow" class="mb-20 md:mb-32">
+                <h2 class="section-title">数据流：一次优雅的访问</h2>
+                <p class="section-subtitle">体验一次无缝、安全的数据请求之旅，从用户浏览器到最终应用，全程加密，路径清晰。</p>
+                 <div class="relative max-w-2xl mx-auto">
+                    <div class="p-6 bg-white rounded-2xl shadow-lg mb-4 text-center">
+                        <div class="font-bold text-lg text-[#0062D5]">① 用户浏览器</div>
+                        <p class="text-sm text-gray-600">访问 `https://app.yourdomain.club`</p>
+                    </div>
+                    <div class="flow-arrow"></div>
+                    <div class="p-6 bg-white rounded-2xl shadow-lg my-4 text-center">
+                        <div class="font-bold text-lg text-[#0062D5]">② Cloudflare 网络</div>
+                        <p class="text-sm text-gray-600">处理DNS、SSL，并将请求送入加密隧道</p>
+                    </div>
+                    <div class="flow-arrow"></div>
+                    <div class="p-6 bg-white rounded-2xl shadow-lg my-4 text-center">
+                        <div class="font-bold text-lg text-[#0062D5]">③ 群晖NAS `cloudflared` 容器</div>
+                        <p class="text-sm text-gray-600">从隧道接收请求，按配置路由到本地端口</p>
+                    </div>
+                    <div class="flow-arrow"></div>
+                    <div class="p-6 bg-white rounded-2xl shadow-lg mt-4 text-center">
+                        <div class="font-bold text-lg text-[#0062D5]">④ 应用服务容器</div>
+                        <p class="text-sm text-gray-600">在 `localhost:port` 收到请求并处理</p>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- NEW SECTION: SSL Explanation -->
+            <section id="ssl-segments" class="mb-20 md:mb-32">
+                <h2 class="section-title">端到端加密：SSL证书的两段论</h2>
+                <p class="section-subtitle">新架构的安全性基石在于两段独立的SSL加密，它们协同工作，告别手动续期的烦恼，实现真正的一劳永逸。</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
+                    
+                    <div class="ssl-segment-card border-[#4392F1]">
+                        <h3 class="font-bold text-xl text-[#004AAD]">第一段：公网加密</h3>
+                        <div class="ssl-flow">
+                            <span>💻</span>
+                            <span class="font-bold text-2xl">↔</span>
+                            <span>☁️</span>
+                        </div>
+                        <p class="font-semibold">用户浏览器 ↔ Cloudflare</p>
+                        <hr class="my-4">
+                        <div class="text-left space-y-2 text-sm">
+                            <p>✅ <span class="font-bold">证书类型：</span>公共SSL证书</p>
+                            <p>✅ <span class="font-bold">颁发机构：</span>Let's Encrypt / Google 等</p>
+                            <p>✅ <span class="font-bold">管理方式：</span><span class="text-green-600 font-semibold">Cloudflare全自动管理和续期</span></p>
+                            <p>✅ <span class="font-bold">用户体验：</span>浏览器地址栏显示安全锁</p>
+                        </div>
+                    </div>
+
+                    <div class="ssl-segment-card border-[#0062D5]">
+                        <h3 class="font-bold text-xl text-[#004AAD]">第二段：隧道加密</h3>
+                         <div class="ssl-flow">
+                            <span>☁️</span>
+                            <span class="font-bold text-2xl">↔</span>
+                            <span>🗄️</span>
+                        </div>
+                        <p class="font-semibold">Cloudflare ↔ 群晖NAS</p>
+                        <hr class="my-4">
+                        <div class="text-left space-y-2 text-sm">
+                            <p>✅ <span class="font-bold">证书类型：</span>Cloudflare Origin CA证书</p>
+                             <p>✅ <span class="font-bold">有效期：</span><span class="text-green-600 font-semibold">长达15年</span></p>
+                            <p>✅ <span class="font-bold">管理方式：</span>在Cloudflare生成，一次性导入群晖即可</p>
+                            <p>✅ <span class="font-bold">安全保障：</span>确保Cloudflare连接到的是您自己的服务器</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-8 p-4 bg-green-50 text-green-700 rounded-lg text-center font-bold">
+                    两段结合 + Cloudflare "Full (Strict)" 模式 = 完整的端到端安全链路
+                </div>
+            </section>
+
+            <section id="transformation" class="mb-20 md:mb-32">
+                <h2 class="section-title">革命性的转变</h2>
+                <p class="section-subtitle">新旧架构的核心差异，不仅是技术的升级，更是管理哲学和安全等级的全面飞跃。</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+                    <div class="kpi-card">
+                        <div class="kpi-number">0</div>
+                        <div class="kpi-label">公网暴露端口</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-number">1</div>
+                        <div class="kpi-label">统一配置文件</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-number">15</div>
+                        <div class="kpi-label">年·内网证书有效期</div>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+                    <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+                        <h3 class="text-2xl font-bold text-center text-[#004AAD] mb-6">关键维度对比</h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm text-left">
+                                <thead class="text-xs text-white uppercase bg-[#0062D5]">
+                                    <tr>
+                                        <th scope="col" class="px-4 py-3">维度</th>
+                                        <th scope="col" class="px-4 py-3">传统方式</th>
+                                        <th scope="col" class="px-4 py-3">现代化架构</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="border-b bg-white">
+                                        <th scope="row" class="px-4 py-3 font-medium whitespace-nowrap">公网暴露</th>
+                                        <td class="px-4 py-3 text-red-600">IP与端口均暴露</td>
+                                        <td class="px-4 py-3 text-green-600 font-bold">零暴露</td>
+                                    </tr>
+                                    <tr class="border-b bg-gray-50">
+                                        <th scope="row" class="px-4 py-3 font-medium whitespace-nowrap">动态IP处理</th>
+                                        <td class="px-4 py-3 text-red-600">必须使用DDNS</td>
+                                        <td class="px-4 py-3 text-green-600 font-bold">完全无需DDNS</td>
+                                    </tr>
+                                    <tr class="border-b bg-white">
+                                        <th scope="row" class="px-4 py-3 font-medium whitespace-nowrap">配置管理</th>
+                                        <td class="px-4 py-3 text-red-600">3+个分散位置</td>
+                                        <td class="px-4 py-3 text-green-600 font-bold">1个统一位置</td>
+                                    </tr>
+                                    <tr class="border-b bg-gray-50">
+                                        <th scope="row" class="px-4 py-3 font-medium whitespace-nowrap">SSL证书</th>
+                                        <td class="px-4 py-3 text-red-600">痛苦的手动续期</td>
+                                        <td class="px-4 py-3 text-green-600 font-bold">自动化，一劳永逸</td>
+                                    </tr>
+                                    <tr class="bg-white">
+                                        <th scope="row" class="px-4 py-3 font-medium whitespace-nowrap">访问体验</th>
+                                        <td class="px-4 py-3 text-red-600">`域名:端口号`</td>
+                                        <td class="px-4 py-3 text-green-600 font-bold">`子域名.域名`</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+                        <h3 class="text-2xl font-bold text-center text-[#004AAD] mb-6">管理复杂度对比</h3>
+                         <div class="chart-container">
+                            <canvas id="complexityChart"></canvas>
+                        </div>
+                        <p class="text-center text-gray-600 mt-4 text-sm">现代化架构将多个配置点统一为一，显著降低了管理复杂度和出错几率。</p>
+                    </div>
+                </div>
+
+            </section>
+        </main>
+
+        <footer class="text-center mt-16 mb-8">
+            <p class="text-gray-600">一个安全、优雅、易于维护的家庭网络，从清晰的架构开始。</p>
+            <p class="text-sm text-gray-400 mt-2">Infographic Generated by Canvas Infographics</p>
+        </footer>
+    </div>
+
+    <script>
+        const wrapLabel = (label, maxWidth = 16) => {
+            if (label.length <= maxWidth) {
+                return label;
+            }
+            const words = label.split(' ');
+            const lines = [];
+            let currentLine = '';
+            for (const word of words) {
+                if ((currentLine + ' ' + word).trim().length > maxWidth) {
+                    lines.push(currentLine.trim());
+                    currentLine = word;
+                } else {
+                    currentLine = (currentLine + ' ' + word).trim();
+                }
+            }
+            if (currentLine) {
+                lines.push(currentLine.trim());
+            }
+            return lines;
+        };
+        
+        const tooltipTitleCallback = (tooltipItems) => {
+            const item = tooltipItems[0];
+            let label = item.chart.data.labels[item.dataIndex];
+            if (Array.isArray(label)) {
+              return label.join(' ');
+            } else {
+              return label;
+            }
+        };
+
+        const chartOptions = {
+            maintainAspectRatio: false,
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                tooltip: {
+                    callbacks: {
+                        title: tooltipTitleCallback
+                    }
+                }
+            }
+        };
+
+        const complexityCtx = document.getElementById('complexityChart').getContext('2d');
+        new Chart(complexityCtx, {
+            type: 'bar',
+            data: {
+                labels: ['传统方式', '现代化架构'],
+                datasets: [{
+                    label: '配置管理点数量',
+                    data: [3, 1],
+                    backgroundColor: [
+                        'rgba(239, 68, 68, 0.6)',
+                        'rgba(34, 197, 94, 0.6)'
+                    ],
+                    borderColor: [
+                        'rgba(239, 68, 68, 1)',
+                        'rgba(34, 197, 94, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: { ...chartOptions,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>
