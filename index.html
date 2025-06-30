@@ -5,104 +5,193 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI 学习笔记导航</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .card-hover-effect {
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        .card-hover-effect:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .category-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #1e3a8a; /* Dark Blue */
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid #3b82f6; /* Lighter Blue */
+            margin-bottom: 2rem;
+        }
+    </style>
 </head>
-<body class="bg-gray-100 min-h-screen">
-    <div class="container mx-auto px-4 py-8">
-        <h1 class="text-3xl font-bold mb-8 text-center text-gray-800">AI 学习笔记导航</h1>
-        <div class="bg-white rounded-lg shadow-lg p-6">
-            <div class="grid grid-cols-1 gap-4">
-                <a href="simulation.html" class="p-4 border rounded hover:bg-gray-50 transition-colors">
-                    <div class="flex justify-between items-center">
-                        <h2 class="text-lg font-semibold text-gray-800">项目利润模拟器 (含税务计算)</h2>
-                        <span class="text-sm text-gray-500">2025-06-25</span>
+<body class="bg-slate-50 min-h-screen">
+    <header class="bg-gradient-to-r from-blue-600 to-indigo-700 text-white shadow-lg">
+        <div class="container mx-auto px-4 py-12 text-center">
+            <h1 class="text-4xl md:text-5xl font-bold">AI 学习笔记导航</h1>
+            <p class="mt-4 text-lg opacity-90">探索人工智能、项目管理和技术洞察的知识库</p>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-10 space-y-12">
+
+        <section>
+            <h2 class="category-title">AI &amp; Machine Learning</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+                <a href="data missing.html" class="block bg-white rounded-lg p-6 card-hover-effect border border-slate-200">
+                    <div class="flex justify-between items-start mb-4">
+                        <span class="text-2xl">📄</span>
+                        <span class="text-xs font-semibold bg-slate-200 text-slate-600 px-2 py-1 rounded-full">2025-06-19</span>
                     </div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-2">走向AI时代的数据挑战</h3>
+                    <p class="text-blue-600 font-semibold text-sm">查看详情 &rarr;</p>
                 </a>
-                <a href="attention score.html" class="p-4 border rounded hover:bg-gray-50 transition-colors">
-                    <div class="flex justify-between items-center">
-                        <h2 class="text-lg font-semibold text-gray-800">缩放点积注意力机制可视化</h2>
-                        <span class="text-sm text-gray-500">2025-06-20</span>
+                <a href="platform.html" class="block bg-white rounded-lg p-6 card-hover-effect border border-slate-200">
+                    <div class="flex justify-between items-start mb-4">
+                        <span class="text-2xl">📄</span>
+                        <span class="text-xs font-semibold bg-slate-200 text-slate-600 px-2 py-1 rounded-full">2025-06-19</span>
                     </div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-2">工业AI智能化转型演示平台</h3>
+                    <p class="text-blue-600 font-semibold text-sm">查看详情 &rarr;</p>
                 </a>
-                <a href="dotproduct.html" class="p-4 border rounded hover:bg-gray-50 transition-colors">
-                    <div class="flex justify-between items-center">
-                        <h2 class="text-lg font-semibold text-gray-800">点积几何可视化</h2>
-                        <span class="text-sm text-gray-500">2025-06-20</span>
+                <a href="AI implement key elements.html" class="block bg-white rounded-lg p-6 card-hover-effect border border-slate-200">
+                    <div class="flex justify-between items-start mb-4">
+                        <span class="text-2xl">📄</span>
+                        <span class="text-xs font-semibold bg-slate-200 text-slate-600 px-2 py-1 rounded-full">2025-06-19</span>
                     </div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-2">工业AI落地要素</h3>
+                    <p class="text-blue-600 font-semibold text-sm">查看详情 &rarr;</p>
                 </a>
-                <a href="Tryptophan.html" class="p-4 border rounded hover:bg-gray-50 transition-colors">
-                    <div class="flex justify-between items-center">
-                        <h2 class="text-lg font-semibold text-gray-800">色氨酸食物指南：開啟好心情與優質睡眠</h2>
-                        <span class="text-sm text-gray-500">2025-06-19</span>
+                <a href="AI learning paradigm.html" class="block bg-white rounded-lg p-6 card-hover-effect border border-slate-200">
+                    <div class="flex justify-between items-start mb-4">
+                        <span class="text-2xl">📄</span>
+                        <span class="text-xs font-semibold bg-slate-200 text-slate-600 px-2 py-1 rounded-full">2025-06-19</span>
                     </div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-2">AI时代组织进化</h3>
+                    <p class="text-blue-600 font-semibold text-sm">查看详情 &rarr;</p>
                 </a>
-                <a href="sleep.html" class="p-4 border rounded hover:bg-gray-50 transition-colors">
-                    <div class="flex justify-between items-center">
-                        <h2 class="text-lg font-semibold text-gray-800">睡眠的架构：可视化指南</h2>
-                        <span class="text-sm text-gray-500">2025-06-19</span>
+                <a href="AI framework.html" class="block bg-white rounded-lg p-6 card-hover-effect border border-slate-200">
+                    <div class="flex justify-between items-start mb-4">
+                        <span class="text-2xl">📄</span>
+                        <span class="text-xs font-semibold bg-slate-200 text-slate-600 px-2 py-1 rounded-full">2025-06-19</span>
                     </div>
-                </a>
-                <a href="teim.html" class="p-4 border rounded hover:bg-gray-50 transition-colors">
-                    <div class="flex justify-between items-center">
-                        <h2 class="text-lg font-semibold text-gray-800">从组织赋能到技术协同</h2>
-                        <span class="text-sm text-gray-500">2025-06-19</span>
-                    </div>
-                </a>
-                <a href="resolution.html" class="p-4 border rounded hover:bg-gray-50 transition-colors">
-                    <div class="flex justify-between items-center">
-                        <h2 class="text-lg font-semibold text-gray-800">企业可持续发展模型TeiM</h2>
-                        <span class="text-sm text-gray-500">2025-06-19</span>
-                    </div>
-                </a>
-                <a href="root mode upgrade.html" class="p-4 border rounded hover:bg-gray-50 transition-colors">
-                    <div class="flex justify-between items-center">
-                        <h2 class="text-lg font-semibold text-gray-800">推动&quot;根模式&quot;的体系升级</h2>
-                        <span class="text-sm text-gray-500">2025-06-19</span>
-                    </div>
-                </a>
-                <a href="data missing.html" class="p-4 border rounded hover:bg-gray-50 transition-colors">
-                    <div class="flex justify-between items-center">
-                        <h2 class="text-lg font-semibold text-gray-800">走向AI时代的数据挑战</h2>
-                        <span class="text-sm text-gray-500">2025-06-19</span>
-                    </div>
-                </a>
-                <a href="platform.html" class="p-4 border rounded hover:bg-gray-50 transition-colors">
-                    <div class="flex justify-between items-center">
-                        <h2 class="text-lg font-semibold text-gray-800">工业AI智能化转型演示平台</h2>
-                        <span class="text-sm text-gray-500">2025-06-19</span>
-                    </div>
-                </a>
-                <a href="ccpm.html" class="p-4 border rounded hover:bg-gray-50 transition-colors">
-                    <div class="flex justify-between items-center">
-                        <h2 class="text-lg font-semibold text-gray-800">交互式关键链项目管理学习应用</h2>
-                        <span class="text-sm text-gray-500">2025-06-19</span>
-                    </div>
-                </a>
-                <a href="QG.html" class="p-4 border rounded hover:bg-gray-50 transition-colors">
-                    <div class="flex justify-between items-center">
-                        <h2 class="text-lg font-semibold text-gray-800">交互式软件开发质量门 (QG0-QG5)</h2>
-                        <span class="text-sm text-gray-500">2025-06-19</span>
-                    </div>
-                </a>
-                <a href="AI implement key elements.html" class="p-4 border rounded hover:bg-gray-50 transition-colors">
-                    <div class="flex justify-between items-center">
-                        <h2 class="text-lg font-semibold text-gray-800">工业AI落地要素</h2>
-                        <span class="text-sm text-gray-500">2025-06-19</span>
-                    </div>
-                </a>
-                <a href="AI learning paradigm.html" class="p-4 border rounded hover:bg-gray-50 transition-colors">
-                    <div class="flex justify-between items-center">
-                        <h2 class="text-lg font-semibold text-gray-800">AI时代组织进化</h2>
-                        <span class="text-sm text-gray-500">2025-06-19</span>
-                    </div>
-                </a>
-                <a href="AI framework.html" class="p-4 border rounded hover:bg-gray-50 transition-colors">
-                    <div class="flex justify-between items-center">
-                        <h2 class="text-lg font-semibold text-gray-800">工业AI应用平台架构深度解析</h2>
-                        <span class="text-sm text-gray-500">2025-06-19</span>
-                    </div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-2">工业AI应用平台架构深度解析</h3>
+                    <p class="text-blue-600 font-semibold text-sm">查看详情 &rarr;</p>
                 </a>
             </div>
-        </div>
-    </div>
+        </section>
+
+        <section>
+            <h2 class="category-title">Industrial &amp; Business Strategy</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+                <a href="teim.html" class="block bg-white rounded-lg p-6 card-hover-effect border border-slate-200">
+                    <div class="flex justify-between items-start mb-4">
+                        <span class="text-2xl">📄</span>
+                        <span class="text-xs font-semibold bg-slate-200 text-slate-600 px-2 py-1 rounded-full">2025-06-19</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-2">从组织赋能到技术协同</h3>
+                    <p class="text-blue-600 font-semibold text-sm">查看详情 &rarr;</p>
+                </a>
+                <a href="resolution.html" class="block bg-white rounded-lg p-6 card-hover-effect border border-slate-200">
+                    <div class="flex justify-between items-start mb-4">
+                        <span class="text-2xl">📄</span>
+                        <span class="text-xs font-semibold bg-slate-200 text-slate-600 px-2 py-1 rounded-full">2025-06-19</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-2">企业可持续发展模型TeiM</h3>
+                    <p class="text-blue-600 font-semibold text-sm">查看详情 &rarr;</p>
+                </a>
+                <a href="root mode upgrade.html" class="block bg-white rounded-lg p-6 card-hover-effect border border-slate-200">
+                    <div class="flex justify-between items-start mb-4">
+                        <span class="text-2xl">📄</span>
+                        <span class="text-xs font-semibold bg-slate-200 text-slate-600 px-2 py-1 rounded-full">2025-06-19</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-2">推动&quot;根模式&quot;的体系升级</h3>
+                    <p class="text-blue-600 font-semibold text-sm">查看详情 &rarr;</p>
+                </a>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="category-title">Project Management</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+                <a href="simulation.html" class="block bg-white rounded-lg p-6 card-hover-effect border border-slate-200">
+                    <div class="flex justify-between items-start mb-4">
+                        <span class="text-2xl">📄</span>
+                        <span class="text-xs font-semibold bg-slate-200 text-slate-600 px-2 py-1 rounded-full">2025-06-25</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-2">项目利润模拟器 (含税务计算)</h3>
+                    <p class="text-blue-600 font-semibold text-sm">查看详情 &rarr;</p>
+                </a>
+                <a href="ccpm.html" class="block bg-white rounded-lg p-6 card-hover-effect border border-slate-200">
+                    <div class="flex justify-between items-start mb-4">
+                        <span class="text-2xl">📄</span>
+                        <span class="text-xs font-semibold bg-slate-200 text-slate-600 px-2 py-1 rounded-full">2025-06-19</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-2">交互式关键链项目管理学习应用</h3>
+                    <p class="text-blue-600 font-semibold text-sm">查看详情 &rarr;</p>
+                </a>
+                <a href="QG.html" class="block bg-white rounded-lg p-6 card-hover-effect border border-slate-200">
+                    <div class="flex justify-between items-start mb-4">
+                        <span class="text-2xl">📄</span>
+                        <span class="text-xs font-semibold bg-slate-200 text-slate-600 px-2 py-1 rounded-full">2025-06-19</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-2">交互式软件开发质量门 (QG0-QG5)</h3>
+                    <p class="text-blue-600 font-semibold text-sm">查看详情 &rarr;</p>
+                </a>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="category-title">Health &amp; Wellness</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+                <a href="Tryptophan.html" class="block bg-white rounded-lg p-6 card-hover-effect border border-slate-200">
+                    <div class="flex justify-between items-start mb-4">
+                        <span class="text-2xl">📄</span>
+                        <span class="text-xs font-semibold bg-slate-200 text-slate-600 px-2 py-1 rounded-full">2025-06-19</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-2">色氨酸食物指南：開啟好心情與優質睡眠</h3>
+                    <p class="text-blue-600 font-semibold text-sm">查看详情 &rarr;</p>
+                </a>
+                <a href="sleep.html" class="block bg-white rounded-lg p-6 card-hover-effect border border-slate-200">
+                    <div class="flex justify-between items-start mb-4">
+                        <span class="text-2xl">📄</span>
+                        <span class="text-xs font-semibold bg-slate-200 text-slate-600 px-2 py-1 rounded-full">2025-06-19</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-2">睡眠的架构：可视化指南</h3>
+                    <p class="text-blue-600 font-semibold text-sm">查看详情 &rarr;</p>
+                </a>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="category-title">Other Topics</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+                <a href="attention score.html" class="block bg-white rounded-lg p-6 card-hover-effect border border-slate-200">
+                    <div class="flex justify-between items-start mb-4">
+                        <span class="text-2xl">📄</span>
+                        <span class="text-xs font-semibold bg-slate-200 text-slate-600 px-2 py-1 rounded-full">2025-06-20</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-2">缩放点积注意力机制可视化</h3>
+                    <p class="text-blue-600 font-semibold text-sm">查看详情 &rarr;</p>
+                </a>
+                <a href="dotproduct.html" class="block bg-white rounded-lg p-6 card-hover-effect border border-slate-200">
+                    <div class="flex justify-between items-start mb-4">
+                        <span class="text-2xl">📄</span>
+                        <span class="text-xs font-semibold bg-slate-200 text-slate-600 px-2 py-1 rounded-full">2025-06-20</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-2">点积几何可视化</h3>
+                    <p class="text-blue-600 font-semibold text-sm">查看详情 &rarr;</p>
+                </a>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="text-center py-6 mt-8">
+        <p class="text-sm text-slate-500">由 generate_nav.py 自动生成</p>
+    </footer>
 </body>
 </html>
