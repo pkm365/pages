@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>走向AI时代的数据挑战</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Visualization & Content Choices:
+        - Report Info: Main title "走向 AI 时代...缺数据". Goal: Set context. Viz/Presentation: Prominent HTML heading. Interaction: None. Justification: Clear entry point.
+        - Report Info: Four data challenges (以为自己有 vs AI认为有 -> 知识浓度, etc.). Goal: Inform & Compare. Viz/Presentation: Four styled HTML cards (using Tailwind grid/flex), each containing 'Our Assumption', 'AI/Actual Situation', and 'Core Problem' text blocks, with Unicode icons (💡, 💻, 🎯). Interaction: Visual separation within cards; hover effects on cards. Justification: Modular, clear comparison, more engaging than a plain table.
+        - Report Info: "Data -> Domain -> AI" flow. Goal: Summarize/Organize. Viz/Presentation: HTML elements (divs, arrows using Unicode) styled with Tailwind to create a flow diagram. Interaction: Hover effects on each stage. Justification: Visualizes the progression effectively.
+        - Library/Method: HTML, Tailwind CSS, Vanilla JS for minor interactions. No Chart.js/Plotly.js needed as content is qualitative/conceptual.
+        - CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+        }
+        .challenge-card {
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+        .challenge-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+        .flow-step {
+            transition: background-color 0.3s ease-in-out, transform 0.3s ease-in-out;
+        }
+        .flow-step:hover {
+            transform: scale(1.05);
+        }
+        .arrow {
+            font-size: 2rem;
+            line-height: 1;
+            color: #38bdf8; /* Tailwind sky-500 */
+        }
+    </style>
+</head>
+<body class="bg-stone-100 text-stone-800">
+
+    <div class="container mx-auto px-4 py-8 md:py-12">
+
+        <header class="text-center mb-10 md:mb-16">
+            <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold text-sky-700">
+                走向AI时代的过程，<br class="sm:hidden">往往遇到最大问题是“<span class="text-amber-600">缺数据</span>“
+            </h1>
+        </header>
+
+        <section id="intro" class="mb-10 md:mb-16 max-w-3xl mx-auto text-center">
+            <p class="text-lg md:text-xl text-stone-700">
+                在迈向人工智能时代的征途中，数据是驱动引擎的核心燃料。然而，企业和团队常常在数据认知上存在误区，导致AI项目难以发挥预期效果。本应用旨在揭示几个常见的认知挑战，帮助您更清晰地审视自身的数据基础。
+            </p>
+        </section>
+
+        <section id="challenges" class="mb-10 md:mb-16">
+            <h2 class="text-2xl md:text-3xl font-semibold text-center mb-8 text-sky-600">四大核心数据挑战</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+
+                <div class="challenge-card bg-white p-6 rounded-xl border border-stone-300 shadow-lg">
+                    <h3 class="text-xl font-semibold text-sky-700 mb-4 flex items-center">
+                        <span class="text-3xl mr-3">🎯</span> “知识浓度” 问题
+                    </h3>
+                    <div class="space-y-3">
+                        <div class="p-3 bg-rose-50 rounded-lg border border-rose-200">
+                            <p class="font-medium text-rose-700 flex items-center"><span class="text-2xl mr-2">🤔</span>我们以为自己有:</p>
+                            <p class="text-stone-600 ml-8">大量原始数据，感觉信息丰富。</p>
+                        </div>
+                        <div class="p-3 bg-emerald-50 rounded-lg border border-emerald-200">
+                            <p class="font-medium text-emerald-700 flex items-center"><span class="text-2xl mr-2">💻</span>AI认为需要有:</p>
+                            <p class="text-stone-600 ml-8">经过提炼、具有高信息密度和业务关联性的知识。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="challenge-card bg-white p-6 rounded-xl border border-stone-300 shadow-lg">
+                    <h3 class="text-xl font-semibold text-sky-700 mb-4 flex items-center">
+                        <span class="text-3xl mr-3">🎯</span> “数据质量” 问题
+                    </h3>
+                    <div class="space-y-3">
+                        <div class="p-3 bg-rose-50 rounded-lg border border-rose-200">
+                            <p class="font-medium text-rose-700 flex items-center"><span class="text-2xl mr-2">🤔</span>我们想象自己有:</p>
+                            <p class="text-stone-600 ml-8">数据完整、准确、随时可用。</p>
+                        </div>
+                        <div class="p-3 bg-emerald-50 rounded-lg border border-emerald-200">
+                            <p class="font-medium text-emerald-700 flex items-center"><span class="text-2xl mr-2">💻</span>实际情况往往是:</p>
+                            <p class="text-stone-600 ml-8">数据残缺、不一致、存在噪音或偏差。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="challenge-card bg-white p-6 rounded-xl border border-stone-300 shadow-lg">
+                    <h3 class="text-xl font-semibold text-sky-700 mb-4 flex items-center">
+                        <span class="text-3xl mr-3">🎯</span> “流程设计” 问题
+                    </h3>
+                    <div class="space-y-3">
+                        <div class="p-3 bg-rose-50 rounded-lg border border-rose-200">
+                            <p class="font-medium text-rose-700 flex items-center"><span class="text-2xl mr-2">🤔</span>提供工具的人不懂制造:</p>
+                            <p class="text-stone-600 ml-8">技术团队可能不深入了解业务流程和真实痛点。</p>
+                        </div>
+                        <div class="p-3 bg-emerald-50 rounded-lg border border-emerald-200">
+                            <p class="font-medium text-emerald-700 flex items-center"><span class="text-2xl mr-2">💻</span>数据化 ≠ 数字化:</p>
+                            <p class="text-stone-600 ml-8">仅仅将线下信息搬到线上 (数字化) 不等于真正将业务流程和决策数据驱动化 (数据化)。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="challenge-card bg-white p-6 rounded-xl border border-stone-300 shadow-lg">
+                    <h3 class="text-xl font-semibold text-sky-700 mb-4 flex items-center">
+                        <span class="text-3xl mr-3">🎯</span> “体系架构” 问题
+                    </h3>
+                    <div class="space-y-3">
+                        <div class="p-3 bg-rose-50 rounded-lg border border-rose-200">
+                            <p class="font-medium text-rose-700 flex items-center"><span class="text-2xl mr-2">🤔</span>系统的零敲碎打:</p>
+                            <p class="text-stone-600 ml-8">各系统独立建设，数据孤岛现象严重。</p>
+                        </div>
+                        <div class="p-3 bg-emerald-50 rounded-lg border border-emerald-200">
+                            <p class="font-medium text-emerald-700 flex items-center"><span class="text-2xl mr-2">💻</span>系统化 ≠ 体系:</p>
+                            <p class="text-stone-600 ml-8">拥有多个系统 (系统化) 不代表拥有一个统一规划、数据互通、协同高效的数据体系。</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="flow" class="py-10 md:py-16 bg-sky-50 rounded-xl shadow-inner">
+            <h2 class="text-2xl md:text-3xl font-semibold text-center mb-8 text-sky-700">从数据到智能的演进路径</h2>
+            <p class="text-center text-stone-600 mb-10 max-w-2xl mx-auto">
+                成功的人工智能应用，依赖于清晰的数据战略和从原始数据到领域洞察，最终赋能AI的完整链路。
+            </p>
+            <div class="flex flex-col md:flex-row items-center justify-center space-y-6 md:space-y-0 md:space-x-6 lg:space-x-10">
+                <div class="flow-step bg-amber-400 text-amber-900 p-6 rounded-lg shadow-md text-center w-48 h-32 flex flex-col justify-center">
+                    <span class="text-2xl font-bold">数据</span>
+                    <span class="text-sm">(Data)</span>
+                </div>
+                <div class="arrow hidden md:block">➔</div>
+                <div class="arrow block md:hidden transform rotate-90">➔</div>
+                <div class="flow-step bg-teal-400 text-teal-900 p-6 rounded-lg shadow-md text-center w-48 h-32 flex flex-col justify-center">
+                    <span class="text-2xl font-bold">领域</span>
+                    <span class="text-sm">(Domain)</span>
+                </div>
+                <div class="arrow hidden md:block">➔</div>
+                <div class="arrow block md:hidden transform rotate-90">➔</div>
+                <div class="flow-step bg-purple-400 text-purple-900 p-6 rounded-lg shadow-md text-center w-48 h-32 flex flex-col justify-center">
+                    <span class="text-2xl font-bold">AI</span>
+                    <span class="text-sm">(人工智能)</span>
+                </div>
+            </div>
+        </section>
+
+        <footer class="text-center mt-12 py-6 border-t border-stone-300">
+            <p class="text-stone-600">&copy; <span id="currentYear"></span> 数据挑战洞察。保留所有权利。</p>
+        </footer>
+    </div>
+
+    <script>
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+    </script>
+</body>
+</html>

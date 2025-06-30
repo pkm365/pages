@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<!-- Visualization & Content Choices:
+    - Core Vision: HTML cards + Unicode icons. Goal: Inform. Justification: Simple, clear.
+    - Overall Architecture: HTML/CSS flowchart (divs, borders/arrows). Goal: Organize. Justification: Visual map, no SVG/Mermaid. Interactive scroll.
+    - Info Systems (MEGA): HTML cards with lists. Goal: Organize/Inform. Justification: Structured detail.
+    - AI Engines (Lean AI): Chart.js Donut (Canvas). Goal: Compare components. Justification: Visual part-to-whole, no SVG. Cards for details.
+    - AI Applications: HTML text (stat) + grid of cards. Goal: Showcase. Justification: Highlights breadth.
+    CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>工业AI应用平台架构深度解析</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans SC', 'Inter', sans-serif;
+            background-color: #F4F5F7; /* Light Gray Background */
+            color: #172B4D; /* Dark Slate Gray Text */
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 450px; /* Max width for readability */
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px; /* Base height */
+            max-height: 350px; /* Max height */
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+                max-height: 400px;
+            }
+        }
+        .flowchart-node {
+            background-color: #FFFFFF;
+            border: 2px solid #0052CC; /* Primary Blue Border */
+            color: #0052CC; /* Primary Blue Text */
+            padding: 0.75rem 1.25rem;
+            border-radius: 0.5rem;
+            text-align: center;
+            font-weight: 600;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .flowchart-node:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .flowchart-arrow {
+            font-size: 2rem;
+            color: #00A2FF; /* Secondary Blue */
+            margin: 0.5rem 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .section-title {
+            font-size: 1.875rem; /* 30px */
+            line-height: 2.25rem; /* 36px */
+            font-weight: 700;
+            color: #0052CC; /* Primary Blue */
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        .card {
+            background-color: #FFFFFF;
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: box-shadow 0.3s ease;
+        }
+        .card:hover {
+             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .card-title {
+            font-size: 1.25rem; /* 20px */
+            font-weight: 600;
+            color: #0052CC; /* Primary Blue */
+            margin-bottom: 0.75rem;
+        }
+        .list-item {
+            padding: 0.375rem 0;
+            border-bottom: 1px solid #E2E8F0;
+            font-size: 0.9rem;
+        }
+        .list-item:last-child {
+            border-bottom: none;
+        }
+        .big-number {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: #00A2FF; /* Secondary Blue */
+            text-align: center;
+        }
+        .icon-style {
+            font-size: 2rem; /* Increased icon size */
+            margin-right: 0.75rem;
+            color: #FFAB00; /* Accent Amber */
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        .nav-link {
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .nav-link:hover {
+            background-color: #00A2FF; /* Secondary Blue */
+            color: white;
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <header class="bg-gradient-to-r from-[#0052CC] to-[#00A2FF] py-10 px-4 text-center text-white sticky top-0 z-50 shadow-lg">
+        <h1 class="text-3xl md:text-4xl font-bold mb-2">工业AI应用平台架构深度解析</h1>
+        <p class="text-lg md:text-xl opacity-90">自主迭代升级，不走回头路的AI之旅</p>
+        <nav class="mt-4 flex flex-wrap justify-center gap-2 md:gap-4 text-sm md:text-base">
+            <span class="nav-link" onclick="scrollToSection('vision')">核心愿景</span>
+            <span class="nav-link" onclick="scrollToSection('architecture-overview')">整体架构</span>
+            <span class="nav-link" onclick="scrollToSection('information-systems')">信息系统</span>
+            <span class="nav-link" onclick="scrollToSection('core-platforms')">核心中台</span>
+            <span class="nav-link" onclick="scrollToSection('ai-applications')">AI应用</span>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-4 py-8 mt-4">
+
+        <section id="vision" class="mb-16 pt-20 -mt-20">
+            <h2 class="section-title">核心愿景与目标</h2>
+            <p class="text-center text-gray-600 mb-8 max-w-2xl mx-auto">该平台致力于通过尖端AI技术推动工业领域的变革，实现更智能、高效和可持续的未来。其核心愿景围绕三大支柱构建：</p>
+            <div class="grid md:grid-cols-3 gap-6 text-center">
+                <div class="card">
+                    <span class="icon-style">🏭</span>
+                    <h3 class="card-title">智能工厂</h3>
+                    <p class="text-gray-700 text-sm">实现高度智能化、自动化的工厂运营，提升生产效率、产品质量和整体运营水平。</p>
+                </div>
+                <div class="card">
+                    <span class="icon-style">🌌</span>
+                    <h3 class="card-title">人机融合的工业元宇宙</h3>
+                    <p class="text-gray-700 text-sm">构建数字世界与物理世界的深度融合，促进人类智慧与机器智能的高效协同与创新。</p>
+                </div>
+                <div class="card">
+                    <span class="icon-style">🚀</span>
+                    <h3 class="card-title">自主迭代升级</h3>
+                    <p class="text-gray-700 text-sm">打造持续学习、自我优化的AI平台，确保技术的前瞻性，引领工业智能化不断向前发展。</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="architecture-overview" class="mb-16 pt-20 -mt-20">
+            <h2 class="section-title">整体架构概览</h2>
+            <p class="text-center text-gray-600 mb-8 max-w-2xl mx-auto">此工业AI应用平台采用分层架构设计，确保了从底层数据采集到顶层智能应用的无缝衔接和高效运作。每一层都扮演着关键角色，共同构成了这个强大而灵活的系统。</p>
+            <div class="flex flex-col items-center space-y-1 md:space-y-2 bg-white p-6 rounded-lg shadow-xl">
+                <div class="flowchart-node w-full md:w-3/4 lg:w-2/3" onclick="scrollToSection('automation-layer-detail')">自动化层 (Automation Layer)</div>
+                <div class="flowchart-arrow">▼</div>
+                <div class="flowchart-node w-full md:w-3/4 lg:w-2/3" onclick="scrollToSection('information-systems')">信息化系统层 (Information Systems Layer)</div>
+                <div class="flowchart-arrow">▼</div>
+                <div class="flowchart-node w-full md:w-3/4 lg:w-2/3" onclick="scrollToSection('core-platforms')">物联中台 艾玛+ 与 工业大数据</div>
+                <div class="flowchart-arrow">▼</div>
+                <div class="flowchart-node w-full md:w-3/4 lg:w-2/3" onclick="scrollToSection('core-platforms')">智能中台 引擎 Lean AI</div>
+                <div class="flowchart-arrow">▼</div>
+                <div class="flowchart-node w-full md:w-3/4 lg:w-2/3" onclick="scrollToSection('ai-applications')">艾聚苍穹 AI 应用平台</div>
+                <div class="flowchart-arrow">▼</div>
+                <div class="flowchart-node w-full md:w-3/4 lg:w-2/3" onclick="scrollToSection('ai-applications')">模型应用 (&gt;500)</div>
+            </div>
+        </section>
+        
+        <section id="automation-layer-detail" class="mb-16 pt-20 -mt-20 card">
+             <h2 class="section-title">自动化层：物理基础</h2>
+             <p class="text-gray-700 mb-4 text-center max-w-2xl mx-auto">自动化层是整个智能制造体系的物理基石。它包括工厂内的各类自动化设备、传感器网络、机器人执行单元等。这些设备负责实际的生产操作和原始数据的生成。例如，图中提及的 "nuva 艾娟" 可能代表了此类自动化解决方案或关键组件，它们是连接物理世界和数字智能的桥梁。</p>
+        </section>
+
+        <section id="information-systems" class="mb-16 pt-20 -mt-20">
+            <h2 class="section-title">信息化系统层：坚实数据基础</h2>
+            <p class="text-center text-gray-600 mb-8 max-w-2xl mx-auto">信息化系统层是企业运营和生产管理的核心，汇集了各类关键业务系统 (MEGA系列)。这些系统不仅支撑日常运作，更重要的是为上层的数据分析和AI应用提供了丰富、准确的基础数据源。</p>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="card">
+                    <h3 class="card-title">MEGA MES (制造执行系统)</h3>
+                    <ul class="text-gray-700 space-y-1">
+                        <li class="list-item">计划管理</li> <li class="list-item">物料管理</li> <li class="list-item">标签管理</li> <li class="list-item">工具管理</li> <li class="list-item">生产管理</li> <li class="list-item">质量控制</li> <li class="list-item">数据采集 (数采)</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3 class="card-title">MEGA EPMS (设备管理系统)</h3>
+                    <ul class="text-gray-700 space-y-1">
+                        <li class="list-item">设备点检</li> <li class="list-item">设备转产</li> <li class="list-item">设备保养</li> <li class="list-item">设备参数管理</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3 class="card-title">MEGA DLMS (一线人员管理)</h3>
+                    <ul class="text-gray-700 space-y-1">
+                        <li class="list-item">员工技能</li> <li class="list-item">智能调度</li> <li class="list-item">工单看板 (工板)</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3 class="card-title">MEGA SRM (供应商管理)</h3>
+                    <ul class="text-gray-700 space-y-1">
+                        <li class="list-item">对账管理</li> <li class="list-item">供应商管理 (含换证)</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3 class="card-title">MEGA WMS (库存管理系统)</h3>
+                    <ul class="text-gray-700 space-y-1">
+                        <li class="list-item">入库管理</li> <li class="list-item">出库管理</li> <li class="list-item">盘点管理</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3 class="card-title">MEGA QMS (品质管理系统)</h3>
+                    <ul class="text-gray-700 space-y-1">
+                        <li class="list-item">SPC (统计过程控制)</li> <li class="list-item">PDCA</li> <li class="list-item">FMEA</li> <li class="list-item">SOP (标准作业程序)</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="core-platforms" class="mb-16 pt-20 -mt-20">
+            <h2 class="section-title">核心中台：赋能引擎</h2>
+            <p class="text-center text-gray-600 mb-8 max-w-2xl mx-auto">中台层是连接信息系统和AI应用的核心枢纽，它负责数据的汇聚、处理以及AI能力的统一提供，是整个平台智能化转型的关键驱动力。</p>
+            <div class="grid md:grid-cols-2 gap-8 items-start">
+                <div class="card">
+                    <h3 class="card-title">物联中台 艾玛+ 与 工业大数据</h3>
+                    <p class="text-gray-700">该中台负责从自动化层和信息化系统层高效收集海量的工业数据。通过先进的数据清洗、整合、存储和管理技术，构建起一个庞大而有序的工业大数据资源池。这个资源池不仅为深度分析提供了可能，也为机器学习模型的训练和优化奠定了坚实的数据基础。</p>
+                </div>
+                <div class="card">
+                    <h3 class="card-title">智能中台 引擎 Lean AI</h3>
+                    <p class="text-gray-700 mb-4">Lean AI 引擎作为智能中台的核心，提供了一整套统一的AI开发、训练、部署和管理能力。它集成了多种先进的AI引擎，以适应不同的工业场景需求：</p>
+                    <div class="chart-container">
+                        <canvas id="aiEngineChart"></canvas>
+                    </div>
+                    <div class="mt-6 grid grid-cols-2 gap-4 text-sm">
+                        <div class="p-3 bg-gray-50 rounded-md shadow-sm"><strong>工业视觉 (Faclo):</strong> 图像视频分析，检测识别。</div>
+                        <div class="p-3 bg-gray-50 rounded-md shadow-sm"><strong>机器学习 (Xpert):</strong> 通用机器学习算法模型。</div>
+                        <div class="p-3 bg-gray-50 rounded-md shadow-sm"><strong>深度学习 (Smart AI):</strong> 复杂深度学习模型构建。</div>
+                        <div class="p-3 bg-gray-50 rounded-md shadow-sm"><strong>生成式 AI (Zora):</strong> 内容生成，如设计、代码。</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="ai-applications" class="mb-16 pt-20 -mt-20 card">
+            <h2 class="section-title">艾聚苍穹 AI 应用平台：价值实现</h2>
+            <p class="text-center text-gray-600 mb-4 max-w-2xl mx-auto">基于强大的中台能力，"艾聚苍穹 AI 应用平台"得以构建，它承载了数量庞大的模型应用，直接面向各类工业场景，将AI技术转化为实际的生产力和业务价值。</p>
+            <div class="text-center mb-8">
+                <p class="text-gray-700 text-2xl font-semibold">模型应用数量</p>
+                <p class="big-number">&gt;500</p>
+                <p class="text-gray-600 mt-2">这些应用覆盖了从生产优化到质量控制，再到预测性维护等多个方面。</p>
+            </div>
+            <h3 class="card-title text-center mb-6 text-xl">主要应用示例</h3>
+            <div class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 text-sm">
+                <div class="bg-gradient-to-br from-blue-50 to-indigo-50 p-4 rounded-lg shadow hover:shadow-md transition-shadow duration-300 text-center">
+                    <span class="text-2xl block mb-1">📄</span>PDF标签比对
+                </div>
+                <div class="bg-gradient-to-br from-blue-50 to-indigo-50 p-4 rounded-lg shadow hover:shadow-md transition-shadow duration-300 text-center">
+                    <span class="text-2xl block mb-1">🏭</span>IFMES
+                </div>
+                <div class="bg-gradient-to-br from-blue-50 to-indigo-50 p-4 rounded-lg shadow hover:shadow-md transition-shadow duration-300 text-center">
+                    <span class="text-2xl block mb-1">🤖</span>ADG交互助手
+                </div>
+                <div class="bg-gradient-to-br from-blue-50 to-indigo-50 p-4 rounded-lg shadow hover:shadow-md transition-shadow duration-300 text-center">
+                    <span class="text-2xl block mb-1">🛠️</span>PHM预测性维护
+                </div>
+                <div class="bg-gradient-to-br from-blue-50 to-indigo-50 p-4 rounded-lg shadow hover:shadow-md transition-shadow duration-300 text-center">
+                    <span class="text-2xl block mb-1">🛡️</span>ESH管理
+                </div>
+                <div class="bg-gradient-to-br from-blue-50 to-indigo-50 p-4 rounded-lg shadow hover:shadow-md transition-shadow duration-300 text-center">
+                    <span class="text-2xl block mb-1">💡</span>Smart IE智慧IE
+                </div>
+                <div class="bg-gradient-to-br from-blue-50 to-indigo-50 p-4 rounded-lg shadow hover:shadow-md transition-shadow duration-300 text-center">
+                    <span class="text-2xl block mb-1">🎓</span>iTraining智训助手
+                </div>
+                <div class="bg-gradient-to-br from-blue-50 to-indigo-50 p-4 rounded-lg shadow hover:shadow-md transition-shadow duration-300 text-center">
+                    <span class="text-2xl block mb-1">⚡</span>能源管理
+                </div>
+                <div class="bg-gradient-to-br from-blue-50 to-indigo-50 p-4 rounded-lg shadow hover:shadow-md transition-shadow duration-300 text-center">
+                    <span class="text-2xl block mb-1">🔬</span>瑕疵识别
+                </div>
+                <div class="bg-gradient-to-br from-blue-50 to-indigo-50 p-4 rounded-lg shadow hover:shadow-md transition-shadow duration-300 text-center">
+                    <span class="text-2xl block mb-1">👁️</span>视觉检测
+                </div>
+            </div>
+            <p class="text-center text-gray-600 mt-8">这些应用通过智能化手段，有效提升了生产效率、降低了运营成本、增强了决策的准确性，并为持续创新提供了动力。</p>
+        </section>
+
+        <section id="conclusion" class="mb-16 pt-20 -mt-20 card bg-gradient-to-r from-[#0052CC] to-[#00A2FF] text-white">
+            <h2 class="section-title !text-white">总结与展望</h2>
+            <p class="text-center mb-4 max-w-3xl mx-auto opacity-90">该工业AI应用平台架构展示了一个全面而强大的解决方案。通过其精心的分层设计，它成功地将底层的自动化设备、中层的信息化系统与顶层的AI能力和应用紧密地结合在一起。其核心竞争力在于构建了强大的物联网中台、工业大数据平台以及灵活高效的AI中台（Lean AI）。</p>
+            <p class="text-center max-w-3xl mx-auto opacity-90">这些坚实的基础为上层丰富多样的AI应用（超过500个模型应用）提供了强大的支撑，最终服务于智能工厂的全面建设和人机融合的工业元宇宙的宏伟蓝图。这不仅仅是一个技术平台，更是一个驱动工业智能化持续进化、自主升级的生态系统。</p>
+        </section>
+
+    </main>
+
+    <footer class="text-center py-8 bg-gray-800 text-gray-400 text-sm">
+        <p>&copy; 2025 工业AI应用平台架构深度解析。版权所有。</p>
+        <p>基于提供的架构信息构建的交互式概览。</p>
+    </footer>
+
+    <script>
+        function scrollToSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            if (section) {
+                section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        const aiEngineCtx = document.getElementById('aiEngineChart');
+        if (aiEngineCtx) {
+            const processLabel = (label) => {
+                if (typeof label !== 'string') return label;
+                const maxLength = 16;
+                if (label.length <= maxLength) return label;
+                
+                const words = label.split(/\\s+|(?<=\\()|(?=\\))/); // Split by space or around parentheses
+                const lines = [];
+                let currentLine = '';
+                for (const word of words) {
+                    if (currentLine.length > 0 && (currentLine + (currentLine.endsWith('(') || word.startsWith(')') ? '' : ' ') + word).length > maxLength) {
+                        lines.push(currentLine.trim());
+                        currentLine = '';
+                    }
+                    currentLine += (currentLine.length > 0 && !currentLine.endsWith('(') && !word.startsWith(')') ? ' ' : '') + word;
+                }
+                if (currentLine.length > 0) {
+                    lines.push(currentLine.trim());
+                }
+                return lines.length > 0 ? lines : [label]; 
+            };
+
+            const originalLabels = ['工业视觉 (Faclo)', '机器学习 (Xpert)', '深度学习 (Smart AI)', '生成式 AI (Zora)'];
+            const processedLabels = originalLabels.map(processLabel);
+
+            new Chart(aiEngineCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: processedLabels,
+                    datasets: [{
+                        label: 'AI 引擎分布',
+                        data: [25, 25, 25, 25], // Assuming equal distribution for visualization
+                        backgroundColor: [
+                            '#0052CC', // Primary Blue
+                            '#00A2FF', // Secondary Blue
+                            '#FFAB00', // Accent Amber
+                            '#36B37E'  // A complementary Green
+                        ],
+                        borderColor: [
+                            '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF'
+                        ],
+                        borderWidth: 3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: '#172B4D', // Dark Slate Gray Text
+                                font: {
+                                    family: "'Noto Sans SC', 'Inter', sans-serif",
+                                    size: 11 // Slightly smaller for potentially wrapped labels
+                                },
+                                 boxWidth: 12,
+                                 padding: 15,
+                                 usePointStyle: true,
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: '#172B4D',
+                            titleColor: '#FFFFFF',
+                            bodyColor: '#FFFFFF',
+                            titleFont: { family: "'Noto Sans SC', 'Inter', sans-serif", size: 13, weight: 'bold' },
+                            bodyFont: { family: "'Noto Sans SC', 'Inter', sans-serif", size: 12 },
+                            padding: 10,
+                            cornerRadius: 4,
+                            callbacks: {
+                                title: function(tooltipItems) {
+                                    const item = tooltipItems[0];
+                                    let label = item.chart.data.labels[item.dataIndex];
+                                    if (Array.isArray(label)) {
+                                      return label.join(' ');
+                                    }
+                                    return label;
+                                },
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed !== null) {
+                                        // For this chart, let's just show the engine name as primary info
+                                        // label += context.parsed + '% (占比)'; 
+                                    }
+                                    return "核心AI引擎之一"; // Simplified tooltip
+                                }
+                            }
+                        }
+                    },
+                    cutout: '60%' // Makes the doughnut thinner
+                }
+            });
+        }
+    </script>
+
+</body>
+</html>

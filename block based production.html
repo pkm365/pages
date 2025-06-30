@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>机加线“区块化生产”信息系统 | 可视化报告</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!--
+    Narrative & Structure Plan:
+    1. Introduction: Hook with the core problem the system solves.
+    2. Core Philosophy Shift: Visually contrast the old vs. new task model.
+    3. The 5 Core Pillars: Detail each of the 5 main functional modules using flowcharts and charts.
+    4. The Technology Engine: Showcase the system's connectivity and data sources.
+    5. Performance & KPIs: Visualize the service level agreements (SLAs).
+    6. Vision: Conclude with the system's impact on building a smart factory.
+
+    Visualization Choices Summary (NO SVG, NO Mermaid JS Confirmed):
+    - Core Philosophy Shift: Goal=Organize, Viz=HTML/CSS Flow Diagram, Justification=Clearly shows process transformation.
+    - Task Assignment Modes: Goal=Compare, Viz=Donut Chart (Chart.js), Justification=Simple proportion view.
+    - Task Variety: Goal=Compare, Viz=Horizontal Bar Chart (Chart.js), Justification=Effectively compares different task categories.
+    - Task Hierarchy: Goal=Organize, Viz=HTML/CSS Hierarchy Diagram, Justification=Shows clear levels of control.
+    - Service Level KPIs: Goal=Compare, Viz=Ordered Bar Chart (Chart.js), Justification=Perfect for ranking and comparing response times.
+    - Process Flows (Tool Change, Inspection): Goal=Organize, Viz=HTML/CSS Flowcharts, Justification=Best way to show sequential steps without SVG/Mermaid.
+
+    Color Palette Selection:
+    - Name: Vibrant Tech
+    - Palette: #0A2540 (Dark Blue), #00D9A6 (Green), #FF3D67 (Red/Pink), #00A9E0 (Blue), #FFFFFF (White).
+    - Justification: Selected for its high-contrast, professional, and modern feel, suitable for a tech-focused infographic.
+    -->
+    <style>
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background-color: #0A2540;
+            color: #F1F4F9;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        @media (max-width: 768px) {
+            .chart-container {
+                height: 300px;
+            }
+        }
+        .kpi-card {
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+        .kpi-card:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: translateY(-5px);
+        }
+        .flow-step {
+            border: 2px solid #00A9E0;
+            background-color: #0A2540;
+            color: #FFFFFF;
+        }
+        .flow-arrow {
+            color: #00A9E0;
+            font-size: 2rem;
+            line-height: 1;
+        }
+        .section-title {
+            color: #00D9A6;
+        }
+        .card {
+            background-color: #FFFFFF;
+            color: #0A2540;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="container mx-auto p-4 md:p-8">
+
+        <header class="text-center mb-12 md:mb-20">
+            <h1 class="text-4xl md:text-6xl font-bold mb-4">机加线“区块化生产”信息系统</h1>
+            <p class="text-xl md:text-2xl text-gray-300">一个以“人”为核心，以“任务”驱动的智能制造新模式</p>
+        </header>
+
+        <section id="philosophy" class="mb-16 md:mb-24">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold section-title">核心理念变革：从“工位”到“人”</h2>
+                <p class="mt-4 max-w-3xl mx-auto text-lg text-gray-400">系统打破了传统的以工位为核心的生产布局，转变为以“人”为核心、以“任务”驱动的动态工作模式，旨在最大化提升人员效率与灵活性。</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div class="p-8 rounded-lg kpi-card text-center">
+                    <h3 class="text-2xl font-bold mb-4 text-red-400">传统模式</h3>
+                    <div class="flex flex-col items-center space-y-4">
+                        <div class="p-4 rounded-lg bg-gray-700 w-full">🏢 工位为中心</div>
+                        <div class="flow-arrow">↓</div>
+                        <div class="p-4 rounded-lg bg-gray-700 w-full">📋 固定的任务</div>
+                        <div class="flow-arrow">↓</div>
+                        <div class="p-4 rounded-lg bg-gray-700 w-full">👤 人员被动执行</div>
+                    </div>
+                </div>
+                <div class="p-8 rounded-lg kpi-card text-center">
+                    <h3 class="text-2xl font-bold mb-4 text-green-400">区块化新模式</h3>
+                    <div class="flex flex-col items-center space-y-4">
+                        <div class="p-4 rounded-lg bg-blue-900 w-full">🎯 任务驱动</div>
+                        <div class="flow-arrow">↓</div>
+                        <div class="p-4 rounded-lg bg-blue-900 w-full">🧑‍🔧 以人员为核心</div>
+                        <div class="flow-arrow">↓</div>
+                        <div class="p-4 rounded-lg bg-blue-900 w-full">💡 动态分配与执行</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="modules" class="mb-16 md:mb-24">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold section-title">五大核心功能模块</h2>
+                <p class="mt-4 max-w-3xl mx-auto text-lg text-gray-400">系统通过五大紧密协作的模块，实现了生产流程的全方位数字化管理和智能化调度。</p>
+            </div>
+
+            <div class="space-y-12">
+                
+                <div class="p-6 md:p-8 rounded-lg card">
+                    <h3 class="text-2xl font-bold mb-6">1. 换刀流程管理</h3>
+                    <p class="mb-6 text-gray-600">通过实时数据采集与智能派单，实现换刀任务的高效、精准闭环管理，最大程度减少设备等待时间。</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div>
+                            <h4 class="font-bold mb-4 text-lg">自动化工作流：</h4>
+                            <div class="space-y-2">
+                                <div class="flex items-center"><span class="flow-step text-sm font-bold w-8 h-8 rounded-full flex items-center justify-center mr-3">1</span> PLC数据采集 (刀具寿命预警)</div>
+                                <div class="ml-4 pl-2 border-l-2 border-dashed border-blue-300"><div class="flow-arrow text-2xl">↓</div></div>
+                                <div class="flex items-center"><span class="flow-step text-sm font-bold w-8 h-8 rounded-full flex items-center justify-center mr-3">2</span> 系统自动生成工单</div>
+                                <div class="ml-4 pl-2 border-l-2 border-dashed border-blue-300"><div class="flow-arrow text-2xl">↓</div></div>
+                                <div class="flex items-center"><span class="flow-step text-sm font-bold w-8 h-8 rounded-full flex items-center justify-center mr-3">3</span> 任务智能派发 (含超时升级)</div>
+                                <div class="ml-4 pl-2 border-l-2 border-dashed border-blue-300"><div class="flow-arrow text-2xl">↓</div></div>
+                                <div class="flex items-center"><span class="flow-step text-sm font-bold w-8 h-8 rounded-full flex items-center justify-center mr-3">4</span> 人员接单并执行换刀</div>
+                                <div class="ml-4 pl-2 border-l-2 border-dashed border-blue-300"><div class="flow-arrow text-2xl">↓</div></div>
+                                <div class="flex items-center"><span class="flow-step text-sm font-bold w-8 h-8 rounded-full flex items-center justify-center mr-3">5</span> 触发首件检验流程</div>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="font-bold mb-4 text-lg">接单模式对比</h4>
+                            <div class="chart-container">
+                                <canvas id="toolChangeModeChart"></canvas>
+                            </div>
+                            <p class="text-center text-gray-500 mt-2">系统支持指定派工和自主接单两种灵活模式，以适应不同场景需求。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-6 md:p-8 rounded-lg card">
+                    <h3 class="text-2xl font-bold mb-6">2. 检件流程管理</h3>
+                     <p class="mb-6 text-gray-600">自动化检件任务的生成、派发和过程监控，通过任务冲突管理和异常升级机制，确保产品质量的稳定可控。</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div>
+                            <h4 class="font-bold mb-4 text-lg">智能化检件工作流：</h4>
+                             <div class="space-y-2">
+                                <div class="flex items-center"><span class="flow-step text-sm font-bold w-8 h-8 rounded-full flex items-center justify-center mr-3">1</span> 采集检件频次，生成任务列表</div>
+                                <div class="ml-4 pl-2 border-l-2 border-dashed border-blue-300"><div class="flow-arrow text-2xl">↓</div></div>
+                                <div class="flex items-center"><span class="flow-step text-sm font-bold w-8 h-8 rounded-full flex items-center justify-center mr-3 text-red-500 border-red-500">2</span> <strong class="text-red-500">任务冲突智能预警与协调</strong></div>
+                                <div class="ml-4 pl-2 border-l-2 border-dashed border-blue-300"><div class="flow-arrow text-2xl">↓</div></div>
+                                <div class="flex items-center"><span class="flow-step text-sm font-bold w-8 h-8 rounded-full flex items-center justify-center mr-3">3</span> 派发检件工单</div>
+                                <div class="ml-4 pl-2 border-l-2 border-dashed border-blue-300"><div class="flow-arrow text-2xl">↓</div></div>
+                                <div class="flex items-center"><span class="flow-step text-sm font-bold w-8 h-8 rounded-full flex items-center justify-center mr-3">4</span> 过程状态实时反馈 (合格/不合格)</div>
+                                <div class="ml-4 pl-2 border-l-2 border-dashed border-blue-300"><div class="flow-arrow text-2xl">↓</div></div>
+                                <div class="flex items-center"><span class="flow-step text-sm font-bold w-8 h-8 rounded-full flex items-center justify-center mr-3">5</span> 不合格任务自动升级至异常处理</div>
+                            </div>
+                        </div>
+                         <div>
+                            <h4 class="font-bold mb-4 text-lg">任务冲突示例</h4>
+                            <div class="chart-container">
+                                <canvas id="taskConflictChart"></canvas>
+                            </div>
+                            <p class="text-center text-gray-500 mt-2">系统能预测并高亮显示潜在的任务时间冲突，便于管理者提前介入协调。</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="p-6 md:p-8 rounded-lg card">
+                    <h3 class="text-2xl font-bold mb-6">3. & 4. 生产辅助与多元化流程管理</h3>
+                    <p class="mb-6 text-gray-600">系统不仅管理核心生产任务，还全面覆盖了生产辅助、异常处理、在制品管理、人员培训等多种流程，形成一个统一的任务中心。</p>
+                     <div class="chart-container" style="max-width: 800px;">
+                        <canvas id="otherTasksChart"></canvas>
+                    </div>
+                    <p class="text-center text-gray-500 mt-2">图表展示了系统所管理的各类辅助及其他流程，体现了其强大的综合管理能力。</p>
+                </div>
+
+                <div class="p-6 md:p-8 rounded-lg card">
+                     <h3 class="text-2xl font-bold mb-6">5. 任务管理平台</h3>
+                     <p class="mb-6 text-gray-600">平台的核心是分层级的任务驾驶舱和智能管理引擎，它为不同角色的用户提供了清晰的任务视图和强大的调度能力。</p>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                        <div>
+                            <h4 class="font-bold text-lg mb-4">多层级任务驾驶舱</h4>
+                            <div class="space-y-3 p-4 bg-gray-50 rounded-lg">
+                                <div class="p-3 rounded bg-blue-100 text-blue-800 font-bold">🏢 工厂级</div>
+                                <div class="ml-4 p-3 rounded bg-green-100 text-green-800 font-bold">🏭 区域级</div>
+                                <div class="ml-8 p-3 rounded bg-indigo-100 text-indigo-800 font-bold">🔧 工段级</div>
+                                <div class="ml-12 p-3 rounded bg-yellow-100 text-yellow-800 font-bold">👨‍👩‍👧‍👦 小组级</div>
+                                <div class="ml-16 p-3 rounded bg-purple-100 text-purple-800 font-bold">👤 个人级</div>
+                            </div>
+                        </div>
+                        <div>
+                             <h4 class="font-bold text-lg mb-4">关键指标实时监控</h4>
+                             <div class="grid grid-cols-2 gap-4">
+                                 <div class="p-4 bg-gray-50 rounded-lg text-center">
+                                     <div class="text-4xl font-bold text-green-500">98%</div>
+                                     <div class="text-gray-600">任务完成率</div>
+                                 </div>
+                                 <div class="p-4 bg-gray-50 rounded-lg text-center">
+                                     <div class="text-4xl font-bold text-blue-500">85%</div>
+                                     <div class="text-gray-600">人员负荷</div>
+                                 </div>
+                                  <div class="p-4 bg-gray-50 rounded-lg text-center">
+                                     <div class="text-4xl font-bold text-red-500">3</div>
+                                     <div class="text-gray-600">待处理异常</div>
+                                 </div>
+                                 <div class="p-4 bg-gray-50 rounded-lg text-center">
+                                     <div class="text-4xl font-bold text-yellow-500">12</div>
+                                     <div class="text-gray-600">进行中任务</div>
+                                 </div>
+                             </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="technology" class="mb-16 md:mb-24">
+             <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold section-title">技术引擎与连接性</h2>
+                <p class="mt-4 max-w-3xl mx-auto text-lg text-gray-400">系统通过与底层设备和上层管理系统的无缝对接，构建了强大的数据驱动核心，支持多终端实时访问。</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+                 <div class="p-6 rounded-lg kpi-card">
+                    <div class="text-5xl mb-4">🔩</div>
+                    <h3 class="text-xl font-bold mb-2">底层数据采集</h3>
+                    <p class="text-gray-400">实时采集机加设备PLC点位信息，获取刀具、检件、故障等一手数据。</p>
+                </div>
+                 <div class="p-6 rounded-lg kpi-card">
+                    <div class="text-5xl mb-4">🔄</div>
+                    <h3 class="text-xl font-bold mb-2">系统集成</h3>
+                    <p class="text-gray-400">与现有PDM, e-SFM, e-TPM等系统深度集成，实现数据联动与业务协同。</p>
+                </div>
+                 <div class="p-6 rounded-lg kpi-card">
+                    <div class="text-5xl mb-4">📱</div>
+                    <h3 class="text-xl font-bold mb-2">多终端访问</h3>
+                    <p class="text-gray-400">支持PC、平板、手机及智能手环，随时随地接收任务、处理工作。</p>
+                </div>
+            </div>
+        </section>
+        
+        <section id="sla" class="mb-16 md:mb-24">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold section-title">服务水平承诺 (SLA)</h2>
+                <p class="mt-4 max-w-3xl mx-auto text-lg text-gray-400">我们承诺提供高效可靠的技术支持，确保系统的稳定运行，以下是针对不同紧急程度事件的响应时间目标。</p>
+            </div>
+            <div class="p-6 md:p-8 rounded-lg card">
+                 <div class="chart-container" style="max-width: 800px; height: 400px;">
+                    <canvas id="slaChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <footer class="text-center p-8 text-gray-500">
+        <p>大众一汽发动机(大连)有限公司 · 智能制造解决方案</p>
+    </footer>
+    
+    <script>
+        const wrapLabel = (label) => {
+            const maxLength = 16;
+            if (typeof label !== 'string' || label.length <= maxLength) {
+                return label;
+            }
+            const words = label.split(' ');
+            const lines = [];
+            let currentLine = '';
+            for (const word of words) {
+                if ((currentLine + ' ' + word).trim().length > maxLength) {
+                    lines.push(currentLine.trim());
+                    currentLine = word;
+                } else {
+                    currentLine = (currentLine + ' ' + word).trim();
+                }
+            }
+            if (currentLine) {
+                lines.push(currentLine.trim());
+            }
+            return lines;
+        };
+        
+        const universalTooltipTitleCallback = (tooltipItems) => {
+            const item = tooltipItems[0];
+            let label = item.chart.data.labels[item.dataIndex];
+            if (Array.isArray(label)) {
+              return label.join(' ');
+            } else {
+              return label;
+            }
+        };
+
+        const universalPluginConfig = {
+            legend: {
+                labels: {
+                    color: '#0A2540'
+                }
+            },
+            tooltip: {
+                callbacks: {
+                    title: universalTooltipTitleCallback
+                }
+            }
+        };
+
+        const universalScalesConfig = (isHorizontal = false) => {
+            const textColor = '#0A2540';
+            const gridColor = 'rgba(10, 37, 64, 0.1)';
+            const axisConfig = {
+                ticks: { color: textColor, font: { size: 12 } },
+                grid: { color: gridColor }
+            };
+            return isHorizontal ? { x: axisConfig, y: { ...axisConfig, beginAtZero: true } } : { x: { ...axisConfig }, y: { ...axisConfig, beginAtZero: true } };
+        };
+        
+        const colors = {
+            darkBlue: '#0A2540',
+            green: '#00D9A6',
+            red: '#FF3D67',
+            blue: '#00A9E0',
+            white: '#FFFFFF'
+        };
+
+        new Chart(document.getElementById('toolChangeModeChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['指定派工模式', '自主接单模式'],
+                datasets: [{
+                    label: '接单模式',
+                    data: [65, 35],
+                    backgroundColor: [colors.blue, colors.green],
+                    borderColor: colors.white,
+                    borderWidth: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '60%',
+                plugins: universalPluginConfig
+            }
+        });
+
+        new Chart(document.getElementById('taskConflictChart'), {
+            type: 'bar',
+            data: {
+                labels: ['08:00', '08:15', '08:30', '08:45', '09:00', '09:15'],
+                datasets: [
+                    {
+                        label: '人员A任务',
+                        data: [0, 1, 1, 0, 0, 1],
+                        backgroundColor: colors.blue,
+                    },
+                    {
+                        label: '人员B任务',
+                        data: [1, 0, 1, 1, 0, 0],
+                        backgroundColor: colors.green,
+                    },
+                     {
+                        label: '任务冲突',
+                        data: [0, 0, 1, 0, 0, 0],
+                        backgroundColor: colors.red,
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    ...universalPluginConfig,
+                    title: { display: false },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false
+                    }
+                },
+                scales: {
+                    x: { stacked: true, ticks: { color: '#0A2540' }, grid: { display: false } },
+                    y: { stacked: true, display: false }
+                }
+            }
+        });
+
+        const otherTasksRawLabels = ['周期性点检工作', '设备保养工作', '设备异常处理', '质量异常处理', '替岗工作协调', '在制品与刀具实验管理', '多技能培训安排'];
+        new Chart(document.getElementById('otherTasksChart'), {
+            type: 'bar',
+            data: {
+                labels: otherTasksRawLabels.map(wrapLabel),
+                datasets: [{
+                    label: '任务数量（示例）',
+                    data: [45, 30, 15, 12, 25, 38, 20],
+                    backgroundColor: [colors.blue, colors.green, colors.red, '#FF8A00', '#7B42F6', '#25A2C3', '#FFC800'],
+                    borderColor: colors.darkBlue,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                     ...universalPluginConfig,
+                     legend: { display: false }
+                },
+                scales: universalScalesConfig(true)
+            }
+        });
+
+        const slaRawLabels = ['严重级别 1 (关键业务中断)', '严重级别 2 (业务严重影响)', '严重级别 3 (日常操作受影响)', '严重级别 4 (一般问询/请求)'];
+        new Chart(document.getElementById('slaChart'), {
+            type: 'bar',
+            data: {
+                labels: slaRawLabels.map(wrapLabel),
+                datasets: [{
+                    label: '承诺响应时长（分钟）',
+                    data: [5, 15, 30, 60],
+                    backgroundColor: [colors.red, '#FF8A00', colors.blue, colors.green],
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                     ...universalPluginConfig,
+                     legend: { display: false },
+                     title: {
+                        display: true,
+                        text: '事件响应时间承诺',
+                        color: colors.darkBlue,
+                        font: { size: 16 }
+                     }
+                },
+                scales: universalScalesConfig(true)
+            }
+        });
+
+    </script>
+</body>
+</html>
