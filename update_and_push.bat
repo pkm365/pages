@@ -1,5 +1,9 @@
 @echo off
 chcp 65001
+
+echo Pulling latest changes from GitHub...
+git pull origin main
+
 echo Updating navigation page...
 python generate_nav.py
 
