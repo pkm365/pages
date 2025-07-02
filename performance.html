@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>交互式项目绩效评估可视化 (V4 - 贡献度模型)</title>
+    <title>交互式项目绩效评估可视化 (V5.2 - 管理贡献权重)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,6 +18,8 @@
         .legend-dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; margin-right: 8px; }
         .input-field { border: 1px solid #d1d5db; padding: 0.5rem 0.75rem; border-radius: 0.375rem; width: 100%; transition: border-color 0.2s; }
         .input-field:focus { outline: 2px solid transparent; outline-offset: 2px; border-color: #3b82f6; }
+        .kpi-item { display: flex; justify-content: space-between; align-items: center; padding: 4px 0; }
+        .criteria-table th, .criteria-table td { padding: 0.75rem; text-align: left; }
     </style>
 </head>
 <body class="bg-gray-100 text-gray-800">
@@ -25,7 +27,7 @@
     <div class="container mx-auto p-4 md:p-8">
         <header class="text-center mb-12">
             <h1 class="text-4xl md:text-5xl font-bold text-gray-900">项目绩效评估可视化模型</h1>
-            <p class="mt-4 text-lg text-gray-600">基于内部“贡献度”的价值衡量模型</p>
+            <p class="mt-4 text-lg text-gray-600">为项目管理者引入专属KPI评估体系</p>
         </header>
 
         <!-- 第一阶段 -->
@@ -42,18 +44,16 @@
                         <label for="plannedHours" class="font-medium">计划工时 (人天): <span id="plannedHoursValue" class="font-bold text-blue-600">200</span></label>
                         <input type="range" id="plannedHours" min="1" max="500" value="200" step="1" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider-thumb">
                     </div>
-                     <div class="p-3 bg-blue-50 rounded-lg">
-                        <label class="font-medium text-sm text-gray-600">自动计算的单位人天贡献值:</label>
-                        <div id="derivedManDayValue" class="text-2xl font-bold text-blue-600"></div>
+                    <div>
+                        <label for="deliveryRate" class="font-medium">里程碑交付达成率: <span id="deliveryRateValue" class="font-bold text-blue-600">100</span>%</label>
+                        <input type="range" id="deliveryRate" min="50" max="120" value="100" step="1" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider-thumb">
                     </div>
                 </div>
 
                 <div class="p-6 rounded-2xl shadow-lg section-card text-center">
                     <h3 class="text-xl font-semibold mb-2">项目绩效池分析</h3>
                     <p class="text-gray-600">实际总投入: <span id="totalActualHours" class="font-bold text-xl"></span> 人天</p>
-                    <div id="valueAnalysis" class="mt-4 space-y-2">
-                        <!-- Value analysis details will be injected here -->
-                    </div>
+                    <div id="valueAnalysis" class="mt-4 space-y-2"></div>
                     <div class="relative w-40 h-40 mx-auto mt-4">
                         <svg id="cakeSvg" viewBox="0 0 100 100" class="w-full h-full transition-transform duration-500"></svg>
                     </div>
@@ -73,29 +73,102 @@
                     <div class="pie-chart-container mx-auto max-w-[300px]">
                         <div id="pieChart" class="pie-chart"></div>
                     </div>
-                    <div id="pieLegend" class="mt-6 space-y-2 text-sm">
-                        <!-- Legend items will be injected here -->
-                    </div>
+                    <div id="pieLegend" class="mt-6 space-y-2 text-sm"></div>
                 </div>
             </div>
         </section>
 
+        <!-- 第三阶段: 衡量标准 -->
+        <section id="stage3">
+            <h2 class="text-3xl font-bold text-center mb-8">附录：修正系数衡量标准参考</h2>
+            <div class="space-y-8">
+                <!-- 产出质量 -->
+                <div class="p-6 rounded-2xl shadow-lg section-card">
+                    <h3 class="text-2xl font-semibold mb-4 text-gray-800">1. 产出质量 (K_quality)</h3>
+                    <p class="text-gray-600 mb-6">衡量“工作的完成质量”，强调的不仅是“做完”，更是“做好”。</p>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm criteria-table">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="w-1/5">评级</th>
+                                    <th class="w-1/5">系数值</th>
+                                    <th class="w-3/5">典型表现</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <tr><td>卓越</td><td>1.3 - 1.5</td><td>产出堪称典范，几乎无缺陷，代码优雅，文档清晰，其成果能作为团队的标杆。</td></tr>
+                                <tr><td>优秀</td><td>1.1 - 1.2</td><td>产出质量高，仅有少量次要问题，返工次数极少，整体上非常可靠。</td></tr>
+                                <tr class="bg-blue-50"><td>符合标准</td><td>1.0</td><td><strong>(基准线)</strong> 产出符合所有明确的要求，功能正确，没有重大遗漏。</td></tr>
+                                <tr><td>需要改进</td><td>0.8 - 0.9</td><td>产出基本可用，但存在一些非致命性缺陷，或代码/文档比较混乱，需要他人花费额外时间修正。</td></tr>
+                                <tr><td>不达标</td><td>0.7</td><td>产出存在严重缺陷，导致功能阻塞或返工成本高昂，对项目造成了明显负面影响。</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- 角色难度 -->
+                <div class="p-6 rounded-2xl shadow-lg section-card">
+                    <h3 class="text-2xl font-semibold mb-4 text-gray-800">2. 角色难度 (K_role)</h3>
+                    <p class="text-gray-600 mb-6">衡量“承担任务的价值”，旨在奖励那些敢于啃硬骨头、承担关键职责的成员。</p>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm criteria-table">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="w-1/5">评级</th>
+                                    <th class="w-1/5">系数值</th>
+                                    <th class="w-3/5">典型表现</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <tr><td>核心攻坚</td><td>1.3 - 1.5</td><td>承担了项目的技术架构设计、核心算法实现、关键性能瓶颈攻关等决定项目成败的根本性任务。</td></tr>
+                                <tr><td>独立担当</td><td>1.1 - 1.2</td><td>作为某一主要功能或复杂模块的负责人，能独立完成从设计到交付的全过程。</td></tr>
+                                <tr class="bg-blue-50"><td>常规执行</td><td>1.0</td><td><strong>(基准线)</strong> 胜任并完成了分配给自己的、难度适中的常规开发/测试/设计任务。</td></tr>
+                                <tr><td>辅助支持</td><td>0.9</td><td>主要执行一些辅助性的、难度较低的、或在他人明确指导下才能完成的任务。</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- 协同管理 -->
+                <div class="p-6 rounded-2xl shadow-lg section-card">
+                    <h3 class="text-2xl font-semibold mb-4 text-gray-800">3. 协同管理 (K_teamwork)</h3>
+                    <p class="text-gray-600 mb-6">衡量“对团队整体效率的贡献”，奖励那些能让“1+1>2”的“团队赋能者”。</p>
+                    <div class="overflow-x-auto">
+                         <table class="w-full text-sm criteria-table">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="w-1/5">评级</th>
+                                    <th class="w-1/5">系数值</th>
+                                    <th class="w-3/5">典型表现</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <tr><td>团队表率</td><td>1.3 - 1.5</td><td>积极主动地帮助他人，带动团队气氛，分享关键知识，优化团队流程，是团队的“粘合剂”和“发动机”。</td></tr>
+                                <tr><td>积极贡献者</td><td>1.1 - 1.2</td><td>主动沟通，乐于助人，能为团队的共同目标做出额外努力，是可靠的合作伙伴。</td></tr>
+                                <tr class="bg-blue-50"><td>有效协作者</td><td>1.0</td><td><strong>(基准线)</strong> 能够完成份内的协作任务，沟通基本顺畅，不给团队合作造成障碍。</td></tr>
+                                <tr><td>有待提升</td><td>0.8 - 0.9</td><td>倾向于单打独斗，沟通不及时或不充分，有时会成为团队信息的“孤岛”或工作的“瓶颈”。</td></tr>
+                                <tr><td>协同不畅</td><td>0.7</td><td>沟通方式或工作习惯对团队合作造成了明显的负面影响，需要管理者花费额外精力进行协调。</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
     </div>
 
     <script>
         const team = [
-            { id: 0, name: '张三 (技术攻坚)', hours: 60, quality: 1.2, role: 1.3, teamwork: 1.1, color: '#34d399' },
-            { id: 1, name: '李四 (项目管理)', hours: 50, quality: 1.1, role: 1.2, teamwork: 1.2, color: '#60a5fa' },
-            { id: 2, name: '王五 (主力开发)', hours: 70, quality: 1.0, role: 1.0, teamwork: 1.0, color: '#facc15' },
-            { id: 3, name: '赵六 (测试)', hours: 30, quality: 1.1, role: 0.9, teamwork: 1.1, color: '#f87171' },
-            { id: 4, name: '孙七 (初级开发)', hours: 40, quality: 0.9, role: 0.9, teamwork: 0.9, color: '#c084fc' },
+            { id: 0, name: '张三 (技术攻坚)', hours: 60, quality: 1.2, role: 1.3, teamwork: 1.1, color: '#34d399', isPM: false },
+            { id: 1, name: '李四 (项目管理)', hours: 50, quality: 1.0, role: 1.0, teamwork: 1.0, color: '#60a5fa', isPM: true, managementWeight: 2.5 },
+            { id: 2, name: '王五 (主力开发)', hours: 70, quality: 1.0, role: 1.0, teamwork: 1.0, color: '#facc15', isPM: false },
+            { id: 3, name: '赵六 (测试)', hours: 30, quality: 1.1, role: 0.9, teamwork: 1.1, color: '#f87171', isPM: false },
+            { id: 4, name: '孙七 (初级开发)', hours: 40, quality: 0.9, role: 0.9, teamwork: 0.9, color: '#c084fc', isPM: false },
         ];
 
         const D = { // DOM elements
             contributionValue: document.getElementById('contributionValue'),
             plannedHours: document.getElementById('plannedHours'),
             plannedHoursValue: document.getElementById('plannedHoursValue'),
-            derivedManDayValue: document.getElementById('derivedManDayValue'),
+            deliveryRate: document.getElementById('deliveryRate'),
+            deliveryRateValue: document.getElementById('deliveryRateValue'),
             totalActualHours: document.getElementById('totalActualHours'),
             valueAnalysis: document.getElementById('valueAnalysis'),
             cakeSvg: document.getElementById('cakeSvg'),
@@ -111,7 +184,24 @@
         function createMemberControls() {
             let html = '';
             team.forEach(m => {
-                html += `
+                if (m.isPM) {
+                    html += `
+                    <div class="p-4 rounded-xl shadow-md section-card border-l-4" style="border-color: ${m.color};">
+                        <h4 class="font-bold text-lg">${m.name}</h4>
+                        <div class="space-y-3 text-sm mt-3">
+                            <p class="text-gray-600">参考工时(人天): <span class="font-semibold">${m.hours}</span></p>
+                            <div>
+                                <label for="managementWeight-${m.id}" class="font-medium">管理贡献权重: <span id="managementWeight-val-${m.id}" class="font-bold text-blue-600">${m.managementWeight.toFixed(1)}</span>x</label>
+                                <input type="range" id="managementWeight-${m.id}" data-id="${m.id}" data-prop="managementWeight" min="1.0" max="5.0" value="${m.managementWeight}" step="0.1" class="w-full h-1.5 bg-gray-200 rounded-lg slider-thumb">
+                            </div>
+                            <div id="pm-kpi-${m.id}" class="p-3 bg-indigo-50 rounded-lg mt-2 text-gray-700">
+                                <h5 class="font-semibold mb-2 text-indigo-800">PM绩效仪表盘</h5>
+                                <!-- KPI details injected by JS -->
+                            </div>
+                        </div>
+                    </div>`;
+                } else {
+                    html += `
                     <div class="p-4 rounded-xl shadow-md section-card border-l-4" style="border-color: ${m.color};">
                         <h4 class="font-bold text-lg">${m.name}</h4>
                         <div class="space-y-3 text-sm mt-3">
@@ -133,6 +223,7 @@
                             </div>
                         </div>
                     </div>`;
+                }
             });
             D.memberControls.innerHTML = html;
         }
@@ -144,16 +235,16 @@
 
             D.totalActualHours.textContent = totalActualHours;
             D.plannedHoursValue.textContent = plannedHours;
+            D.deliveryRateValue.textContent = D.deliveryRate.value;
 
             const derivedManDayValue = plannedHours > 0 ? contributionValue / plannedHours : 0;
-            D.derivedManDayValue.textContent = formatCurrency(derivedManDayValue);
             
             const hourDifference = totalActualHours - plannedHours;
             const valueDifference = hourDifference * derivedManDayValue;
             const adjustedPool = contributionValue - valueDifference;
             
             updateCakeVisual(contributionValue, adjustedPool, valueDifference);
-            updateDistribution(totalActualHours, adjustedPool);
+            updateDistribution(contributionValue, adjustedPool);
         }
 
         function updateCakeVisual(initialValue, finalPool, valueDiff) {
@@ -179,27 +270,51 @@
             D.cakeSvg.style.transform = `scale(${scale})`;
         }
         
-        function updateDistribution(totalHours, pool) {
-             if (totalHours === 0) {
-                updatePieChart([], 0);
-                return;
+        function updateDistribution(initialValue, finalPool) {
+            const pm = team.find(m => m.isPM);
+            let pmModifier = 1.0;
+            if (pm) {
+                const valueScore = initialValue > 0 ? finalPool / initialValue : 0;
+                const nonPmMembers = team.filter(m => !m.isPM);
+                const avgQuality = nonPmMembers.length > 0 
+                    ? nonPmMembers.reduce((sum, m) => sum + m.quality, 0) / nonPmMembers.length
+                    : 1.0;
+                const deliveryScore = parseInt(D.deliveryRate.value) / 100;
+                pmModifier = (valueScore * 0.5) + (avgQuality * 0.25) + (deliveryScore * 0.25);
+
+                const pmKpiDiv = document.getElementById(`pm-kpi-${pm.id}`);
+                if (pmKpiDiv) {
+                    pmKpiDiv.innerHTML = `
+                        <h5 class="font-semibold mb-2 text-indigo-800">PM绩效仪表盘</h5>
+                        <div class="kpi-item"><span>项目价值达成 (50%):</span> <strong>${valueScore.toFixed(2)}</strong></div>
+                        <div class="kpi-item"><span>质量达成 (25%):</span> <strong>${avgQuality.toFixed(2)}</strong></div>
+                        <div class="kpi-item"><span>交付达成 (25%):</span> <strong>${deliveryScore.toFixed(2)}</strong></div>
+                        <hr class="my-1 border-indigo-200">
+                        <div class="kpi-item font-bold"><span>综合修正系数:</span> <span class="text-indigo-800 text-lg">${pmModifier.toFixed(3)}</span></div>
+                    `;
+                }
             }
-            
+
             const memberScores = team.map(m => {
-                const modifier = m.quality * m.role * m.teamwork;
-                const baselineShare = m.hours / totalHours;
-                const score = baselineShare * modifier;
-                return { ...m, score };
+                let rawScore;
+                if (m.isPM) {
+                    const baseScore = m.hours * pmModifier;
+                    rawScore = baseScore * m.managementWeight;
+                } else {
+                    const modifier = m.quality * m.role * m.teamwork;
+                    rawScore = m.hours * modifier;
+                }
+                return { ...m, rawScore };
             });
 
-            const totalScore = memberScores.reduce((sum, m) => sum + m.score, 0);
+            const totalScore = memberScores.reduce((sum, m) => sum + m.rawScore, 0);
 
             const finalDistribution = memberScores.map(m => ({
                 ...m,
-                finalShare: totalScore > 0 ? (m.score / totalScore) : 0
+                finalShare: totalScore > 0 ? (m.rawScore / totalScore) : 0
             }));
 
-            updatePieChart(finalDistribution, pool);
+            updatePieChart(finalDistribution, finalPool);
         }
 
 
@@ -238,13 +353,20 @@
         function addEventListeners() {
             D.contributionValue.addEventListener('input', updateAll);
             D.plannedHours.addEventListener('input', updateAll);
+            D.deliveryRate.addEventListener('input', updateAll);
             D.memberControls.addEventListener('input', (e) => {
                 if(e.target.type === 'range') {
-                    const id = e.target.dataset.id;
+                    const id = parseInt(e.target.dataset.id);
                     const prop = e.target.dataset.prop;
                     const value = parseFloat(e.target.value);
-                    team[id][prop] = value;
-                    document.getElementById(`${prop}-val-${id}`).textContent = prop === 'hours' ? value : value.toFixed(1);
+                    const member = team.find(m => m.id === id);
+                    if(member) {
+                        member[prop] = value;
+                        const displayElement = document.getElementById(`${prop}-val-${id}`);
+                        if (displayElement) {
+                             displayElement.textContent = prop === 'hours' ? value : value.toFixed(1);
+                        }
+                    }
                     updateAll();
                 }
             });
@@ -253,12 +375,10 @@
         document.addEventListener('DOMContentLoaded', () => {
             createMemberControls();
             addEventListeners();
-            // Set initial values based on the example
             D.contributionValue.value = 400000;
             D.plannedHours.value = 200;
             const initialTeamHours = team.reduce((acc, m) => acc + m.hours, 0);
             team.forEach(m => { m.hours = Math.round((m.hours / initialTeamHours) * 250) });
-            // Re-create controls with new hours
             createMemberControls();
             updateAll();
         });
