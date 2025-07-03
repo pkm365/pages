@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>交互式项目绩效评估可视化 (V5.2 - 管理贡献权重)</title>
+    <title>交互式项目绩效评估可视化 (V5.3 - 计划工时确认)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -33,24 +33,42 @@
         <!-- 第一阶段 -->
         <section id="stage1" class="mb-16">
             <h2 class="text-3xl font-bold text-center mb-8">第一阶段：计算“绩效蛋糕”的真实价值</h2>
-            <div class="grid md:grid-cols-2 gap-8 items-center">
-                <div class="p-6 rounded-2xl shadow-lg section-card space-y-4">
-                    <h3 class="text-xl font-semibold">核心价值指标</h3>
+            <div class="grid md:grid-cols-2 gap-8 items-start">
+                <div class="p-6 rounded-2xl shadow-lg section-card space-y-6">
                     <div>
-                        <label for="contributionValue" class="font-medium">贡献值金额 (元)</label>
-                        <input type="number" id="contributionValue" value="400000" class="input-field">
+                        <h3 class="text-xl font-semibold mb-3 border-b pb-2">步骤 1.1：对外报价核算</h3>
+                        <div class="space-y-4 mt-4">
+                             <div>
+                                <label for="contributionValue" class="font-medium">贡献值金额 (元)</label>
+                                <input type="number" id="contributionValue" value="400000" class="input-field">
+                            </div>
+                            <div>
+                                <label for="quotedRate" class="font-medium">对外报价人天单价 (元)</label>
+                                <input type="number" id="quotedRate" value="2025" class="input-field">
+                            </div>
+                            <div class="p-3 bg-gray-100 rounded-lg text-center">
+                                <label class="text-sm text-gray-600">核算的对外报价人天 (参考):</label>
+                                <div id="quotedHoursDisplay" class="text-xl font-bold text-gray-800"></div>
+                            </div>
+                        </div>
                     </div>
                     <div>
-                        <label for="plannedHours" class="font-medium">计划工时 (人天): <span id="plannedHoursValue" class="font-bold text-blue-600">200</span></label>
-                        <input type="range" id="plannedHours" min="1" max="500" value="200" step="1" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider-thumb">
-                    </div>
-                    <div>
-                        <label for="deliveryRate" class="font-medium">里程碑交付达成率: <span id="deliveryRateValue" class="font-bold text-blue-600">100</span>%</label>
-                        <input type="range" id="deliveryRate" min="50" max="120" value="100" step="1" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider-thumb">
+                        <h3 class="text-xl font-semibold mb-3 border-b pb-2">步骤 1.2：内部评估与调整</h3>
+                         <div class="space-y-4 mt-4">
+                            <p class="text-sm text-gray-600">基于对外报价，并考量内部支持、资源等因素后，最终确认用于本次绩效考核的计划工时。</p>
+                            <div>
+                                <label for="deliveryRate" class="font-medium">里程碑交付达成率: <span id="deliveryRateValue" class="font-bold text-blue-600">100</span>%</label>
+                                <input type="range" id="deliveryRate" min="50" max="120" value="100" step="1" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider-thumb">
+                            </div>
+                            <div>
+                                <label for="plannedHours" class="font-medium">内部考核计划工时 (人天): <span id="plannedHoursValue" class="font-bold text-blue-600">200</span></label>
+                                <input type="range" id="plannedHours" min="1" max="500" value="200" step="1" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider-thumb">
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="p-6 rounded-2xl shadow-lg section-card text-center">
+                <div class="p-6 rounded-2xl shadow-lg section-card text-center sticky top-8">
                     <h3 class="text-xl font-semibold mb-2">项目绩效池分析</h3>
                     <p class="text-gray-600">实际总投入: <span id="totalActualHours" class="font-bold text-xl"></span> 人天</p>
                     <div id="valueAnalysis" class="mt-4 space-y-2"></div>
@@ -165,6 +183,8 @@
 
         const D = { // DOM elements
             contributionValue: document.getElementById('contributionValue'),
+            quotedRate: document.getElementById('quotedRate'),
+            quotedHoursDisplay: document.getElementById('quotedHoursDisplay'),
             plannedHours: document.getElementById('plannedHours'),
             plannedHoursValue: document.getElementById('plannedHoursValue'),
             deliveryRate: document.getElementById('deliveryRate'),
@@ -230,12 +250,20 @@
 
         function updateAll() {
             const contributionValue = parseFloat(D.contributionValue.value) || 0;
+            const quotedRate = parseFloat(D.quotedRate.value) || 1;
+            
+            const quotedHours = contributionValue / quotedRate;
+            D.quotedHoursDisplay.textContent = `${quotedHours.toFixed(2)} 人天`;
+
             const plannedHours = parseInt(D.plannedHours.value);
             const totalActualHours = team.reduce((sum, m) => sum + m.hours, 0);
 
             D.totalActualHours.textContent = totalActualHours;
             D.plannedHoursValue.textContent = plannedHours;
-            D.deliveryRateValue.textContent = D.deliveryRate.value;
+            if (D.deliveryRate) {
+                D.deliveryRateValue.textContent = D.deliveryRate.value;
+            }
+
 
             const derivedManDayValue = plannedHours > 0 ? contributionValue / plannedHours : 0;
             
@@ -279,7 +307,7 @@
                 const avgQuality = nonPmMembers.length > 0 
                     ? nonPmMembers.reduce((sum, m) => sum + m.quality, 0) / nonPmMembers.length
                     : 1.0;
-                const deliveryScore = parseInt(D.deliveryRate.value) / 100;
+                const deliveryScore = D.deliveryRate ? parseInt(D.deliveryRate.value) / 100 : 1.0;
                 pmModifier = (valueScore * 0.5) + (avgQuality * 0.25) + (deliveryScore * 0.25);
 
                 const pmKpiDiv = document.getElementById(`pm-kpi-${pm.id}`);
@@ -352,8 +380,11 @@
 
         function addEventListeners() {
             D.contributionValue.addEventListener('input', updateAll);
+            D.quotedRate.addEventListener('input', updateAll);
             D.plannedHours.addEventListener('input', updateAll);
-            D.deliveryRate.addEventListener('input', updateAll);
+            if (D.deliveryRate) {
+                D.deliveryRate.addEventListener('input', updateAll);
+            }
             D.memberControls.addEventListener('input', (e) => {
                 if(e.target.type === 'range') {
                     const id = parseInt(e.target.dataset.id);
