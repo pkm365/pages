@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>交互式软件开发质量门 (QG0-QG5)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Application Structure Plan: 
+        该SPA设计为一个单页滚动应用，用于清晰展示软件开发的QG0至QG5各阶段。
+        主要结构包括：
+        1. 固定的页眉，包含应用标题和可能的基础导航（本例中为纯标题）。
+        2. 内容区域，每个QG作为一个独立的卡片式版块。
+        3. 每个QG版块默认显示核心目标。
+        4. 用户可通过点击“查看详情/收起详情”按钮来切换“主要活动”和“通过标准”的可见性。
+        5. “重要说明”部分作为总结性内容展示在所有QG之后。
+        选择此结构的原因：
+        - 清晰性：每个QG阶段信息独立，易于区分和理解。
+        - 用户控制：允许用户按需展开信息，避免一次性信息过载，提升用户体验。
+        - 导航便捷：单页滚动配合可能的锚点跳转（本例未显式添加锚点导航，但结构支持）方便快速定位。
+        - 响应式：Tailwind CSS确保在不同设备上的良好显示效果。
+    -->
+
+    <!-- Visualization & Content Choices:
+        - QG0-QG5 各阶段信息:
+            - 目标: 组织与告知 (Organize & Inform)
+            - 呈现方式: 使用HTML/CSS (Tailwind) 构建卡片式布局，每个卡片代表一个QG阶段。核心目标始终可见，主要活动和通过标准为可切换显示的列表。
+            - 交互: 点击按钮展开/折叠详细信息 (主要活动、通过标准)。
+            - 理由: 这种方式结构清晰，用户可以专注于特定QG，并通过交互获取更多细节，符合易于理解和导航的核心目标。
+            - 实现方法: HTML, Tailwind CSS, Vanilla JavaScript.
+        - “重要说明”部分:
+            - 目标: 告知 (Inform)
+            - 呈现方式: 文本块，位于所有QG卡片之后。
+            - 交互: 无特定交互，静态展示。
+            - 理由: 作为总结性信息，直接展示即可。
+            - 实现方法: HTML, Tailwind CSS.
+        - 确认: 未使用SVG图形，未使用Mermaid JS。
+    -->
+
+    <style>
+        body {
+            background-color: #F5F5F5; /* 浅米色背景 */
+            color: #333333; /* 深灰色文字 */
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+        }
+        .qg-card {
+            background-color: #FFFFFF; /* 白色卡片背景 */
+            border-radius: 0.5rem; /* 8px */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-bottom: 1.5rem; /* 24px */
+            padding: 1.5rem; /* 24px */
+            border-left: 5px solid #8D6E63; /* 暖棕色左边框作为强调 */
+        }
+        .qg-title {
+            font-size: 1.5rem; /* 24px */
+            font-weight: 600;
+            color: #333333;
+            margin-bottom: 0.5rem;
+        }
+        .qg-subtitle {
+            font-size: 1.125rem; /* 18px */
+            font-weight: 500;
+            color: #8D6E63; /* 暖棕色 */
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        .qg-list {
+            list-style-type: disc;
+            padding-left: 1.5rem;
+            color: #555555; /* 稍浅的灰色 */
+        }
+        .qg-list li {
+            margin-bottom: 0.25rem;
+        }
+        .toggle-button {
+            background-color: #8D6E63; /* 暖棕色 */
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem; /* 6px */
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            border: none;
+            font-size: 0.875rem; /* 14px */
+            margin-top: 1rem;
+        }
+        .toggle-button:hover {
+            background-color: #795548; /* 深一点的棕色 */
+        }
+        .details-section {
+            display: none; /* 默认隐藏 */
+            margin-top: 1rem;
+            border-top: 1px dashed #E0E0E0; /* 分隔线 */
+            padding-top: 1rem;
+        }
+        .section-introduction {
+            font-size: 1.1rem;
+            color: #555555;
+            margin-bottom: 2rem;
+            text-align: center;
+            padding: 0 1rem;
+        }
+        .main-header {
+            background-color: #8D6E63; /* 暖棕色 */
+            color: white;
+            padding: 1.5rem 0;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .main-header h1 {
+            font-size: 2rem; /* 32px */
+            font-weight: 700;
+        }
+        .important-notes-card {
+            background-color: #FFF8E1; /* 淡黄色背景 */
+            border-left: 5px solid #FFC107; /* 琥珀色 */
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="main-header">
+        <h1>交互式软件开发质量门 (QG0-QG5) 查看器</h1>
+    </header>
+
+    <main class="container mx-auto px-4 py-8 max-w-4xl">
+        <p class="section-introduction">
+            欢迎使用软件开发质量门交互式查看器。本应用旨在帮助您清晰、便捷地了解从QG0到QG5各个阶段的核心目标、主要活动及通过标准。点击下方各阶段卡片中的“查看详情”按钮，可以展开更多信息。
+        </p>
+
+        <div class="qg-card" id="qg0">
+            <h2 class="qg-title">QG0: 项目启动/概念阶段</h2>
+            <p><strong class="text-[#8D6E63]">核心目标:</strong> 确认项目的可行性、初步范围和商业价值。</p>
+            <button class="toggle-button" data-target="details-qg0">查看详情</button>
+            <div class="details-section" id="details-qg0">
+                <h3 class="qg-subtitle">主要活动:</h3>
+                <ul class="qg-list">
+                    <li>初步需求收集与分析。</li>
+                    <li>市场调研与竞品分析。</li>
+                    <li>高阶解决方案概念设计。</li>
+                    <li>初步的风险评估和资源估算。</li>
+                    <li>商业论证 (Business Case) 的准备。</li>
+                </ul>
+                <h3 class="qg-subtitle">通过标准:</h3>
+                <ul class="qg-list">
+                    <li>项目章程或类似文件的批准。</li>
+                    <li>明确的项目目标和初步范围。</li>
+                    <li>确认项目具有足够的商业价值和可行性。</li>
+                    <li>主要干系人对项目启动达成一致。</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="qg-card" id="qg1">
+            <h2 class="qg-title">QG1: 需求与规划阶段</h2>
+            <p><strong class="text-[#8D6E63]">核心目标:</strong> 详细定义项目范围、需求，并制定详细的项目计划。</p>
+            <button class="toggle-button" data-target="details-qg1">查看详情</button>
+            <div class="details-section" id="details-qg1">
+                <h3 class="qg-subtitle">主要活动:</h3>
+                <ul class="qg-list">
+                    <li>详细的需求收集、分析和文档化 (例如：用户故事、用例、需求规格说明书)。</li>
+                    <li>制定详细的项目计划 (时间、成本、资源、风险管理计划、沟通计划等)。</li>
+                    <li>技术选型和架构初步设计。</li>
+                    <li>定义项目的成功标准和验收标准。</li>
+                </ul>
+                <h3 class="qg-subtitle">通过标准:</h3>
+                <ul class="qg-list">
+                    <li>详细的需求文档获得批准。</li>
+                    <li>完整的项目管理计划获得批准。</li>
+                    <li>明确的技术方案和架构设计。</li>
+                    <li>干系人对项目计划和需求达成一致。</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="qg-card" id="qg2">
+            <h2 class="qg-title">QG2: 设计阶段</h2>
+            <p><strong class="text-[#8D6E63]">核心目标:</strong> 完成详细的系统设计，包括技术架构、模块设计、接口设计等。</p>
+            <button class="toggle-button" data-target="details-qg2">查看详情</button>
+            <div class="details-section" id="details-qg2">
+                <h3 class="qg-subtitle">主要活动:</h3>
+                <ul class="qg-list">
+                    <li>详细的软件架构设计。</li>
+                    <li>数据库设计。</li>
+                    <li>用户界面 (UI) 和用户体验 (UX) 设计。</li>
+                    <li>模块和组件的详细设计。</li>
+                    <li>制定详细的测试计划和测试用例框架。</li>
+                    <li>安全设计和性能设计考量。</li>
+                </ul>
+                <h3 class="qg-subtitle">通过标准:</h3>
+                <ul class="qg-list">
+                    <li>详细的设计文档 (如架构设计文档、详细设计说明书、UI/UX 设计稿) 获得批准。</li>
+                    <li>测试计划获得批准。</li>
+                    <li>设计方案满足需求规格，并具备可实施性。</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="qg-card" id="qg3">
+            <h2 class="qg-title">QG3: 开发与集成阶段</h2>
+            <p><strong class="text-[#8D6E63]">核心目标:</strong> 完成软件编码、单元测试，并将各个模块集成为一个可工作的系统。</p>
+            <button class="toggle-button" data-target="details-qg3">查看详情</button>
+            <div class="details-section" id="details-qg3">
+                <h3 class="qg-subtitle">主要活动:</h3>
+                <ul class="qg-list">
+                    <li>根据设计文档进行编码。</li>
+                    <li>进行单元测试 (Unit Testing) 和代码审查 (Code Review)。</li>
+                    <li>模块集成和集成测试 (Integration Testing)。</li>
+                    <li>持续集成 (Continuous Integration, CI) 环境的搭建和运行。</li>
+                    <li>初步的系统测试。</li>
+                </ul>
+                <h3 class="qg-subtitle">通过标准:</h3>
+                <ul class="qg-list">
+                    <li>所有计划的编码工作完成。</li>
+                    <li>单元测试和集成测试通过，达到预定义的覆盖率和质量标准。</li>
+                    <li>代码审查完成，关键问题已修复。</li>
+                    <li>系统能够在一个集成环境中稳定运行。</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="qg-card" id="qg4">
+            <h2 class="qg-title">QG4: 测试与验证阶段</h2>
+            <p><strong class="text-[#8D6E63]">核心目标:</strong> 全面测试系统，确保其满足所有需求，并且质量达标，准备上线。</p>
+            <button class="toggle-button" data-target="details-qg4">查看详情</button>
+            <div class="details-section" id="details-qg4">
+                <h3 class="qg-subtitle">主要活动:</h3>
+                <ul class="qg-list">
+                    <li>系统测试 (System Testing)。</li>
+                    <li>用户验收测试 (User Acceptance Testing, UAT)。</li>
+                    <li>性能测试、安全测试、兼容性测试等专项测试。</li>
+                    <li>缺陷跟踪与修复。</li>
+                    <li>准备部署计划和回滚计划。</li>
+                    <li>最终用户文档和培训材料的准备。</li>
+                </ul>
+                <h3 class="qg-subtitle">通过标准:</h3>
+                <ul class="qg-list">
+                    <li>所有类型的测试按计划完成，并达到预定义的通过标准。</li>
+                    <li>UAT 通过，获得用户或业务方的认可。</li>
+                    <li>所有关键和高优先级缺陷已修复。</li>
+                    <li>部署计划和应急预案准备就绪。</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="qg-card" id="qg5">
+            <h2 class="qg-title">QG5: 部署与上线后阶段</h2>
+            <p><strong class="text-[#8D6E63]">核心目标:</strong> 将软件成功部署到生产环境，并进行上线后的监控和支持，完成项目收尾。</p>
+            <button class="toggle-button" data-target="details-qg5">查看详情</button>
+            <div class="details-section" id="details-qg5">
+                <h3 class="qg-subtitle">主要活动:</h3>
+                <ul class="qg-list">
+                    <li>执行部署计划，将软件部署到生产环境。</li>
+                    <li>进行上线后冒烟测试 (Smoke Testing) 和健康检查。</li>
+                    <li>监控系统运行状态，及时处理突发问题。</li>
+                    <li>提供初期用户支持。</li>
+                    <li>项目总结，经验教训回顾。</li>
+                    <li>项目正式关闭，资源释放。</li>
+                </ul>
+                <h3 class="qg-subtitle">通过标准:</h3>
+                <ul class="qg-list">
+                    <li>软件成功部署到生产环境并稳定运行。</li>
+                    <li>用户可以正常使用系统。</li>
+                    <li>上线后关键指标符合预期。</li>
+                    <li>项目收尾工作完成，相关文档归档。</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="qg-card important-notes-card" id="important-notes">
+            <h2 class="qg-title text-[#D1A506]">重要说明:</h2>
+            <ul class="qg-list text-[#795548]">
+                <li><strong>灵活性:</strong> 上述 QG 的定义和数量并非一成不变，不同公司、不同类型的项目（例如敏捷开发与瀑布模型）可能会有不同的实践。</li>
+                <li><strong>迭代性:</strong> 在敏捷开发模式下，这些质量门可能在每个迭代或冲刺 (Sprint) 结束时以更轻量级的方式体现。</li>
+                <li><strong>工具支持:</strong> 许多项目管理和ALM (Application Lifecycle Management) 工具可以帮助自动化 QG 的部分检查和报告。</li>
+            </ul>
+            <p class="mt-4 text-sm text-[#795548]">希望这份解释能够帮助您理解软件开发实施交付中 QG0 到 QG5 的含义。</p>
+        </div>
+
+    </main>
+
+    <footer class="text-center py-8 mt-8 border-t border-gray-300">
+        <p class="text-sm text-gray-600">&copy; 2024 交互式质量门查看器. 版权所有。</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const toggleButtons = document.querySelectorAll('.toggle-button');
+
+            toggleButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    const targetId = this.getAttribute('data-target');
+                    const targetElement = document.getElementById(targetId);
+
+                    if (targetElement) {
+                        if (targetElement.style.display === 'none' || targetElement.style.display === '') {
+                            targetElement.style.display = 'block';
+                            this.textContent = '收起详情';
+                        } else {
+                            targetElement.style.display = 'none';
+                            this.textContent = '查看详情';
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>从组织赋能到技术协同</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans SC', 'Inter', sans-serif;
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #60a5fa 100%);
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .main-container {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            margin: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            overflow: hidden;
+        }
+        
+        .main-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            text-align: center;
+            padding: 3rem 2rem 2rem;
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            color: white;
+            position: relative;
+            margin: 0;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            font-weight: 400;
+            opacity: 0.9;
+            margin-top: 0.5rem;
+        }
+        
+        /* 时间线容器 */
+        .timeline-container {
+            padding: 3rem 2rem;
+            background: #f8fafc;
+        }
+        
+        /* 时代标题行 */
+        .era-headers {
+            display: grid;
+            grid-template-columns: 80px 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .era-titles-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            position: relative;
+        }
+        
+        .era-title {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            color: white;
+            padding: 1rem 2rem;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            position: relative;
+            clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 50%, calc(100% - 20px) 100%, 0 100%);
+        }
+        
+        .era-title:last-child {
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+        }
+        
+        /* 内容网格 */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 80px 1fr;
+            gap: 2rem;
+        }
+        
+        .stage-labels {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .stage-label {
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            font-weight: 600;
+            border-radius: 8px;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            font-size: 1.1rem;
+        }
+        
+        .content-rows {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .content-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+        }
+        
+        .content-card {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 1.5rem;
+            height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .content-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+        }
+        
+        .content-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px -5px rgba(59, 130, 246, 0.3);
+            border-color: #3b82f6;
+        }
+        
+        .content-card h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #1e3a8a;
+            margin-bottom: 0.75rem;
+            line-height: 1.3;
+        }
+        
+        .content-card p {
+            font-size: 0.85rem;
+            color: #4b5563;
+            line-height: 1.5;
+            flex-grow: 1;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 1200px) {
+            .main-container {
+                margin: 1rem;
+            }
+            
+            .timeline-container {
+                padding: 2rem 1rem;
+            }
+            
+            .content-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .stage-labels {
+                flex-direction: row;
+                justify-content: space-around;
+            }
+            
+            .stage-label {
+                writing-mode: horizontal-tb;
+                text-orientation: mixed;
+                height: auto;
+                padding: 0.75rem 1rem;
+                flex: 1;
+            }
+            
+            .content-rows {
+                gap: 2rem;
+            }
+            
+            .content-row {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .era-headers {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .era-titles-row {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.5rem;
+            }
+            
+            .era-title {
+                clip-path: none;
+                border-radius: 8px;
+                font-size: 1.2rem;
+                padding: 0.75rem 1rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .main-title {
+                font-size: 1.8rem;
+                padding: 2rem 1rem 1.5rem;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+            }
+            
+            .era-titles-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .content-card {
+                height: auto;
+                min-height: 150px;
+            }
+        }
+        
+        /* 滚动进度指示器 */
+        .scroll-indicator {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: rgba(59, 130, 246, 0.2);
+            z-index: 1000;
+        }
+        
+        .scroll-progress {
+            height: 100%;
+            background: linear-gradient(90deg, #1e3a8a 0%, #3b82f6 100%);
+            width: 0%;
+            transition: width 0.1s ease;
+        }
+    </style>
+</head>
+<body>
+    <!-- 滚动进度指示器 -->
+    <div class="scroll-indicator">
+        <div class="scroll-progress" id="scrollProgress"></div>
+    </div>
+
+    <div class="main-container">
+        <!-- 主标题 -->
+        <header class="main-title">
+            从组织赋能到技术协同
+            <div class="subtitle">探索智能时代的可持续竞争力</div>
+        </header>
+
+        <!-- 时间线内容 -->
+        <div class="timeline-container">
+            <!-- 时代标题行 -->
+            <div class="era-headers">
+                <div></div> <!-- 占位符 -->
+                <div class="era-titles-row">
+                    <div class="era-title">T - 时代</div>
+                    <div class="era-title">e - 时代</div>
+                    <div class="era-title">i - 时代</div>
+                    <div class="era-title">M - 时代</div>
+                </div>
+            </div>
+
+            <!-- 内容网格 -->
+            <div class="content-grid">
+                <!-- 左侧阶段标签 -->
+                <div class="stage-labels">
+                    <div class="stage-label">解决问题</div>
+                    <div class="stage-label">分析问题</div>
+                    <div class="stage-label">发现问题</div>
+                </div>
+
+                <!-- 内容行 -->
+                <div class="content-rows">
+                    <!-- 解决问题行 -->
+                    <div class="content-row">
+                        <div class="content-card">
+                            <h3>专家经验与实验设计</h3>
+                            <p>通过团队头脑风暴等形式，汇集专家智慧，共同设计实验方案来应对和解决复杂问题。</p>
+                        </div>
+                        <div class="content-card">
+                            <h3>历史对策的最优推荐</h3>
+                            <p>基于历史数据和成功案例的积累，通过数据分析（如对比图表）向上追溯，推荐以往解决类似问题的最佳实践方案。</p>
+                        </div>
+                        <div class="content-card">
+                            <h3>依托y=f(x)模型化的智能决策</h3>
+                            <p>构建基于数学函数关系 y=f(x) 的决策模型，融合数据驱动与机理分析，实现智能化决策，自动输出最优解、最优值和最优参数。</p>
+                        </div>
+                        <div class="content-card">
+                            <h3>打造数字员工和工作助手</h3>
+                            <p>开发集成流程挖掘、知识图谱、机器学习、核心算法及AIGC（AI生成内容）等能力的数字员工或智能工作助手，以辅助甚至自主完成复杂工作任务。</p>
+                        </div>
+                    </div>
+
+                    <!-- 分析问题行 -->
+                    <div class="content-row">
+                        <div class="content-card">
+                            <h3>多层原因分析与要因锁定</h3>
+                            <p>运用鱼骨图等工具进行系统性根本原因分析，从问题表象深入到直接原因、中间环节，直至锁定核心要因。</p>
+                        </div>
+                        <div class="content-card">
+                            <h3>个性化识别与多块大数据分析</h3>
+                            <p>利用大数据技术，对来自不同源头、结构各异的数据进行个性化识别和多维度深度分析（如多种统计图表组合呈现），洞察潜在规律与关联。</p>
+                        </div>
+                        <div class="content-card">
+                            <h3>构造y=f(x)模型及因子分析</h3>
+                            <p>针对具体问题建立数学模型 y=f(x)，并运用因子分析、相关性分析（如矩阵图表）等方法，量化各影响因素的权重和贡献度。</p>
+                        </div>
+                        <div class="content-card">
+                            <h3>工业"大模型"构建及应用</h3>
+                            <p>构建并应用针对特定工业领域的"大模型"，利用其强大的知识理解、模式识别和推理能力，对复杂的工业系统问题进行深度分析和优化。</p>
+                        </div>
+                    </div>
+
+                    <!-- 发现问题行 -->
+                    <div class="content-row">
+                        <div class="content-card">
+                            <h3>到现场、看现物、掌握现况</h3>
+                            <p>强调"三现主义"，即亲临问题发生的现场，观察实际的物品或情况，与一线人员交流，全面掌握真实状况以发现问题。</p>
+                        </div>
+                        <div class="content-card">
+                            <h3>线下到线上</h3>
+                            <p>将传统的线下业务流程和数据信息逐步数字化、线上化，通过人与数字系统的交互，实现数据的高效采集、流转和问题的便捷追踪。</p>
+                        </div>
+                        <div class="content-card">
+                            <h3>基于泛感知的数采互联互通</h3>
+                            <p>应用物联网（IoT）等泛在感知技术，实现设备、系统间的广泛数据采集与互联互通，整合边缘计算数据、企业内部（第一方）及外部（第三方）数据资源。</p>
+                        </div>
+                        <div class="content-card">
+                            <h3>工业元宇宙里的现场映射</h3>
+                            <p>运用数字孪生或工业元宇宙技术，创建真实物理生产现场的高保真虚拟副本，在虚拟环境中进行模拟、监控、预测和优化，从而提前发现和规避风险。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="text-center text-sm text-gray-500 py-8 border-t border-gray-200">
+            <p class="font-medium">2025 无锡国际智能制造大会</p>
+            <p class="mt-2 text-xs">探索智能时代的可持续竞争力</p>
+        </footer>
+    </div>
+
+    <script>
+        // 滚动进度指示器
+        window.addEventListener('scroll', () => {
+            const scrollTop = window.pageYOffset;
+            const docHeight = document.body.offsetHeight - window.innerHeight;
+            const scrollPercent = (scrollTop / docHeight) * 100;
+            document.getElementById('scrollProgress').style.width = scrollPercent + '%';
+        });
+
+        // 入场动画
+        document.addEventListener('DOMContentLoaded', () => {
+            const cards = document.querySelectorAll('.content-card');
+            const eraHeaders = document.querySelectorAll('.era-title');
+            const stageLabels = document.querySelectorAll('.stage-label');
+            
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+
+            // 初始化动画状态
+            [...cards, ...eraHeaders, ...stageLabels].forEach((element, index) => {
+                element.style.opacity = '0';
+                element.style.transform = 'translateY(30px)';
+                element.style.transition = `all 0.6s ease ${index * 0.1}s`;
+                observer.observe(element);
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>色氨酸食物指南：開啟好心情與優質睡眠</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 400px;
+            max-height: 50vh;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 500px;
+            }
+        }
+        .gradient-text {
+            background: linear-gradient(90deg, #FF4E50, #FC913A);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="bg-[#E1F5C4] text-gray-800">
+
+    <!-- 
+    Chosen Color Palette: Energetic & Playful
+    #FF4E50 (Red), #FC913A (Orange), #F9D423 (Yellow), #EDE574 (Light Yellow), #E1F5C4 (Light Green)
+    -->
+
+    <!-- 
+    Narrative & Structure Plan:
+    1. Hero: Introduce Tryptophan and its two key functions (mood, sleep).
+    2. The "Why": Visualize the conversion process of Tryptophan.
+    3. The "What": Use a bar chart to compare Tryptophan content in top foods.
+    4. The Categories: Use styled cards with Unicode icons to list food groups.
+    5. The "How": Explain absorption tips with clear visual cues.
+    6. Conclusion: Summarize the importance of a balanced diet.
+    -->
+
+    <!-- 
+    Visualization Choices:
+    - Process Flow (Tryptophan -> Serotonin -> Melatonin): Goal: Organize/Process. Visualization: Structured HTML/CSS. Justification: Clear, lightweight, avoids SVG/Mermaid.
+    - Top Tryptophan Foods: Goal: Compare/Rank. Visualization: Horizontal Bar Chart (Chart.js/Canvas). Justification: Best for comparing quantities, meets library requirements.
+    - Food Categories: Goal: Organize. Visualization: Styled Lists/Cards with Unicode icons. Justification: Visually appealing and lightweight, avoids SVG.
+    - Absorption Tips: Goal: Relationships. Visualization: Styled Cards (HTML/CSS). Justification: Effectively shows synergistic relationships without complex charts.
+    - Final Confirmation: NEITHER Mermaid JS NOR SVG were used in this output.
+    -->
+
+    <div class="container mx-auto p-4 md:p-8 max-w-6xl">
+
+        <header class="text-center my-8 md:my-12">
+            <h1 class="text-4xl md:text-6xl font-black gradient-text mb-4">解鎖好心情與優質睡眠</h1>
+            <p class="text-lg md:text-xl text-gray-700 max-w-3xl mx-auto">探索色氨酸的秘密——這種必需胺基酸是您身體製造快樂與寧靜的關鍵原料。</p>
+        </header>
+
+        <main class="space-y-12 md:space-y-20">
+
+            <section id="process" class="bg-white/70 rounded-2xl shadow-lg p-6 md:p-8">
+                <h2 class="text-2xl md:text-3xl font-bold text-center mb-6 text-[#FF4E50]">色氨酸的神奇轉化之旅</h2>
+                <p class="text-center text-gray-600 mb-8 max-w-2xl mx-auto">攝取色氨酸後，您的身體會啟動一個重要的生化過程，將其轉化為兩種對身心健康至關重要的物質。</p>
+                <div class="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-4">
+                    <div class="text-center p-4">
+                        <div class="bg-[#FC913A] text-white rounded-full w-28 h-28 flex items-center justify-center text-lg font-bold shadow-md">色氨酸</div>
+                        <p class="mt-2 text-sm text-gray-600">從食物中攝取</p>
+                    </div>
+                    <div class="text-4xl font-light text-[#F9D423] transform md:-translate-y-2">➔</div>
+                    <div class="text-center p-4">
+                        <div class="bg-[#FF4E50] text-white rounded-full w-28 h-28 flex items-center justify-center text-lg font-bold shadow-md">血清素</div>
+                        <p class="mt-2 text-sm text-gray-600">調節情緒<br/>“快樂荷爾蒙”</p>
+                    </div>
+                    <div class="text-4xl font-light text-[#F9D423] transform md:-translate-y-2">➔</div>
+                    <div class="text-center p-4">
+                        <div class="bg-[#8A5CF4] text-white rounded-full w-28 h-28 flex items-center justify-center text-lg font-bold shadow-md" style="background-color: #3e4a89;">褪黑激素</div>
+                        <p class="mt-2 text-sm text-gray-600">調節睡眠<br/>“生理時鐘”</p>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="comparison">
+                <h2 class="text-2xl md:text-3xl font-bold text-center mb-6 text-[#FF4E50]">色氨酸含量排行榜</h2>
+                <p class="text-center text-gray-600 mb-8 max-w-2xl mx-auto">雖然許多食物都含有色氨酸，但某些食物的含量特別突出。這張圖表比較了各種食物中色氨酸的代表性含量（毫克/100克）。</p>
+                <div class="bg-white/70 rounded-2xl shadow-lg p-4 md:p-8">
+                    <div class="chart-container">
+                        <canvas id="tryptophanChart"></canvas>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="categories">
+                <h2 class="text-2xl md:text-3xl font-bold text-center mb-8 text-[#FF4E50]">從哪裡獲取色氨酸？</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="bg-white/70 rounded-2xl shadow-lg p-6 md:p-8">
+                        <h3 class="text-xl font-bold mb-4 text-[#FC913A]">優質蛋白質來源</h3>
+                        <ul class="space-y-3 text-lg">
+                            <li class="flex items-center"><span class="text-2xl mr-3">🦃</span> 火雞肉</li>
+                            <li class="flex items-center"><span class="text-2xl mr-3">🐔</span> 雞肉</li>
+                            <li class="flex items-center"><span class="text-2xl mr-3">🐟</span> 鮭魚、鮪魚、鱈魚</li>
+                            <li class="flex items-center"><span class="text-2xl mr-3">🥚</span> 雞蛋</li>
+                            <li class="flex items-center"><span class="text-2xl mr-3">🥛</span> 牛奶、起司、優格</li>
+                        </ul>
+                    </div>
+                    <div class="bg-white/70 rounded-2xl shadow-lg p-6 md:p-8">
+                        <h3 class="text-xl font-bold mb-4 text-[#FC913A]">豐富植物性來源</h3>
+                        <ul class="space-y-3 text-lg">
+                            <li class="flex items-center"><span class="text-2xl mr-3">🌱</span> 黃豆、毛豆、豆腐</li>
+                            <li class="flex items-center"><span class="text-2xl mr-3">🎃</span> 南瓜子、葵花子</li>
+                            <li class="flex items-center"><span class="text-2xl mr-3">🥜</span> 花生、腰果、杏仁</li>
+                            <li class="flex items-center"><span class="text-2xl mr-3">🌾</span> 燕麥、小米、胚芽</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="tips">
+                 <h2 class="text-2xl md:text-3xl font-bold text-center mb-8 text-[#FF4E50]">聰明攝取小訣竅</h2>
+                 <p class="text-center text-gray-600 mb-8 max-w-2xl mx-auto">要讓色氨酸發揮最大效益，搭配正確的營養素是關鍵。這能幫助它更有效地被大腦吸收和利用。</p>
+                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                     <div class="bg-white/70 rounded-2xl shadow-lg p-6 md:p-8 text-center">
+                        <div class="text-5xl mb-4">🍞</div>
+                        <h3 class="text-xl font-bold mb-2 text-[#FC913A]">搭配碳水化合物</h3>
+                        <p class="text-gray-600">與米飯、麵包、地瓜等碳水化合物一起食用，可以刺激胰島素分泌，幫助清除血液中其他與色氨酸競爭的胺基酸，讓色氨酸更容易進入大腦。</p>
+                     </div>
+                     <div class="bg-white/70 rounded-2xl shadow-lg p-6 md:p-8 text-center">
+                        <div class="text-5xl mb-4">🍌</div>
+                        <h3 class="text-xl font-bold mb-2 text-[#FC913A]">補充維生素 B6</h3>
+                        <p class="text-gray-600">維生素 B6 是將色氨酸轉化為血清素過程中的重要輔助因子。富含 B6 的食物如香蕉、菠菜、酪梨等，是色氨酸的最佳拍檔。</p>
+                     </div>
+                 </div>
+            </section>
+
+        </main>
+
+        <footer class="text-center mt-12 md:mt-20 py-8 border-t-2 border-white/50">
+            <p class="text-gray-700 font-bold">維持均衡飲食是身心健康的基石。</p>
+            <p class="text-sm text-gray-600 mt-2">本資訊僅供參考，若有特殊健康狀況或飲食疑慮，請諮詢醫師或專業營養師。</p>
+        </footer>
+
+    </div>
+
+    <script>
+        const ctx = document.getElementById('tryptophanChart');
+
+        const chartData = {
+            labels: ['火雞肉', '南瓜子', '黃豆', '鮪魚', '鮭魚', '雞胸肉', '燕麥', '雞蛋', '牛奶'],
+            datasets: [{
+                label: '色氨酸含量 (毫克/100克)',
+                data: [490, 450, 420, 305, 219, 210, 180, 167, 40],
+                backgroundColor: [
+                    '#FF4E50',
+                    '#FC913A',
+                    '#F9D423',
+                    '#4CAF50',
+                    '#2196F3',
+                    '#9C27B0',
+                    '#E91E63',
+                    '#FF9800',
+                    '#795548'
+                ],
+                borderColor: 'rgba(255, 255, 255, 0.5)',
+                borderWidth: 1,
+                borderRadius: 5,
+                borderSkipped: false,
+            }]
+        };
+
+        new Chart(ctx, {
+            type: 'bar',
+            data: chartData,
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.05)'
+                        },
+                        ticks: {
+                            font: {
+                                family: "'Noto Sans TC', sans-serif"
+                            }
+                        }
+                    },
+                    y: {
+                         grid: {
+                            display: false
+                        },
+                        ticks: {
+                            font: {
+                                family: "'Noto Sans TC', sans-serif",
+                                size: 14
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    title: {
+                        display: true,
+                        text: '常見食物色氨酸含量比較',
+                        font: {
+                            size: 18,
+                            family: "'Noto Sans TC', sans-serif",
+                            weight: 'bold'
+                        },
+                        color: '#333'
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0,0,0,0.7)',
+                        titleFont: {
+                            size: 16,
+                            family: "'Noto Sans TC', sans-serif"
+                        },
+                        bodyFont: {
+                            size: 14,
+                            family: "'Noto Sans TC', sans-serif"
+                        },
+                        callbacks: {
+                            title: function(tooltipItems) {
+                                const item = tooltipItems[0];
+                                let label = item.chart.data.labels[item.dataIndex];
+                                if (Array.isArray(label)) {
+                                  return label.join(' ');
+                                } else {
+                                  return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
