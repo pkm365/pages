@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAE 360 设备看板 (16:9)</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js for charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Chart.js Annotation Plugin -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-annotation/1.4.0/chartjs-plugin-annotation.min.js"></script>
+    <!-- SortableJS for drag and drop -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+    <style>
+        /* Custom dark theme and font */
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden; /* Prevent page scrolling */
+            background-color: #0d1117;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+            color: #c9d1d9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        #dashboard-container {
+            width: 100vw;
+            height: calc(100vw * 9 / 16);
+            max-height: 100vh;
+            max-width: calc(100vh * 16 / 9);
+            margin: auto;
+            display: flex;
+            flex-direction: column;
+            background-color: #0d1117;
+            border: 1px solid #30363d;
+            box-shadow: 0 0 30px rgba(0,0,0,0.5);
+        }
+        .card {
+            background-color: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            padding: 1rem;
+            transition: all 0.2s ease-in-out;
+            display: flex;
+            flex-direction: column;
+        }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid #30363d;
+            margin-bottom: 1rem;
+            flex-shrink: 0;
+        }
+        .card-header.draggable {
+             cursor: move;
+        }
+        .card-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #58a6ff;
+        }
+        .card-title::before {
+            content: '▍';
+            color: #58a6ff;
+            margin-right: 0.5rem;
+            font-weight: 900;
+        }
+        .sortable-ghost {
+            opacity: 0.4;
+            background: #21262d;
+        }
+        .sortable-chosen {
+            box-shadow: 0 0 15px rgba(88, 166, 255, 0.5);
+        }
+        .table-auto th, .table-auto td {
+            padding: 0.5rem 0.75rem;
+            font-size: 0.875rem;
+            text-align: left;
+        }
+        .table-auto thead th {
+            color: #8b949e;
+            border-bottom: 1px solid #30363d;
+        }
+        .table-auto tbody tr:not(:last-child) {
+             border-bottom: 1px solid #30363d;
+        }
+        /* Make main content areas scrollable if content overflows */
+        main {
+            overflow: hidden;
+        }
+        .column-container {
+            overflow-y: auto;
+            /* Custom scrollbar */
+            scrollbar-width: thin;
+            scrollbar-color: #30363d #161b22;
+        }
+        .column-container::-webkit-scrollbar {
+            width: 8px;
+        }
+        .column-container::-webkit-scrollbar-track {
+            background: #161b22;
+        }
+        .column-container::-webkit-scrollbar-thumb {
+            background-color: #30363d;
+            border-radius: 4px;
+        }
+        .tab-button {
+            padding: 0.5rem 1rem;
+            border: 1px solid transparent;
+            border-bottom: none;
+            cursor: pointer;
+            color: #8b949e;
+            transition: all 0.2s;
+        }
+        .tab-button.active {
+            color: #58a6ff;
+            background-color: #161b22;
+            border-color: #30363d;
+            border-bottom-color: #161b22;
+            border-radius: 6px 6px 0 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="dashboard-container" class="p-4">
+        <!-- Header -->
+        <header class="flex items-center justify-between pb-4 mb-4 border-b border-gray-700 flex-shrink-0">
+            <div class="flex items-center">
+                <svg width="32" height="32" viewBox="0 0 1024 1024" class="mr-3"><path fill="#4dabf7" d="M949.4 209.4c-11-17.6-28.9-28.7-48.8-28.7H123.4c-19.9 0-37.8 11.1-48.8 28.7-11 17.6-13.1 39.5-5.8 59.1l387.1 1012.4c7.8 20.5 27.2 34.5 49.2 34.5h.1c22 0 41.4-14 49.2-34.5L955.2 268.5c7.3-19.6 5.2-41.5-5.8-59.1zM512 1133.5L158.4 246.2h707.2L512 1133.5z m339.7-952.8H172.3l-35.8-93.6c-7.8-20.5-2.1-44.1 13.6-57.9 15.7-13.8 38.3-16.4 56.6-6.5l707.1 372.2c18.3 9.8 26.9 31.4 19.1 51.9s-31.4 26.9-51.9 19.1L512 190.8l-14.2 37.2L887.5 490c18.3 9.8 26.9 31.4 19.1 51.9s-31.4 26.9-51.9 19.1L172.3 180.7z"></path></svg>
+                <h1 class="text-2xl font-bold text-white">MAE 360</h1>
+                <span class="ml-4 px-3 py-1 text-sm font-semibold text-yellow-300 bg-yellow-800/50 rounded-md border border-yellow-600">TEST</span>
+            </div>
+            <div class="flex items-center space-x-4">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-400"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path><path d="M12 6v6l4 2"></path></svg>
+                <button class="px-3 py-1 text-sm bg-blue-600/50 border border-blue-500 rounded-md">中文</button>
+                <button class="px-3 py-1 text-sm">EN</button>
+                <span class="text-gray-400">|</span>
+                <span class="text-white">XiaomiLi</span>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="grid grid-cols-1 lg:grid-cols-12 gap-4 flex-grow">
+            <!-- Left Column -->
+            <aside class="lg:col-span-3 flex flex-col gap-4 h-full column-container">
+                <!-- Top Block: Image and Controls -->
+                <div class="card flex-grow">
+                    <div class="flex items-center justify-between text-sm mb-4">
+                        <div class="flex items-center gap-2">
+                            <input type="text" placeholder="开始时间" class="bg-[#0d1117] border border-[#30363d] rounded px-2 py-1 w-24 text-xs">
+                            <span>-</span>
+                            <input type="text" placeholder="结束时间" class="bg-[#0d1117] border border-[#30363d] rounded px-2 py-1 w-24 text-xs">
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button class="bg-green-600/50 border border-green-500 rounded px-3 py-1 text-xs">实时</button>
+                            <button class="bg-[#161b22] border border-[#30363d] rounded px-3 py-1 text-xs">历史</button>
+                        </div>
+                    </div>
+                    <div class="relative flex-grow min-h-0">
+                        <img src="https://images.unsplash.com/photo-1567789884554-0b844b597180?q=80&w=2070&auto=format&fit=crop" alt="设备图片" class="rounded-md w-full h-full object-cover">
+                        <div class="absolute top-2 right-2 flex gap-2">
+                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white/80"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white/80"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
+                        </div>
+                    </div>
+                    <div class="w-full bg-gray-700 rounded-full h-1.5 mt-4">
+                        <div class="bg-green-500 h-1.5 rounded-full" style="width: 75%"></div>
+                    </div>
+                </div>
+                <!-- Middle Block: Basic Info -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">基础信息</h3>
+                        <div class="flex items-center gap-2">
+                             <span class="text-sm">PRC-7x00</span>
+                             <span class="px-2 py-1 text-xs font-medium text-green-300 bg-green-900/50 rounded-full border border-green-600">● 在线</span>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-3 gap-x-4 gap-y-2 text-sm">
+                        <span class="text-gray-400">产品型号:</span> <span class="text-white col-span-2">0130021003</span>
+                        <span class="text-gray-400">设备名称:</span> <span class="text-white col-span-2">输出轴焊接</span>
+                        <span class="text-gray-400">测试工位:</span> <span class="text-white col-span-2">3500-2</span>
+                        <span class="text-gray-400">部门:</span> <span class="text-white col-span-2">IP</span>
+                        <span class="text-gray-400">产线:</span> <span class="text-white col-span-2">IPB-3</span>
+                        <span class="text-gray-400">工位:</span> <span class="text-white col-span-2">ST2602</span>
+                    </div>
+                </div>
+                 <!-- Bottom Block: Production Info -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">生产信息</h3>
+                        <div class="text-sm text-gray-400">数据来源: MES</div>
+                    </div>
+                    <div class="flex justify-around items-center text-center flex-grow">
+                        <div>
+                            <p class="text-gray-400 text-sm">节拍</p>
+                            <p class="text-2xl font-bold text-white">- s</p>
+                        </div>
+                        <div>
+                            <p class="text-gray-400 text-sm">实际产量</p>
+                            <p class="text-2xl font-bold text-blue-400">960</p>
+                        </div>
+                        <div class="relative w-24 h-24">
+                             <svg class="w-full h-full" viewBox="0 0 36 36">
+                                <path class="text-gray-700" stroke-width="2" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
+                                <path class="text-green-400" stroke-width="2" fill="none" stroke-dasharray="100, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
+                            </svg>
+                            <div class="absolute inset-0 flex flex-col items-center justify-center">
+                                <p class="text-gray-400 text-xs">合格率</p>
+                                <p class="text-xl font-bold text-green-400">100<span class="text-base">%</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Middle Column -->
+            <section id="middle-column" class="lg:col-span-5 flex flex-col gap-4 h-full column-container">
+                <div class="card flex-1 min-h-0">
+                    <div class="card-header draggable"><h3 class="card-title">稼动率趋势 (月)</h3></div>
+                    <div class="flex-grow min-h-0">
+                        <canvas id="utilizationBarChart"></canvas>
+                    </div>
+                </div>
+                <div class="card flex-1 min-h-0">
+                    <div class="card-header draggable !mb-0 !pb-2">
+                        <h3 class="card-title">班产</h3>
+                        <div id="shift-tabs" class="text-sm">
+                            <button id="night-shift-tab" class="tab-button">夜班</button>
+                            <button id="morning-shift-tab" class="tab-button">早班</button>
+                            <button id="middle-shift-tab" class="tab-button">中班</button>
+                        </div>
+                    </div>
+                    <div class="flex-grow min-h-0 pt-4">
+                        <canvas id="shiftOutputChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Right Column -->
+            <section id="right-column" class="lg:col-span-4 flex flex-col gap-4 h-full column-container">
+                <div class="card flex-1 min-h-0">
+                     <div class="card-header draggable"><h3 class="card-title">设备运行状态</h3></div>
+                     <div class="flex-grow flex items-center justify-center min-h-0">
+                        <canvas id="statusPieChart"></canvas>
+                     </div>
+                </div>
+                <div class="card flex-1 min-h-0">
+                    <div class="card-header draggable"><h3 class="card-title">停机原因 TOP 5</h3></div>
+                    <div class="flex-grow">
+                        <table class="w-full table-auto text-sm">
+                            <thead>
+                                <tr><th>原因</th><th class="text-right">时长 (分钟)</th><th class="text-right">次数</th></tr>
+                            </thead>
+                            <tbody id="top5-tbody">
+                                <!-- Content will be generated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // --- DRAG AND DROP INITIALIZATION ---
+        const middleColumn = document.getElementById('middle-column');
+        const rightColumn = document.getElementById('right-column');
+        
+        new Sortable(middleColumn, {
+            animation: 150,
+            handle: '.draggable',
+            ghostClass: 'sortable-ghost',
+            chosenClass: 'sortable-chosen',
+        });
+
+        new Sortable(rightColumn, {
+            animation: 150,
+            handle: '.draggable',
+            ghostClass: 'sortable-ghost',
+            chosenClass: 'sortable-chosen',
+        });
+
+        // --- CHART.JS CONFIGURATION AND INTERACTIVITY ---
+        
+        // Mock data for daily status breakdown up to 7/24
+        const dailyStatusData = Array.from({length: 31}, (_, i) => {
+            if (i < 24) { // Only generate data for the first 24 days
+                const running = Math.floor(Math.random() * 20) + 70; // 70-90
+                const planned = Math.floor(Math.random() * 5) + 5; // 5-10
+                const fault = Math.floor(Math.random() * 8); // 0-8
+                const idle = 100 - running - planned - fault;
+                return {
+                    day: `7/${i + 1}`,
+                    values: [running, planned, fault, idle > 0 ? idle : 0]
+                };
+            }
+            return { day: `7/${i + 1}`, values: null }; // No data for future dates
+        });
+
+        const defaultChartOptions = {
+            maintainAspectRatio: false,
+            responsive: true,
+            plugins: {
+                legend: {
+                    labels: { 
+                        color: '#c9d1d9',
+                        boxWidth: 12,
+                        padding: 15,
+                    }
+                }
+            },
+            interaction: {
+                intersect: false,
+                mode: 'index',
+            },
+        };
+
+        // Right Column: Status Pie Chart
+        const statusPieCtx = document.getElementById('statusPieChart').getContext('2d');
+        const statusPieChart = new Chart(statusPieCtx, {
+            type: 'pie',
+            data: {
+                labels: ['正常运行', '计划停机', '设备故障', '空闲'],
+                datasets: [{
+                    label: '设备状态',
+                    data: dailyStatusData[0].values, // Initial data
+                    backgroundColor: [
+                        '#238636', // Green
+                        '#1f6feb', // Blue
+                        '#f85149', // Red
+                        '#8b949e'  // Gray
+                    ],
+                    borderColor: '#161b22',
+                    borderWidth: 4,
+                }]
+            },
+            options: {
+                ...defaultChartOptions,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        align: 'center',
+                    }
+                }
+            }
+        });
+
+        // Middle Column: Utilization Bar Chart
+        const utilizationBarCtx = document.getElementById('utilizationBarChart').getContext('2d');
+        const monthLabels = dailyStatusData.map(d => d.day);
+        const monthUtilizationData = dailyStatusData.map(d => d.values ? d.values[0] : null); // Use null for future dates
+        
+        const defaultBarColor = 'rgba(88, 166, 255, 0.5)';
+        const highlightBarColor = 'rgba(255, 165, 0, 0.6)'; // Orange for highlight
+        const barColors = Array(dailyStatusData.length).fill(defaultBarColor);
+        let selectedIndex = -1;
+
+        const utilizationBarChart = new Chart(utilizationBarCtx, {
+            type: 'bar',
+            data: {
+                labels: monthLabels,
+                datasets: [{
+                    label: '稼动率 %',
+                    data: monthUtilizationData,
+                    backgroundColor: barColors,
+                    borderColor: 'rgba(88, 166, 255, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                ...defaultChartOptions,
+                 scales: {
+                    x: {
+                        ticks: { color: '#8b949e', maxRotation: 60, minRotation: 60 },
+                        grid: { color: 'rgba(255,255,255,0.05)' }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        ticks: { color: '#8b949e' },
+                        grid: { color: 'rgba(255,255,255,0.1)' }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    annotation: {
+                        annotations: {
+                            targetLine: {
+                                type: 'line',
+                                yMin: 80,
+                                yMax: 80,
+                                borderColor: '#f85149',
+                                borderWidth: 2,
+                                borderDash: [6, 6],
+                                label: {
+                                    content: '目标: 80%',
+                                    enabled: true,
+                                    position: 'start',
+                                    backgroundColor: 'rgba(248, 81, 73, 0.5)',
+                                    font: {
+                                        size: 10
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                onClick: (event, elements) => {
+                    if (elements.length > 0) {
+                        const clickedIndex = elements[0].index;
+                        
+                        if(dailyStatusData[clickedIndex].values === null) return; // Do nothing for future dates
+
+                        // Update pie chart data
+                        statusPieChart.data.datasets[0].data = dailyStatusData[clickedIndex].values;
+                        statusPieChart.update();
+                        
+                        // Update bar color for visual feedback
+                        if (selectedIndex !== -1) {
+                            barColors[selectedIndex] = defaultBarColor; // Reset previous
+                        }
+                        selectedIndex = clickedIndex;
+                        barColors[selectedIndex] = highlightBarColor; // Highlight current
+                        
+                        utilizationBarChart.update();
+                    }
+                }
+            }
+        });
+
+        // --- Shift & TOP 5 Data and Logic ---
+        const shiftTabs = document.getElementById('shift-tabs');
+        const shiftOutputCtx = document.getElementById('shiftOutputChart').getContext('2d');
+        const top5Tbody = document.getElementById('top5-tbody');
+
+        const shiftData = {
+            night: {
+                labels: ['00:00', '01:00', '02:00', '03:00', '04:00', '05:00', '06:00'],
+                data: [250, 245, 248, 255, 260, 258, 252],
+                color: '#a371f7' // Purple
+            },
+            morning: {
+                labels: ['07:00', '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00'],
+                data: [480, 485, 490, 495, 500, 498, 492, 488, 485],
+                color: '#3fb950' // Green
+            },
+            middle: {
+                labels: ['16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00'],
+                data: [495, 492, 488, 485, 480, 478, 475, 470],
+                color: '#db61a2' // Pink
+            }
+        };
+
+        const top5Data = {
+            night: [
+                { reason: '设备故障: Sensor-B', duration: 45, count: 2 },
+                { reason: '机器人手臂校准', duration: 30, count: 1 },
+                { reason: '系统重启', duration: 15, count: 3 },
+                { reason: '物料传送带卡顿', duration: 12, count: 5 },
+                { reason: '未知原因', duration: 5, count: 1 },
+            ],
+            morning: [
+                { reason: '等待物料', duration: 128, count: 15 },
+                { reason: '设备故障: Sensor-A', duration: 95, count: 3 },
+                { reason: '计划性保养', duration: 60, count: 1 },
+                { reason: '人员休息', duration: 30, count: 2 },
+                { reason: '产品切换', duration: 25, count: 4 },
+            ],
+            middle: [
+                { reason: '工具更换', duration: 55, count: 8 },
+                { reason: '网络波动', duration: 20, count: 10 },
+                { reason: '等待质检', duration: 18, count: 3 },
+                { reason: '清洁设备', duration: 15, count: 1 },
+                { reason: '参数调整', duration: 10, count: 7 },
+            ]
+        };
+
+        const shiftOutputChart = new Chart(shiftOutputCtx, {
+            type: 'bar',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: '小时产量',
+                    data: [],
+                    backgroundColor: [],
+                    borderColor: [],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                ...defaultChartOptions,
+                scales: {
+                     x: {
+                        ticks: { color: '#8b949e' },
+                        grid: { color: 'rgba(255,255,255,0.05)' }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        max: 500, // Set max value for Y-axis
+                        ticks: { color: '#8b949e' },
+                        grid: { color: 'rgba(255,255,255,0.1)' }
+                    }
+                },
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
+
+        function updateTop5Table(shiftName) {
+            const data = top5Data[shiftName];
+            top5Tbody.innerHTML = ''; // Clear existing rows
+            data.forEach(item => {
+                const row = `
+                    <tr>
+                        <td>${item.reason}</td>
+                        <td class="text-right">${item.duration}</td>
+                        <td class="text-right">${item.count}</td>
+                    </tr>
+                `;
+                top5Tbody.innerHTML += row;
+            });
+        }
+
+        function updateShiftModules(shiftName) {
+            // Update Chart
+            const data = shiftData[shiftName];
+            shiftOutputChart.data.labels = data.labels;
+            const dataset = shiftOutputChart.data.datasets[0];
+            dataset.data = data.data;
+            dataset.backgroundColor = `${data.color}80`; // Add alpha for fill
+            dataset.borderColor = data.color;
+            shiftOutputChart.update();
+
+            // Update Table
+            updateTop5Table(shiftName);
+
+            // Update active tab style
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.getElementById(`${shiftName}-shift-tab`).classList.add('active');
+        }
+        
+        shiftTabs.addEventListener('click', (e) => {
+            if (e.target.classList.contains('tab-button')) {
+                const shiftId = e.target.id; // e.g., "night-shift-tab"
+                const shiftName = shiftId.split('-')[0]; // "night"
+                updateShiftModules(shiftName);
+            }
+        });
+
+        // Auto-activate current shift on load
+        function getCurrentShift() {
+            const h = new Date().getHours();
+            if (h >= 7 && h <= 15) return 'morning';
+            if (h >= 16 && h <= 23) return 'middle';
+            return 'night';
+        }
+
+        updateShiftModules(getCurrentShift());
+
+    </script>
+</body>
+</html>
