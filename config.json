@@ -1,0 +1,24 @@
+{
+  "webhookUrl": "https://n8n.pkm365.com/webhook/content-publisher",
+  "githubOwner": "pkm365",
+  "githubRepo": "pages",
+  "pagesUrl": "https://pkm365.github.io/pages",
+  "maxFileSize": 1024,
+  "maxRequestsPerHour": 50,
+  "version": "2.0-mvp",
+  "features": {
+    "securityValidation": false,
+    "rateLimiting": false,
+    "webhookSecret": false
+  },
+  "endpoints": {
+    "github": {
+      "api": "https://api.github.com",
+      "pages": "https://pkm365.github.io/pages"
+    },
+    "n8n": {
+      "base": "https://n8n.pkm365.com",
+      "webhook": "https://n8n.pkm365.com/webhook/content-publisher"
+    }
+  }
+}
