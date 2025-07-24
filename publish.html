@@ -433,10 +433,7 @@
                 try {
                     const formData = {
                         htmlContent: htmlContent.value,
-                        fileName: fileName.value + '.html',
-                        commitMessage: document.getElementById('commitMessage').value || '添加新内容页面',
-                        timestamp: new Date().toISOString(),
-                        source: 'content-publisher-form-env'
+                        fileName: fileName.value + '.html'
                     };
 
                     const response = await fetch(config.webhookUrl, {
