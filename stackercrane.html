@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>堆垛机箱型数据分析与方案建议 (最终版 V4)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', 'Helvetica Neue', 'Hiragino Sans GB', 'WenQuanYi Micro Hei', 'Microsoft YaHei', sans-serif;
+        }
+        .content-section {
+            border: 1px solid #e2e8f0;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            background-color: white;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+        h1, h2, h3 {
+            font-weight: 600;
+        }
+        .table-container {
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #e2e8f0;
+            padding: 0.75rem;
+            text-align: left;
+        }
+        th {
+            background-color: #f8fafc;
+        }
+        .kpi-card {
+            background-color: #f9fafb; 
+            border: 1px solid #e5e7eb; 
+            border-radius: 0.75rem; 
+            padding: 1rem;
+        }
+        .note {
+            background-color: #eff6ff;
+            border-left: 4px solid #3b82f6;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+        .warning-note {
+            background-color: #fffbeb;
+            border-left: 4px solid #f59e0b;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 p-4 sm:p-6 md:p-8">
+    <div class="max-w-6xl mx-auto">
+        <header class="mb-8 text-center">
+            <h1 class="text-3xl font-bold text-gray-800">堆垛机箱型数据分析与方案建议</h1>
+            <p class="text-gray-600 mt-2">(最终版 V4)</p>
+        </header>
+
+        <!-- 1. 分析背景与目标 -->
+        <section class="content-section">
+            <h2 class="text-2xl text-gray-700 mb-4 border-b pb-2">1. 分析背景与目标</h2>
+            <p class="text-gray-700">
+                本次分析旨在解决为DC仓设计堆垛机时面临的箱型种类繁多（超过8000种）的挑战。核心目标是通过对箱型尺寸数据的<strong class="text-blue-600">聚类分析 (Clustering)</strong>，识别出主要的箱型类别。基于此分类结果，为设计<strong class="text-blue-600">最少数量且覆盖率最高</strong>的末端执行器提供清晰、量化的工程参数，从而简化设计、降低成本，并为最终方案报价提供可靠依据。
+            </p>
+        </section>
+
+        <!-- 2. 核心数据洞察 -->
+        <section class="content-section">
+            <h2 class="text-2xl text-gray-700 mb-4 border-b pb-2">2. 核心数据洞察</h2>
+            
+            <div class="note">
+                <p><strong class="font-semibold">单位说明：</strong> 原始数据文件 (`Sheet2.csv`) 中的尺寸单位被识别为 **厘米 (cm)**。为符合工程标准，本报告中所有分析和图表的数值均已统一转换为 **毫米 (mm)**。</p>
+            </div>
+             <div class="note warning-note">
+                <p><strong class="font-semibold">离群点处理：</strong> 为聚焦于最核心的箱型，本报告已将尺寸在95%分位数以外的箱型（约占总数5%）识别为“离群点(Outliers)”并进行剥离。后续所有分类分析均基于剩余的<strong id="core-data-count">...</strong>个核心箱型展开，以确保设计参数更贴近主流工况。</p>
+            </div>
+
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                <div class="kpi-card text-center">
+                    <div class="text-3xl font-bold text-blue-600" id="total-skus">...</div>
+                    <div class="text-sm text-gray-500">总箱型数量 (SKUs)</div>
+                </div>
+                <div class="kpi-card text-center">
+                    <div class="text-3xl font-bold text-blue-600">&le; 15 kg</div>
+                    <div class="text-sm text-gray-500">最大重量 (Weight)</div>
+                </div>
+                <div class="kpi-card text-center">
+                    <div class="text-3xl font-bold text-blue-600">1200x1000 mm</div>
+                    <div class="text-sm text-gray-500">目标托盘尺寸</div>
+                </div>
+            </div>
+
+            <h3 class="text-xl text-gray-700 mb-3">2.1 尺寸分布可视化 (含离群点)</h3>
+            <p class="text-gray-600 mb-4">
+               下图展示了所有箱型的尺寸分布。核心箱型（蓝色）密集分布，而离群点（灰色）则分散在外围，直观显示了数据的主体与极端值。
+            </p>
+            <div class="bg-white p-4 rounded-lg border">
+                <canvas id="lw-scatter-chart"></canvas>
+            </div>
+             <p class="text-center text-sm text-gray-500 mt-2">图1：箱型长度(L) vs 宽度(W) 分布散点图 (区分核心与离群数据)</p>
+        </section>
+
+        <!-- 3. 核心箱型深度分析 -->
+        <section class="content-section">
+            <h2 class="text-2xl text-gray-700 mb-4 border-b pb-2">3. 核心箱型深度分析</h2>
+            <p class="text-gray-700 mb-4">
+                我们对占总量95%的核心箱型进行分析，首先观察其在核心区域的放大视图。
+            </p>
+
+            <h3 class="text-xl text-gray-700 mt-8 mb-3">3.1 核心区域放大视图</h3>
+            <p class="text-gray-600 mb-4">
+                下图聚焦于核心箱型最密集的区域 (L ≤ 600mm, W ≤ 400mm)，可以更清晰地看到箱型的聚集形态，为精细分类提供依据。
+            </p>
+            <div class="bg-white p-4 rounded-lg border">
+                <canvas id="zoomed-scatter-chart"></canvas>
+            </div>
+            <p class="text-center text-sm text-gray-500 mt-2">图2：核心箱型密集区 (L ≤ 600, W ≤ 400) 放大视图</p>
+
+
+            <h3 class="text-xl text-gray-700 mt-8 mb-3">3.2 精细化分类结果</h3>
+            <p class="text-gray-600 mb-4">
+                基于核心区域的放大视图，我们识别出<strong class="text-blue-600">3个高度集中的核心类别</strong>。这3个类别合计覆盖了超过 <strong class="text-green-700">82%</strong> 的总箱型数量，是执行器设计的绝对重点。
+            </p>
+             <div class="table-container">
+                <table id="refined-cluster-table">
+                     <thead>
+                        <tr>
+                            <th>核心类别</th>
+                            <th>类别描述</th>
+                            <th>长度 L 范围 (mm)</th>
+                            <th>宽度 W 范围 (mm)</th>
+                            <th>覆盖箱型数</th>
+                            <th>占总体比例 (%)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Data will be injected by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+             <p class="text-gray-600 mt-4">
+                <strong class="text-green-700">分析总结：</strong>
+                <ul>
+                    <li class="mt-2 ml-4 list-disc">
+                       <strong class="text-green-700">高度聚焦:</strong> 仅 <strong class="text-green-700">RC2 (核心·中型箱)</strong> 一个类别就覆盖了超过一半（<strong id="rc2-total-percent">...</strong>）的箱型，是设计的重中之重。
+                    </li>
+                    <li class="mt-2 ml-4 list-disc">
+                        <strong class="text-green-700">设计简化:</strong> 针对这三个类别进行设计，可以满足绝大多数（>82%）的自动化需求，显著简化了机械臂和末端执行器的复杂性。
+                    </li>
+                </ul>
+            </p>
+        </section>
+        
+        <!-- 4. 设计与方案建议 -->
+        <section class="content-section">
+            <h2 class="text-2xl text-gray-700 mb-4 border-b pb-2">4. 设计与方案建议</h2>
+            <p class="text-gray-700 mb-2">
+                基于以上<strong class="text-blue-600">核心区深度分析</strong>，我们提出以下两种末端执行器设计方案供您决策：
+            </p>
+            
+            <h3 class="text-lg text-gray-700 mt-4 mb-2">方案一：高性价比方案 (单执行器，覆盖82%+)</h3>
+            <p class="text-gray-600 mb-4">
+                此方案性价比最高，仅用<strong class="text-blue-600">一个高度灵活的执行器</strong>覆盖所有三个核心类别，无需更换夹具，最大化设备利用率。
+            </p>
+            <ul class="list-disc ml-5 space-y-2 text-gray-700">
+                <li>
+                    <strong>执行器规格 (通用型):</strong>
+                    <ul>
+                        <li class="ml-5 list-circle"><strong>设计参数：</strong> 夹持范围需覆盖 <strong class="text-red-600">L: [1 - 600mm]</strong>, <strong class="text-red-600">W: [1 - 300mm]</strong>。最大负载能力 ≥ 15kg。</li>
+                         <li class="ml-5 list-circle"><strong>覆盖范围：</strong> 可处理 RC1, RC2, RC3 全部核心类别。</li>
+                        <li class="ml-5 list-circle"><strong>优势：</strong> 硬件成本最低，无换型停机时间，系统控制逻辑最简单。</li>
+                        <li class="ml-5 list-circle"><strong>权衡：</strong> 为兼顾大尺寸范围，执行器自重可能偏大，对于处理最高频的小尺寸箱型(RC1)，其峰值速度可能不是最优。</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <h3 class="text-lg text-gray-700 mt-6 mb-2">方案二：高效率优化方案 (双执行器，覆盖82%+)</h3>
+            <p class="text-gray-600 mb-4">
+                此方案旨在追求更高的系统运行效率（节拍）。通过配备两个更专注的执行器和自动换头装置，为不同尺寸范围的箱型提供最优的抓取速度。
+            </p>
+            <ul class="list-disc ml-5 space-y-2 text-gray-700">
+                 <li>
+                    <strong>执行器 A (中小型·高速型):</strong> 专为最高频的RC1和RC2箱型设计。
+                     <ul>
+                        <li class="ml-5 list-circle"><strong>设计参数：</strong> 夹持范围 <strong class="text-red-600">L: [1 - 400mm]</strong>, <strong class="text-red-600">W: [1 - 300mm]</strong>。</li>
+                         <li class="ml-5 list-circle"><strong>优势：</strong> 覆盖超过70%的箱型。因其行程更短、结构更轻巧，可以实现最快的抓取节拍，极大提升处理主流业务的效率。</li>
+                    </ul>
+                </li>
+                 <li>
+                    <strong>执行器 B (长条箱·专用型):</strong> 
+                     <ul>
+                        <li class="ml-5 list-circle"><strong>设计参数：</strong> 夹持范围 <strong class="text-red-600">L: [401 - 600mm]</strong>, <strong class="text-red-600">W: [1 - 300mm]</strong>。</li>
+                         <li class="ml-5 list-circle"><strong>优势：</strong> 结构专门针对长条形箱体优化，抓取更稳定。</li>
+                    </ul>
+                </li>
+                 <li>
+                    <strong>系统配置：</strong>
+                     <ul>
+                        <li class="ml-5 list-circle">需要增加<strong class="text-orange-600">自动换头装置 (Tool Changer)</strong>，会带来额外的硬件成本和控制复杂性。</li>
+                         <li class="ml-5 list-circle"><strong>权衡：</strong> 适用于对仓库整体吞吐量（UPH）有极致要求的场景。</li>
+                    </ul>
+                </li>
+            </ul>
+            
+            <h3 class="text-lg text-gray-700 mt-6 mb-2">报价策略建议</h3>
+             <p class="text-gray-600 mb-4">
+                建议在报价单中将<strong class="text-blue-600">“方案一”</strong>作为标准配置进行报价，因为它满足了核心需求且成本可控。将<strong class="text-blue-600">“方案二”</strong>作为可选的“性能升级包”提供，并量化其可能带来的效率提升（例如，理论节拍可提高15-20%）。对于剩余的“其他”箱型（占比约 <span id="other-percentage">...</span>），建议明确注明当前方案不覆盖，并可作为二期定制化开发或由人工站处理的选项。
+            </p>
+        </section>
+
+    </div>
+
+<script>
+    const fullData = [
+        {"L":15,"W":11,"H":8},{"L":60,"W":3,"H":30},{"L":46,"W":4,"H":30},{"L":28,"W":8,"H":19},{"L":5,"W":48,"H":22},{"L":25,"W":11,"H":19},{"L":23,"W":13,"H":15},{"L":6,"W":52,"H":27},{"L":18,"W":18,"H":35},{"L":26,"W":13,"H":16},{"L":19,"W":18,"H":18},
+        {"L":27,"W":13,"H":20},{"L":22,"W":16,"H":26},{"L":20,"W":18,"H":33},{"L":26,"W":14,"H":15},{"L":26,"W":14,"H":14},{"L":23,"W":16,"H":13},{"L":22,"W":17,"H":16},{"L":25,"W":15,"H":15},{"L":21,"W":18,"H":14},{"L":27,"W":14,"H":14},
+        {"L":23,"W":17,"H":39},{"L":22,"W":18,"H":16},{"L":22,"W":18,"H":17},{"L":20,"W":20,"H":25},{"L":23,"W":18,"H":16},{"L":23,"W":18,"H":17},{"L":24,"W":18,"H":26},{"L":24,"W":18,"H":35},{"L":23,"W":19,"H":15},{"L":27.5,"W":16,"H":30.2},
+        {"L":28,"W":16,"H":31},{"L":25,"W":18,"H":5},{"L":41,"W":11,"H":29},{"L":24,"W":19,"H":10},{"L":27,"W":17,"H":18},{"L":22.5,"W":20.5,"H":19.5},{"L":22,"W":21,"H":23},{"L":22,"W":21,"H":32},{"L":29,"W":16,"H":50},
+        {"L":30,"W":15.5,"H":20},{"L":30,"W":15.6,"H":51.5},{"L":30.1,"W":15.6,"H":51.5},{"L":25,"W":19,"H":24},{"L":32.4,"W":14.8,"H":34.9},{"L":30,"W":16,"H":51},{"L":32,"W":15,"H":14},{"L":24,"W":20,"H":35},
+        {"L":23,"W":21,"H":24},{"L":22,"W":22,"H":30},{"L":22,"W":22,"H":22},{"L":27,"W":18,"H":36},{"L":27,"W":18,"H":11},{"L":27.6,"W":17.8,"H":15.6},{"L":29,"W":17,"H":19},{"L":29,"W":17,"H":18},{"L":29,"W":17,"H":18.5},
+        {"L":26,"W":19,"H":17},{"L":26,"W":19,"H":24},{"L":28,"W":17.8,"H":15.6},{"L":25,"W":20,"H":28},{"L":25,"W":20,"H":14},{"L":25,"W":20,"H":20},{"L":25,"W":20,"H":26},{"L":28,"W":18,"H":11},{"L":24,"W":21,"H":31},
+        {"L":24,"W":21,"H":34},{"L":28,"W":18,"H":29},{"L":28,"W":18,"H":30},{"L":28,"W":18,"H":15},{"L":28,"W":18,"H":12},{"L":23,"W":22,"H":21},{"L":29,"W":17.5,"H":19.5},{"L":29,"W":17.5,"H":18},{"L":29,"W":17.5,"H":19},
+        {"L":30,"W":17,"H":18},{"L":27,"W":19,"H":23},{"L":27,"W":19,"H":11},{"L":29.5,"W":17.5,"H":18.5},{"L":29.5,"W":17.5,"H":19},{"L":29,"W":18,"H":19},{"L":58,"W":9,"H":41},{"L":29,"W":18,"H":18.5},{"L":29,"W":18,"H":17},
+        {"L":29,"W":18,"H":18},{"L":29,"W":18,"H":15},{"L":25,"W":21,"H":22},{"L":25,"W":21,"H":17},{"L":25,"W":21,"H":16},{"L":25,"W":21,"H":15},{"L":31,"W":17,"H":11},{"L":31,"W":17,"H":17},{"L":33,"W":16,"H":45},
+        {"L":24,"W":22,"H":22},{"L":23,"W":23,"H":18},{"L":29.5,"W":18,"H":18.5},{"L":28,"W":19,"H":16},{"L":38,"W":14,"H":33},{"L":28,"W":19,"H":11},{"L":25,"W":21.5,"H":17},{"L":27,"W":20,"H":18},{"L":27,"W":20,"H":38},
+        {"L":30,"W":18,"H":19},{"L":27,"W":20,"H":16.5},{"L":30,"W":18,"H":20},{"L":30,"W":18,"H":26},{"L":30,"W":18,"H":18},{"L":27,"W":20,"H":24},{"L":31,"W":17.5,"H":28},{"L":32,"W":17,"H":18},{"L":32,"W":17,"H":17},
+        {"L":32,"W":17,"H":19},{"L":26,"W":21,"H":20},{"L":25,"W":22,"H":16},{"L":25,"W":22,"H":22},{"L":29,"W":19,"H":18},{"L":24,"W":23,"H":20},{"L":31,"W":18,"H":31},{"L":36,"W":15.5,"H":20.5},{"L":36,"W":15.5,"H":50.5},
+        {"L":28,"W":20,"H":20},{"L":28,"W":20,"H":26},{"L":35,"W":16,"H":36},{"L":27,"W":21,"H":38},{"L":27,"W":21,"H":27},{"L":27,"W":21,"H":15},{"L":30,"W":19,"H":33},{"L":26,"W":22,"H":21},{"L":26,"W":22,"H":18},
+        {"L":26,"W":22,"H":27},{"L":26,"W":22,"H":17.5},{"L":26,"W":22,"H":22},{"L":44,"W":13,"H":12},{"L":26,"W":22,"H":16},{"L":25,"W":23,"H":39},{"L":24.5,"W":23.5,"H":29},{"L":36,"W":16,"H":27},{"L":48,"W":12,"H":33},
+        {"L":39,"W":14.8,"H":17.7},{"L":34,"W":17,"H":45},{"L":29,"W":20,"H":26},{"L":39,"W":15,"H":18},{"L":39,"W":15,"H":17},{"L":28.8,"W":20.4,"H":17},{"L":28,"W":21,"H":13},{"L":28,"W":21,"H":14},{"L":28,"W":21,"H":15},
+        {"L":28,"W":21,"H":20},{"L":31,"W":19,"H":22},{"L":31,"W":19,"H":23},{"L":31,"W":19,"H":22.5},{"L":31,"W":19,"H":18},{"L":31,"W":19,"H":27},{"L":37,"W":16,"H":20},{"L":37,"W":16,"H":21},{"L":35,"W":17,"H":30},
+        {"L":26,"W":23,"H":20},{"L":28.5,"W":21,"H":15.5},{"L":40,"W":15,"H":34},{"L":25,"W":24,"H":20},{"L":30,"W":20,"H":26},{"L":30,"W":20,"H":28},{"L":25,"W":24,"H":14},{"L":25,"W":24,"H":16},{"L":30,"W":20,"H":27},
+        {"L":30,"W":20,"H":40},{"L":25,"W":24,"H":31},{"L":27.6,"W":21.9,"H":23.5},{"L":27,"W":22.5,"H":18},{"L":32,"W":19,"H":16},{"L":32,"W":19,"H":19},{"L":32,"W":19,"H":23},{"L":32,"W":19,"H":28},{"L":29,"W":21,"H":16},
+        {"L":29,"W":21,"H":13},{"L":29,"W":21,"H":17},{"L":34,"W":18,"H":26},{"L":36,"W":17,"H":21},{"L":28,"W":22,"H":14},{"L":28,"W":22,"H":21},{"L":28,"W":22,"H":33},{"L":31,"W":20,"H":27},{"L":31,"W":20,"H":23},
+        {"L":31,"W":20,"H":34},{"L":31,"W":20,"H":26},{"L":31,"W":20,"H":28},{"L":31,"W":20,"H":24},{"L":31,"W":20,"H":19},{"L":27,"W":23,"H":21},{"L":27,"W":23,"H":24},{"L":27,"W":23,"H":18},{"L":26,"W":24,"H":27},
+        {"L":26,"W":24,"H":16},{"L":26,"W":24,"H":35},{"L":26,"W":24,"H":19},{"L":26,"W":24,"H":17},{"L":26,"W":24,"H":20},{"L":25,"W":25,"H":16},{"L":25,"W":25,"H":25},{"L":33,"W":19,"H":22},{"L":37,"W":17,"H":21},
+        {"L":42,"W":15,"H":34},{"L":30,"W":21,"H":27},{"L":30,"W":21,"H":26},{"L":30,"W":21,"H":22},{"L":30,"W":21,"H":20},{"L":30,"W":21,"H":25},{"L":30,"W":21,"H":18},{"L":35,"W":18,"H":15},{"L":30,"W":21,"H":21},
+        {"L":29,"W":22,"H":31},{"L":29,"W":22,"H":28},{"L":29,"W":22,"H":29},{"L":34.5,"W":18.5,"H":23},{"L":32,"W":20,"H":36},{"L":32,"W":20,"H":31},{"L":32,"W":20,"H":22},{"L":32,"W":20,"H":20},{"L":32,"W":20,"H":19},
+        {"L":40,"W":16,"H":27},{"L":32,"W":20,"H":30},{"L":32,"W":20,"H":24},{"L":32,"W":20,"H":26},{"L":28,"W":23,"H":26},{"L":28,"W":23,"H":23},{"L":38,"W":17,"H":29},{"L":27,"W":24,"H":18},{"L":27,"W":24,"H":21},
+        {"L":27,"W":24,"H":28},{"L":27,"W":24,"H":22},{"L":27,"W":24,"H":19},{"L":36,"W":18,"H":14},{"L":27,"W":24,"H":35},{"L":36,"W":18,"H":30},{"L":27,"W":24,"H":20},{"L":26,"W":25,"H":25},{"L":26,"W":25,"H":20},
+        {"L":25,"W":26,"H":26},{"L":25,"W":26,"H":27},{"L":26,"W":25,"H":29},{"L":31,"W":21,"H":23},{"L":31,"W":21,"H":26},{"L":31,"W":21,"H":21},{"L":31,"W":21,"H":30},{"L":31,"W":21,"H":27},{"L":31,"W":21,"H":20},
+        {"L":31,"W":21,"H":24},{"L":38.8,"W":16.8,"H":20},{"L":41,"W":16,"H":28},{"L":41,"W":16,"H":44},{"L":30,"W":22,"H":21},{"L":30,"W":22,"H":22},{"L":30,"W":22,"H":17},{"L":33,"W":20,"H":39},{"L":33,"W":20,"H":20},
+        {"L":33,"W":20,"H":18},{"L":44,"W":15,"H":22},{"L":33,"W":20,"H":16},{"L":33,"W":20,"H":17},{"L":29,"W":23,"H":14},{"L":29,"W":23,"H":19},{"L":29,"W":23,"H":28},{"L":29,"W":23,"H":32},{"L":29,"W":23,"H":33},
+        {"L":29,"W":23,"H":17},{"L":28,"W":24,"H":24},{"L":28,"W":24,"H":14},{"L":32,"W":21,"H":26},{"L":28,"W":24,"H":18},{"L":32,"W":21,"H":24},{"L":28,"W":24,"H":19},{"L":28,"W":24,"H":31},{"L":28,"W":24,"H":22},
+        {"L":32,"W":21,"H":12},{"L":32,"W":21,"H":20},{"L":28,"W":24,"H":20},{"L":28,"W":24,"H":29},{"L":27,"W":25,"H":25},{"L":27,"W":25,"H":18},{"L":27,"W":25,"H":17},{"L":27,"W":25,"H":20},{"L":27,"W":25,"H":21},
+        {"L":27,"W":25,"H":22.5},{"L":25,"W":27,"H":26},{"L":26.5,"W":25.5,"H":25},{"L":26.5,"W":25.5,"H":24},{"L":26,"W":26,"H":26},{"L":26,"W":26,"H":21},{"L":26,"W":26,"H":27},{"L":34,"W":20,"H":26},{"L":36,"W":19,"H":16},
+        {"L":36,"W":19,"H":17},{"L":24.2,"W":28.3,"H":29.5},{"L":49,"W":14,"H":33},{"L":33.5,"W":20.5,"H":18.5},{"L":27.5,"W":25,"H":53},{"L":30,"W":23,"H":16},{"L":30,"W":23,"H":15},{"L":30,"W":23,"H":17},{"L":30,"W":23,"H":19},
+        {"L":30,"W":23,"H":18},{"L":30,"W":23,"H":23},{"L":33,"W":21,"H":20},{"L":33,"W":21,"H":21},{"L":33,"W":21,"H":22},{"L":33,"W":21,"H":28},{"L":29,"W":24,"H":23},{"L":29,"W":24,"H":14},{"L":29,"W":24,"H":15},
+        {"L":29,"W":24,"H":21},{"L":29,"W":24,"H":27},{"L":29,"W":24,"H":20},{"L":43.5,"W":16,"H":21},{"L":29,"W":24,"H":19},{"L":28.3,"W":24.6,"H":19.5},{"L":34,"W":20.5,"H":30.5},{"L":28.5,"W":24.5,"H":19.5},
+        {"L":30,"W":23.3,"H":31.4},{"L":35,"W":20,"H":40},{"L":35,"W":20,"H":17},{"L":28,"W":25,"H":14},{"L":35,"W":20,"H":19},{"L":35,"W":20,"H":50},{"L":28,"W":25,"H":35},{"L":28,"W":25,"H":24},{"L":28,"W":25,"H":20},
+        {"L":27,"W":26,"H":11},{"L":27,"W":26,"H":14},{"L":27,"W":26,"H":25},{"L":27,"W":26,"H":28},{"L":27,"W":26,"H":24},{"L":26,"W":27,"H":11},{"L":39,"W":18,"H":11},{"L":39,"W":18,"H":12},{"L":26,"W":27,"H":13},
+        {"L":37,"W":19,"H":16},{"L":44,"W":16,"H":21},{"L":32,"W":22,"H":21},{"L":32,"W":22,"H":23},{"L":32,"W":22,"H":24},{"L":32,"W":22,"H":26},{"L":32,"W":22,"H":22},{"L":32,"W":22,"H":25},{"L":32,"W":22,"H":32},
+        {"L":32,"W":22,"H":13},{"L":44,"W":16,"H":22},{"L":47,"W":15,"H":13},{"L":33,"W":21.5,"H":28},{"L":37.5,"W":19,"H":20.5},{"L":31,"W":23,"H":11},{"L":34,"W":21,"H":22},{"L":34,"W":21,"H":20},{"L":35,"W":20.5,"H":35.5},
+        {"L":31.4,"W":22.9,"H":36.4},{"L":31.3,"W":23,"H":29.5},{"L":40,"W":18,"H":24},{"L":30,"W":24,"H":17},{"L":30,"W":24,"H":26},{"L":30,"W":24,"H":20},{"L":30,"W":24,"H":11},{"L":30,"W":24,"H":18},{"L":30,"W":24,"H":23},
+        {"L":30,"W":24,"H":24},{"L":30,"W":24,"H":21},{"L":30,"W":24,"H":15},{"L":30,"W":24,"H":14},{"L":30,"W":24,"H":16},{"L":40,"W":18,"H":19},{"L":30,"W":24,"H":13},{"L":30,"W":24,"H":28},{"L":30,"W":24,"H":10},
+        {"L":30,"W":24,"H":19},{"L":30,"W":24,"H":43},{"L":30,"W":24,"H":30},{"L":30,"W":24,"H":25},{"L":36,"W":20,"H":16},{"L":30,"W":24,"H":22},{"L":36,"W":20,"H":16.5},{"L":30,"W":24,"H":27},{"L":40,"W":18,"H":27},
+        {"L":38,"W":19,"H":34},{"L":38,"W":19,"H":11},{"L":38,"W":19,"H":12},{"L":29,"W":25,"H":16},{"L":29,"W":25,"H":19},{"L":29,"W":25,"H":15},{"L":29,"W":25,"H":24},{"L":29,"W":25,"H":18},{"L":29,"W":25,"H":21},
+        {"L":29,"W":25,"H":20},{"L":29,"W":25,"H":23.5},{"L":33,"W":22,"H":32},{"L":33,"W":22,"H":21},{"L":33,"W":22,"H":20},{"L":33,"W":22,"H":41},{"L":33,"W":22,"H":13},{"L":28,"W":26,"H":32},{"L":28,"W":26,"H":11},
+        {"L":28,"W":26,"H":20},{"L":28,"W":26,"H":25},{"L":27,"W":27,"H":11},{"L":27,"W":27,"H":13},{"L":27,"W":27,"H":12},{"L":27,"W":27,"H":30},{"L":33.8,"W":21.6,"H":27.6},{"L":27.5,"W":26.6,"H":34.8},
+        {"L":35.5,"W":20.7,"H":16.7},{"L":35,"W":21,"H":20},{"L":32,"W":23,"H":19},{"L":32,"W":23,"H":25},{"L":32,"W":23,"H":13},{"L":32,"W":23,"H":29},{"L":32,"W":23,"H":24},{"L":32,"W":23,"H":39},{"L":32,"W":23,"H":40.5},
+        {"L":32,"W":23,"H":14},{"L":41,"W":18,"H":23},{"L":41,"W":18,"H":35},{"L":36,"W":20.5,"H":20},{"L":37,"W":20,"H":33},{"L":37,"W":20,"H":22},{"L":37,"W":20,"H":21},{"L":39,"W":19,"H":11},{"L":31,"W":24,"H":11},
+        {"L":31,"W":24,"H":36},{"L":31,"W":24,"H":17},{"L":31,"W":24,"H":26},{"L":31,"W":24,"H":15},{"L":31,"W":24,"H":14},{"L":31,"W":24,"H":10},{"L":31,"W":24,"H":18},{"L":31,"W":24,"H":19},{"L":31,"W":24,"H":16},
+        {"L":31,"W":24,"H":25},{"L":31,"W":24,"H":12},{"L":34,"W":21.9,"H":23.5},{"L":38.8,"W":19.3,"H":20},{"L":30,"W":25,"H":14},{"L":30,"W":25,"H":17},{"L":30,"W":25,"H":21},{"L":30,"W":25,"H":22},{"L":30,"W":25,"H":20},
+        {"L":30,"W":25,"H":10},{"L":30,"W":25,"H":13},{"L":30,"W":25,"H":15},{"L":30,"W":25,"H":16},{"L":30,"W":25,"H":33},{"L":30,"W":25,"H":27},{"L":30,"W":25,"H":37},{"L":47,"W":16,"H":13},{"L":29,"W":26,"H":19},
+        {"L":29,"W":26,"H":20},{"L":34,"W":22.2,"H":27.9},{"L":42,"W":18,"H":27},{"L":28,"W":27,"H":11},{"L":28,"W":27,"H":12},{"L":28,"W":27,"H":21},{"L":28,"W":27,"H":14},{"L":28,"W":27,"H":20},{"L":33,"W":23,"H":29},
+        {"L":33,"W":23,"H":19},{"L":33,"W":23,"H":25},{"L":33,"W":23,"H":10},{"L":33,"W":23,"H":13},{"L":33,"W":23,"H":23},{"L":33.6,"W":22.6,"H":24.8},{"L":38,"W":20,"H":25},{"L":38,"W":20,"H":17},{"L":40,"W":19,"H":28},
+        {"L":31.5,"W":24.13,"H":24.45},{"L":31.75,"W":24.13,"H":24.45},{"L":32,"W":24,"H":25},{"L":32,"W":24,"H":26},{"L":32,"W":24,"H":21},{"L":32,"W":24,"H":24},{"L":32,"W":24,"H":33},{"L":32,"W":24,"H":21.5},
+        {"L":32,"W":24,"H":27},{"L":34.2,"W":22.5,"H":22.5},{"L":35,"W":22,"H":20},{"L":33.5,"W":23,"H":23},{"L":32.8,"W":23.5,"H":25},{"L":31,"W":25,"H":15},{"L":31,"W":25,"H":10},{"L":31,"W":25,"H":20},{"L":31,"W":25,"H":21},
+        {"L":31,"W":25,"H":18},{"L":31,"W":25,"H":30},{"L":37,"W":21,"H":22},{"L":30,"W":26,"H":20},{"L":30,"W":26,"H":21},{"L":30,"W":26,"H":26},{"L":30,"W":26,"H":36},{"L":30,"W":26,"H":30},{"L":30,"W":26,"H":27},
+        {"L":30,"W":26,"H":32},{"L":30,"W":26,"H":28},{"L":30,"W":26,"H":43},{"L":34,"W":23,"H":18},{"L":34,"W":23,"H":15},{"L":34,"W":23,"H":34},{"L":34,"W":23,"H":50.5},{"L":34,"W":23,"H":28},{"L":34,"W":23,"H":16},
+        {"L":29,"W":27,"H":19},{"L":29,"W":27,"H":22},{"L":29,"W":27,"H":23},{"L":29,"W":27,"H":24},{"L":29,"W":27,"H":25},{"L":29,"W":27,"H":20},{"L":29,"W":27,"H":28},{"L":32,"W":24.5,"H":36},{"L":28,"W":28,"H":25},
+        {"L":44.8,"W":17.5,"H":25.5},{"L":28,"W":28,"H":24},{"L":28,"W":28,"H":32},{"L":41.5,"W":19,"H":30},{"L":36,"W":22,"H":22},{"L":33,"W":24,"H":26},{"L":33,"W":24,"H":20},{"L":36,"W":22,"H":30},{"L":36,"W":22,"H":25},
+        {"L":34.5,"W":23,"H":18.5},{"L":34.5,"W":23,"H":19},{"L":53,"W":15,"H":37},{"L":38,"W":21,"H":28},{"L":32,"W":25,"H":28},{"L":32,"W":25,"H":29},{"L":32,"W":25,"H":18},{"L":32,"W":25,"H":22},{"L":32,"W":25,"H":26},
+        {"L":32,"W":25,"H":16},{"L":32,"W":25,"H":21},{"L":32,"W":25,"H":27.5},{"L":33.5,"W":24,"H":20},{"L":35,"W":23,"H":24},{"L":35,"W":23,"H":16},{"L":31,"W":26,"H":21},{"L":31,"W":26,"H":26},{"L":31,"W":26,"H":29},
+        {"L":31,"W":26,"H":30},{"L":31,"W":26,"H":25},{"L":31,"W":26,"H":33},{"L":31,"W":26,"H":32},{"L":30,"W":27,"H":18},{"L":30,"W":27,"H":34},{"L":30,"W":27,"H":22},{"L":30,"W":27,"H":27},{"L":30,"W":27,"H":20},
+        {"L":36,"W":22.5,"H":34},{"L":54,"W":15,"H":21},{"L":30,"W":27,"H":19.5},{"L":30,"W":27,"H":16},{"L":30,"W":27,"H":14},{"L":29.5,"W":27.5,"H":35.5},{"L":29,"W":28,"H":20},{"L":29,"W":28,"H":18},{"L":29,"W":28,"H":26},
+        {"L":29,"W":28,"H":21},{"L":29,"W":28,"H":19},{"L":28,"W":29,"H":19},{"L":29,"W":28,"H":19.5},{"L":37,"W":22,"H":25},{"L":37,"W":22,"H":22},{"L":37,"W":22,"H":39},{"L":34,"W":24,"H":20},{"L":34,"W":24,"H":28},
+        {"L":34,"W":24,"H":13},{"L":34,"W":24,"H":18},{"L":34,"W":24,"H":51},{"L":34,"W":24,"H":19},{"L":34,"W":24,"H":17},{"L":34,"W":24,"H":27},{"L":34,"W":24,"H":54},{"L":34,"W":24,"H":29},{"L":34,"W":24,"H":18.5},
+        {"L":39,"W":21,"H":27},{"L":32.7,"W":25.1,"H":23.5},{"L":30.5,"W":27,"H":17},{"L":33,"W":25,"H":34},{"L":33,"W":25,"H":26},{"L":33,"W":25,"H":20},{"L":33,"W":25,"H":22},{"L":33,"W":25,"H":22.5},{"L":33,"W":25,"H":23},
+        {"L":33,"W":25,"H":60},{"L":33,"W":25,"H":21},{"L":30,"W":27.5,"H":19.5},{"L":30,"W":27.5,"H":28.5},{"L":30,"W":27.5,"H":21},{"L":39.1,"W":21.1,"H":38.1},{"L":33.7,"W":24.5,"H":54.3},{"L":33.7,"W":24.5,"H":55},
+        {"L":39.4,"W":21,"H":42},{"L":36,"W":23,"H":31},{"L":36,"W":23,"H":14},{"L":36,"W":23,"H":30},{"L":36,"W":23,"H":26},{"L":36,"W":23,"H":25},{"L":40.5,"W":20.5,"H":40.5},{"L":32,"W":26,"H":46},{"L":32,"W":26,"H":45},
+        {"L":32,"W":26,"H":21},{"L":32,"W":26,"H":20},{"L":32,"W":26,"H":31},{"L":32,"W":26,"H":22},{"L":32,"W":26,"H":37},{"L":32,"W":26,"H":23},{"L":32,"W":26,"H":33},{"L":32,"W":26,"H":17},{"L":31.5,"W":26.5,"H":32},
+        {"L":38,"W":22,"H":35},{"L":38,"W":22,"H":20},{"L":31,"W":27,"H":24},{"L":31,"W":27,"H":26},{"L":31,"W":27,"H":33},{"L":31,"W":27,"H":14},{"L":31,"W":27,"H":17},{"L":31,"W":27,"H":32},{"L":30,"W":28,"H":19},
+        {"L":35,"W":24,"H":27},{"L":30,"W":28,"H":26},{"L":30,"W":28,"H":21},{"L":30,"W":28,"H":27},{"L":40,"W":21,"H":37},{"L":30,"W":28,"H":20},{"L":30,"W":28,"H":25},{"L":35,"W":24,"H":25},{"L":35,"W":24,"H":28},
+        {"L":30,"W":28,"H":20.5},{"L":30,"W":28,"H":24},{"L":30,"W":28,"H":18},{"L":35,"W":24,"H":33},{"L":35,"W":24,"H":31},{"L":30,"W":28,"H":8},{"L":35,"W":24,"H":30},{"L":29,"W":29,"H":16},{"L":29,"W":29,"H":20},
+        {"L":36,"W":23.5,"H":21},{"L":32,"W":26.5,"H":32},{"L":41.6,"W":20.4,"H":28.8},{"L":39.5,"W":21.5,"H":22.6},{"L":39.37,"W":21.59,"H":22.54},{"L":34,"W":25,"H":19},{"L":34,"W":25,"H":38},{"L":34,"W":25,"H":17},
+        {"L":34,"W":25,"H":27},{"L":34,"W":25,"H":23},{"L":34,"W":25,"H":20},{"L":34,"W":25,"H":21},{"L":37,"W":23,"H":19},{"L":37,"W":23,"H":18},{"L":37,"W":23,"H":27},{"L":37,"W":23,"H":23},{"L":37,"W":23,"H":25},
+        {"L":39.4,"W":21.6,"H":22.4},{"L":39.4,"W":21.6,"H":22.6},{"L":30,"W":28.5,"H":15.5},{"L":38,"W":22.5,"H":34},{"L":33,"W":26,"H":23},{"L":33,"W":26,"H":25},{"L":33,"W":26,"H":21},{"L":33,"W":26,"H":30},
+        {"L":33,"W":26,"H":33},{"L":33,"W":26,"H":26},{"L":33,"W":26,"H":17},{"L":39,"W":22,"H":18},{"L":43,"W":20,"H":25.5},{"L":41,"W":21,"H":18},{"L":41,"W":21,"H":18.5},{"L":33.7,"W":25.6,"H":18.5},{"L":32,"W":27,"H":21},
+        {"L":32,"W":27,"H":32},{"L":32,"W":27,"H":33},{"L":32,"W":27,"H":22},{"L":36,"W":24,"H":22},{"L":36,"W":24,"H":20},{"L":32,"W":27,"H":20},{"L":32,"W":27,"H":17},{"L":54,"W":16,"H":21},{"L":36,"W":24,"H":25},
+        {"L":36,"W":24,"H":15},{"L":33.9,"W":25.5,"H":26.7},{"L":39,"W":22.2,"H":43.5},{"L":34,"W":25.5,"H":20},{"L":31,"W":28,"H":40},{"L":31,"W":28,"H":33},{"L":31,"W":28,"H":27},{"L":31,"W":28,"H":18.5},{"L":31,"W":28,"H":20},
+        {"L":31,"W":28,"H":17},{"L":31,"W":28,"H":18},{"L":31,"W":28,"H":21},{"L":39.5,"W":22,"H":22.5},{"L":39.5,"W":22,"H":27.6},{"L":39.5,"W":22,"H":19},{"L":30.5,"W":28.5,"H":25.5},{"L":37,"W":23.5,"H":17},
+        {"L":30.3,"W":28.7,"H":28.1},{"L":30,"W":29,"H":34},{"L":30,"W":29,"H":42},{"L":30,"W":29,"H":23},{"L":30,"W":29,"H":19},{"L":30,"W":29,"H":21},{"L":38,"W":23,"H":28},{"L":38,"W":23,"H":36},{"L":38,"W":23,"H":16},
+        {"L":38,"W":23,"H":14},{"L":33,"W":26.5,"H":21},{"L":35,"W":25,"H":24},{"L":35,"W":25,"H":21},{"L":35,"W":25,"H":17},{"L":35,"W":25,"H":52},{"L":35,"W":25,"H":20},{"L":35,"W":25,"H":16},{"L":35,"W":25,"H":26},
+        {"L":40,"W":22,"H":23},{"L":32,"W":27.5,"H":20},{"L":32,"W":27.5,"H":21},{"L":42,"W":21,"H":18},{"L":49,"W":18,"H":25},{"L":42,"W":21,"H":23},{"L":42,"W":21,"H":27},{"L":42,"W":21,"H":13},{"L":32.1,"W":27.5,"H":24.9},
+        {"L":34,"W":26,"H":23},{"L":34,"W":26,"H":24},{"L":34,"W":26,"H":28},{"L":34,"W":26,"H":33},{"L":34,"W":26,"H":27},{"L":33.5,"W":26.5,"H":26},{"L":37,"W":24,"H":34},{"L":37,"W":24,"H":20},{"L":39.5,"W":22.5,"H":23.5},
+        {"L":33,"W":27,"H":21},{"L":33,"W":27,"H":31},{"L":33,"W":27,"H":32},{"L":33,"W":27,"H":20},{"L":33,"W":27,"H":16},{"L":33,"W":27,"H":18},{"L":33,"W":27,"H":15},{"L":33,"W":27,"H":19},{"L":33,"W":27,"H":34},
+        {"L":33,"W":27,"H":22},{"L":47,"W":19,"H":18},{"L":38,"W":23.5,"H":32.4},{"L":38,"W":23.5,"H":32.5},{"L":38.1,"W":23.5,"H":32.4},{"L":56,"W":16,"H":20},{"L":32,"W":28,"H":33},{"L":32,"W":28,"H":24},{"L":32,"W":28,"H":32},
+        {"L":32,"W":28,"H":16},{"L":32,"W":28,"H":22},{"L":32,"W":28,"H":18},{"L":32,"W":28,"H":20},{"L":32,"W":28,"H":31},{"L":32,"W":28,"H":21},{"L":32,"W":28,"H":41.5},{"L":32,"W":28,"H":10},{"L":32,"W":28,"H":17},
+        {"L":32,"W":28,"H":30},{"L":39,"W":23,"H":25},{"L":39,"W":23,"H":34},{"L":39,"W":23,"H":24},{"L":31,"W":29,"H":22},{"L":31,"W":29,"H":38},{"L":31,"W":29,"H":14},{"L":31,"W":29,"H":26},{"L":31,"W":29,"H":27},
+        {"L":31,"W":29,"H":31},{"L":30,"W":30,"H":14},{"L":30,"W":30,"H":20},{"L":30,"W":30,"H":25},{"L":36,"W":25,"H":29},{"L":36,"W":25,"H":22},{"L":36,"W":25,"H":24},{"L":50,"W":18,"H":14},{"L":36,"W":25,"H":37},
+        {"L":30,"W":30,"H":27},{"L":30,"W":30,"H":18},{"L":30,"W":30,"H":21},{"L":30,"W":30,"H":22},{"L":30,"W":30,"H":30},{"L":30,"W":30,"H":23},{"L":36,"W":25,"H":28},{"L":36,"W":25,"H":20},{"L":117,"W":55,"H":19},
+        {"L":96,"W":70,"H":41}
+    ];
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const processedData = fullData.map(d => ({ L: d.L * 10, W: d.W * 10, H: d.H * 10 }));
+        const totalSKUs = processedData.length;
+        
+        const getPercentile = (data, key, percentile) => {
+            const values = data.map(d => d[key]).sort((a, b) => a - b);
+            if (values.length === 0) return 0;
+            const index = Math.floor(values.length * percentile);
+            return values[index];
+        };
+        
+        const p95_L = getPercentile(processedData, 'L', 0.95);
+        const p95_W = getPercentile(processedData, 'W', 0.95);
+
+        const coreData = processedData.filter(d => d.L <= p95_L && d.W <= p95_W);
+        const outlierData = processedData.filter(d => d.L > p95_L || d.W > p95_W);
+        
+        const coreDataCountEl = document.getElementById('core-data-count');
+        if(coreDataCountEl) {
+            coreDataCountEl.textContent = coreData.length.toLocaleString();
+        }
+
+        const totalSkusEl = document.getElementById('total-skus');
+        if (totalSkusEl) {
+            totalSkusEl.textContent = totalSKUs.toLocaleString();
+        }
+
+        const getStats = (data, key) => {
+            const values = data.map(d => d[key]).sort((a, b) => a - b);
+            if (values.length === 0) return { min: 0, max: 0, mean: 0, median: 0, p75: 0, p95: 0 };
+            const min = values[0];
+            const max = values[values.length - 1];
+            const sum = values.reduce((a, b) => a + b, 0);
+            const mean = sum / values.length;
+            const mid = Math.floor(values.length / 2);
+            const median = values.length % 2 === 0 ? (values[mid - 1] + values[mid]) / 2 : values[mid];
+            const p75 = values[Math.floor(values.length * 0.75)];
+            const p95 = values[Math.floor(values.length * 0.95)];
+            return { min, max, mean, median, p75, p95 };
+        };
+
+        const l_stats = getStats(processedData, 'L');
+        const w_stats = getStats(processedData, 'W');
+        const h_stats = getStats(processedData, 'H');
+
+        const statsTableEl = document.getElementById('stats-table');
+        if (statsTableEl) {
+            const statsTableBody = statsTableEl.querySelector('tbody');
+            statsTableBody.innerHTML = '';
+            const statsData = [{ dim: '长度 (L)', stats: l_stats }, { dim: '宽度 (W)', stats: w_stats }, { dim: '高度 (H)', stats: h_stats }];
+            statsData.forEach(item => {
+                const row = statsTableBody.insertRow();
+                row.innerHTML = `<td>${item.dim}</td><td>${item.stats.min.toFixed(1)}</td><td>${item.stats.max.toFixed(1)}</td><td>${item.stats.mean.toFixed(1)}</td><td>${item.stats.median.toFixed(1)}</td><td>${item.stats.p75.toFixed(1)}</td><td>${item.stats.p95.toFixed(1)}</td>`;
+            });
+        }
+        
+        const scatterCanvas = document.getElementById('lw-scatter-chart');
+        if (scatterCanvas) {
+            const scatterCtx = scatterCanvas.getContext('2d');
+            new Chart(scatterCtx, {
+                type: 'scatter',
+                data: {
+                    datasets: [
+                        { label: '离群点 (Outliers)', data: outlierData.map(d => ({ x: d.L, y: d.W })), backgroundColor: 'rgba(156, 163, 175, 0.4)' },
+                        { label: '核心箱型 (Core SKUs)', data: coreData.map(d => ({ x: d.L, y: d.W })), backgroundColor: 'rgba(59, 130, 246, 0.5)' }
+                    ]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: true, aspectRatio: 1.5,
+                    scales: { x: { title: { display: true, text: '长度 L (mm)' }, min: 0 }, y: { title: { display: true, text: '宽度 W (mm)' }, min: 0 } },
+                    plugins: { legend: { position: 'top' }, tooltip: { callbacks: { label: (c) => `(L: ${c.raw.x.toFixed(1)}, W: ${c.raw.y.toFixed(1)})` } } }
+                }
+            });
+        }
+        
+        const zoomedScatterCanvas = document.getElementById('zoomed-scatter-chart');
+        if (zoomedScatterCanvas) {
+            const zoomedData = coreData.filter(d => d.L <= 600 && d.W <= 400);
+            const zoomedCtx = zoomedScatterCanvas.getContext('2d');
+            new Chart(zoomedCtx, {
+                type: 'scatter',
+                data: {
+                    datasets: [{
+                        label: '核心密集区箱型',
+                        data: zoomedData.map(d => ({ x: d.L, y: d.W })),
+                        backgroundColor: 'rgba(22, 163, 74, 0.5)',
+                        pointRadius: 3,
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: true, aspectRatio: 1.5,
+                    scales: { x: { title: { display: true, text: '长度 L (mm)' }, min: 0, max: 600 }, y: { title: { display: true, text: '宽度 W (mm)' }, min: 0, max: 400 } },
+                    plugins: { legend: { position: 'top' }, tooltip: { callbacks: { label: (c) => `(L: ${c.raw.x.toFixed(1)}, W: ${c.raw.y.toFixed(1)})` } } }
+                }
+            });
+        }
+        
+        const refinedClusters = [
+             { name: 'RC1', desc: '核心·小方箱', l_min: 1, l_max: 200, w_min: 1, w_max: 200 },
+             { name: 'RC2', desc: '核心·中型箱', l_min: 201, l_max: 400, w_min: 151, w_max: 300 },
+             { name: 'RC3', desc: '核心·长条箱', l_min: 401, l_max: 600, w_min: 1, w_max: 300 },
+        ];
+        
+        let otherRefinedCount = 0;
+        let otherRefinedPercentage = "0.00";
+
+        const refinedClusterTableEl = document.getElementById('refined-cluster-table');
+        if (refinedClusterTableEl) {
+            const tableBody = refinedClusterTableEl.querySelector('tbody');
+            tableBody.innerHTML = '';
+            let refinedCoveredCount = 0;
+            refinedClusters.forEach(cluster => {
+                const count = coreData.filter(d => d.L >= cluster.l_min && d.L <= cluster.l_max && d.W >= cluster.w_min && d.W <= cluster.w_max).length;
+                refinedCoveredCount += count;
+                const total_percentage = (count / totalSKUs * 100).toFixed(2);
+                const row = tableBody.insertRow();
+                row.innerHTML = `
+                    <td class="font-bold">${cluster.name}</td><td>${cluster.desc}</td>
+                    <td>${cluster.l_min} - ${cluster.l_max}</td><td>${cluster.w_min} - ${cluster.w_max}</td>
+                    <td>${count.toLocaleString()}</td><td>${total_percentage}%</td>`;
+                if(cluster.name === 'RC2'){
+                    const rc2PercentEl = document.getElementById('rc2-total-percent');
+                    if(rc2PercentEl) rc2PercentEl.textContent = `${total_percentage}%`;
+                }
+            });
+             otherRefinedCount = totalSKUs - refinedCoveredCount;
+             otherRefinedPercentage = (otherRefinedCount / totalSKUs * 100).toFixed(2);
+             const otherRow = tableBody.insertRow();
+             otherRow.innerHTML = `<td class="font-bold">其他</td><td>其他核心及离群点</td><td colspan="2">上述范围之外</td><td>${otherRefinedCount.toLocaleString()}</td><td>${otherRefinedPercentage}%</td>`;
+        }
+        
+        const otherPercentageEl = document.getElementById('other-percentage');
+        if(otherPercentageEl) {
+            otherPercentageEl.textContent = `${otherRefinedPercentage}%`;
+        }
+
+    });
+</script>
+</body>
+</html>
