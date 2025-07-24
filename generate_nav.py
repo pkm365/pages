@@ -16,8 +16,6 @@ EXCLUDE_FILES = {
     "index.html",
     "LICENSE",
     ".gitignore",
-    "config-validator.html",
-    "config-validator-cloud.html",
 }
 
 # Regex to extract the <title> tag content
