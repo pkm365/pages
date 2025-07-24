@@ -23,6 +23,11 @@ jobs:
         with:
           python-version: '3.x'
           
+      - name: Configure git
+        run: |
+          git config --global user.name "pkm365"
+          git config --global user.email "jarry.feng@gmail.com"
+          
       - name: Generate navigation
         run: |
           python generate_nav.py
