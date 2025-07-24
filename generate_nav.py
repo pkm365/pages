@@ -16,6 +16,7 @@ EXCLUDE_FILES = {
     "index.html",
     "LICENSE",
     ".gitignore",
+    "publish.html",  # 发布表单页面，通过按钮访问，不在导航中显示
 }
 
 # Regex to extract the <title> tag content
