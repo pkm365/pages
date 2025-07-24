@@ -94,10 +94,25 @@
         /* Responsive grid */
         .dashboard-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            grid-template-rows: 1fr 1fr;
+            grid-template-columns: 1fr;
+            grid-template-rows: repeat(6, 1fr);
             gap: 1.5rem;
             height: 100%;
+            overflow-x: auto;
+        }
+        
+        @media (min-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr 1fr;
+                grid-template-rows: repeat(3, 1fr);
+            }
+        }
+        
+        @media (min-width: 1200px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr 1fr 1fr;
+                grid-template-rows: 1fr 1fr;
+            }
         }
         
         /* Chart containers */
