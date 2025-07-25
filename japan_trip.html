@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>大阪七日游可视化行程单</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+        }
+        .tab-active {
+            background-color: #F97316; /* Orange-500 */
+            color: white;
+            border-color: #F97316;
+        }
+        .tab-inactive {
+            background-color: #F1F5F9; /* Slate-100 */
+            color: #475569; /* Slate-600 */
+            border-color: transparent;
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .day-panel {
+            display: none;
+        }
+        .day-panel.active {
+            display: block;
+        }
+    </style>
+</head>
+<body class="bg-slate-50">
+
+    <div class="container mx-auto p-4 md:p-8 max-w-5xl">
+
+        <!-- Header -->
+        <header class="text-center mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold text-orange-600">大阪七日奇趣之旅</h1>
+            <p class="text-slate-600 mt-2">为您和家人量身定制的动漫、美食与文化探索计划</p>
+        </header>
+
+        <!-- Travel Tips Section -->
+        <div class="bg-white p-6 rounded-2xl shadow-md mb-8 border border-orange-100">
+            <h3 class="text-xl font-bold text-slate-800 mb-4 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-orange-500 mr-2"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path><path d="m9 12 2 2 4-4"></path></svg>
+                旅行小贴士
+            </h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                <div class="bg-orange-50 p-3 rounded-lg">
+                    <p class="font-semibold text-orange-800">ICOCA 交通卡</p>
+                    <p class="text-slate-600">关西地区通用，省去购票烦恼。</p>
+                </div>
+                <div class="bg-sky-50 p-3 rounded-lg">
+                    <p class="font-semibold text-sky-800">扶梯礼仪</p>
+                    <p class="text-slate-600">在大阪，请靠<strong class="font-bold">右侧</strong>站立。</p>
+                </div>
+                <div class="bg-amber-50 p-3 rounded-lg">
+                    <p class="font-semibold text-amber-800">炸串规矩</p>
+                    <p class="text-slate-600">酱汁只允许蘸一次哦！</p>
+                </div>
+                <div class="bg-violet-50 p-3 rounded-lg">
+                    <p class="font-semibold text-violet-800">随身网络</p>
+                    <p class="text-slate-600">建议租用随身Wi-Fi或购买上网卡。</p>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Tabs Navigation -->
+        <div class="mb-6">
+            <div class="flex flex-wrap justify-center gap-2" id="tab-buttons">
+                <button data-day="1" class="day-tab tab-active px-4 py-2 text-sm font-semibold rounded-full transition-all duration-300 shadow-sm">第 1 天</button>
+                <button data-day="2" class="day-tab tab-inactive px-4 py-2 text-sm font-semibold rounded-full transition-all duration-300 shadow-sm">第 2 天</button>
+                <button data-day="3" class="day-tab tab-inactive px-4 py-2 text-sm font-semibold rounded-full transition-all duration-300 shadow-sm">第 3 天</button>
+                <button data-day="4" class="day-tab tab-inactive px-4 py-2 text-sm font-semibold rounded-full transition-all duration-300 shadow-sm">第 4 天</button>
+                <button data-day="5" class="day-tab tab-inactive px-4 py-2 text-sm font-semibold rounded-full transition-all duration-300 shadow-sm">第 5 天</button>
+                <button data-day="6" class="day-tab tab-inactive px-4 py-2 text-sm font-semibold rounded-full transition-all duration-300 shadow-sm">第 6 天</button>
+                <button data-day="7" class="day-tab tab-inactive px-4 py-2 text-sm font-semibold rounded-full transition-all duration-300 shadow-sm">第 7 天</button>
+            </div>
+        </div>
+
+        <!-- Content Panels -->
+        <div id="tab-content">
+            <!-- Day 1 Panel -->
+            <div id="day-1" class="day-panel active fade-in">
+                <div class="bg-white p-6 rounded-2xl shadow-lg">
+                    <h2 class="text-2xl font-bold text-slate-800 mb-1">Day 1 (周日): 初探浪速，道顿堀巡礼</h2>
+                    <p class="text-slate-500 mb-6">抵达大阪，感受“天下厨房”的魅力！</p>
+                    <div class="space-y-4">
+                        <div class="flex items-start gap-4">
+                            <div class="bg-sky-100 text-sky-700 p-3 rounded-full"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 1 4 4-1h3l3-2 2.5 2.5z"></path></svg></div>
+                            <div>
+                                <h4 class="font-bold text-slate-700">下午：抵达与入住</h4>
+                                <p class="text-slate-600 text-sm">从关西机场乘坐南海电铁至难波站，入住心斋桥或难波附近酒店。</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div class="bg-amber-100 text-amber-700 p-3 rounded-full"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C8.42 2 6 3.21 6 5c0 1.48 1.45 2.87 3 3.55V14a3 3 0 0 0-3 3v2h12v-2a3 3 0 0 0-3-3V8.55c1.55-.68 3-2.07 3-3.55 0-1.79-2.42-3-6-3z"></path><path d="M20.57 14.86c.34.82.02 1.74-.79 2.08-.82.34-1.74-.02-2.08-.79-.34-.82-.02-1.74.79-2.08.82-.34 1.74.02 2.08.79z"></path><path d="M6.22 16.14a1.35 1.35 0 0 0-2.08-.79c-.81.34-1.13 1.26-.79 2.08.34.81 1.26 1.13 2.08.79.81-.34 1.13-1.26.79-2.08z"></path></svg></div>
+                            <div>
+                                <h4 class="font-bold text-slate-700">晚上：道顿堀美食探险</h4>
+                                <p class="text-slate-600 text-sm">漫步于霓虹灯闪烁的道顿堀，与格力高广告牌合影，品尝地道的章鱼烧和大阪烧。</p>
+                            </div>
+                        </div>
+                         <img src="https://placehold.co/800x400/e0f2fe/0c4a6e?text=道顿堀格力高广告牌" class="rounded-xl mt-4 w-full h-auto object-cover" alt="道顿堀格力高广告牌">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Day 2 Panel -->
+            <div id="day-2" class="day-panel fade-in">
+                 <div class="bg-white p-6 rounded-2xl shadow-lg">
+                    <h2 class="text-2xl font-bold text-slate-800 mb-1">Day 2 (周一): 动漫天堂与市井厨房</h2>
+                    <p class="text-slate-500 mb-6">女儿的最爱！沉浸在二次元世界，再到集市大快朵颐。</p>
+                    <div class="space-y-4">
+                        <div class="flex items-start gap-4">
+                            <div class="bg-violet-100 text-violet-700 p-3 rounded-full"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 20H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h6"></path><path d="m18 8 4 4-10.5 10.5-4.5 1.5 1.5-4.5L18 8z"></path></svg></div>
+                            <div>
+                                <h4 class="font-bold text-slate-700">上午：日本桥动漫巡礼</h4>
+                                <p class="text-slate-600 text-sm">探索“关西秋叶原”——日本桥电电城，寻找心爱的动漫周边和手办。</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                             <div class="bg-red-100 text-red-700 p-3 rounded-full"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 12c0-2.5-2-5-5-5s-5 2.5-5 5c0 2.5 2 5 5 5s5-2.5 5-5z"></path><path d="M21 12c0-2.5-2-5-5-5s-5 2.5-5 5c0 2.5 2 5 5 5s5-2.5 5-5z"></path><path d="M9.1 12.1a3.5 3.5 0 0 1 5.8 0"></path><path d="M9.1 12.1a3.5 3.5 0 0 0 5.8 0"></path></svg></div>
+                            <div>
+                                <h4 class="font-bold text-slate-700">中午：黑门市场的美味</h4>
+                                <p class="text-slate-600 text-sm">在“大阪的厨房”黑门市场享用午餐，品尝新鲜的刺身、海胆和烤和牛。</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div class="bg-green-100 text-green-700 p-3 rounded-full"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path><path d="M3 6h18"></path><path d="M16 10a4 4 0 0 1-8 0"></path></svg></div>
+                            <div>
+                                <h4 class="font-bold text-slate-700">下午：心斋桥购物乐</h4>
+                                <p class="text-slate-600 text-sm">在大阪最繁华的商业街——心斋桥筋释放购物欲，从药妆到潮牌应有尽有。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Day 3 Panel -->
+            <div id="day-3" class="day-panel fade-in">
+                <div class="bg-white p-6 rounded-2xl shadow-lg">
+                    <h2 class="text-2xl font-bold text-slate-800 mb-1">Day 3 (周二): 环球影城与梅田夜景</h2>
+                    <p class="text-slate-500 mb-6">进入电影的魔法世界，再从城市之巅欣赏璀璨夜色。</p>
+                    <div class="space-y-4">
+                        <div class="flex items-start gap-4">
+                            <div class="bg-indigo-100 text-indigo-700 p-3 rounded-full"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.23 7.51a5.3 5.3 0 0 1 3.54 3.54M2 12h3m14 0h3M12 2v3m0 14v3M4.2 4.2l2.1 2.1m11.4 11.4 2.1 2.1M4.2 19.8l2.1-2.1M19.8 4.2l-2.1 2.1M12 18a6 6 0 1 0 0-12 6 6 0 0 0 0 12z"></path><path d="M12 12a2.38 2.38 0 0 0-3.37 3.37A2.38 2.38 0 0 0 12 12Z"></path></svg></div>
+                            <div>
+                                <h4 class="font-bold text-slate-700">全天：日本环球影城 (USJ)</h4>
+                                <p class="text-slate-600 text-sm">畅玩哈利波特禁忌之旅、蜘蛛侠惊魂历险记等热门项目，享受一整天的奇幻与刺激。</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div class="bg-fuchsia-100 text-fuchsia-700 p-3 rounded-full"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path><path d="M6.34 6.34 4.93 4.93"></path><path d="m19.07 19.07-1.41-1.41"></path><path d="M12 4V2"></path><path d="M12 22v-2"></path><path d="M12 18a6 6 0 1 0 0-12 6 6 0 0 0 0 12z"></path></svg></div>
+                            <div>
+                                <h4 class="font-bold text-slate-700">晚上：梅田空中庭园</h4>
+                                <p class="text-slate-600 text-sm">登上梅田蓝天大厦，360度俯瞰大阪壮丽的城市夜景，感受“光之河”的震撼。</p>
+                            </div>
+                        </div>
+                         <img src="https://placehold.co/800x400/f3e8ff/581c87?text=梅田空中庭园夜景" class="rounded-xl mt-4 w-full h-auto object-cover" alt="梅田空中庭园夜景">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Day 4 Panel -->
+            <div id="day-4" class="day-panel fade-in">
+                <div class="bg-white p-6 rounded-2xl shadow-lg">
+                    <h2 class="text-2xl font-bold text-slate-800 mb-1">Day 4 (周三): 历史古迹与水都风情</h2>
+                    <p class="text-slate-500 mb-6">穿越回战国时代，再从水上感受大阪的独特魅力。</p>
+                     <div class="space-y-4">
+                        <div class="flex items-start gap-4">
+                            <div class="bg-lime-100 text-lime-700 p-3 rounded-full"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 9v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V9"></path><path d="M9 22V12h6v10"></path><path d="M2 12h20"></path><path d="M16.5 12 12 7l-4.5 5"></path></svg></div>
+                            <div>
+                                <h4 class="font-bold text-slate-700">上午：大阪城天守阁</h4>
+                                <p class="text-slate-600 text-sm">参观大阪的象征——宏伟的大阪城，了解丰臣秀吉的历史，登顶远眺。</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                             <div class="bg-cyan-100 text-cyan-700 p-3 rounded-full"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 18H2a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h20a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2Z"></path><path d="M14 18v-4h-4v4"></path><path d="M10 10h4"></path><path d="M12 6v4"></path></svg></div>
+                            <div>
+                                <h4 class="font-bold text-slate-700">下午：中之岛漫步</h4>
+                                <p class="text-slate-600 text-sm">在中之岛公园悠闲散步，欣赏大阪市中央公会堂等典雅的近代建筑。</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div class="bg-blue-100 text-blue-700 p-3 rounded-full"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 17a2.5 2.5 0 0 1 5 0"></path><path d="M2.5 12a2.5 2.5 0 0 1 5 0"></path><path d="M2.5 7a2.5 2.5 0 0 1 5 0"></path><path d="M22 2H10v10h12V2Z"></path><path d="M16 12v10"></path></svg></div>
+                            <div>
+                                <h4 class="font-bold text-slate-700">傍晚：水上巴士巡游</h4>
+                                <p class="text-slate-600 text-sm">乘坐水上巴士，换个角度欣赏大阪城与中之岛的沿岸风光，感受“水都”魅力。</p>
+                            </div>
+                        </div>
+                         <img src="https://placehold.co/800x400/ecfccb/365314?text=大阪城天守阁" class="rounded-xl mt-4 w-full h-auto object-cover" alt="大阪城天守阁">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Day 5 Panel -->
+            <div id="day-5" class="day-panel fade-in">
+                <div class="bg-white p-6 rounded-2xl shadow-lg">
+                    <h2 class="text-2xl font-bold text-slate-800 mb-1">Day 5 (周四): 新世界怀旧与温泉放松</h2>
+                    <p class="text-slate-500 mb-6">感受昭和时代的复古氛围，品尝地道炸串，最后用温泉洗去疲惫。</p>
+                    <div class="space-y-4">
+                        <div class="flex items-start gap-4">
+                           <div class="bg-yellow-100 text-yellow-700 p-3 rounded-full"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"></path><path d="M2 17l10 5 10-5"></path><path d="M2 12l10 5 10-5"></path></svg></div>
+                            <div>
+                                <h4 class="font-bold text-slate-700">上午：新世界与通天阁</h4>
+                                <p class="text-slate-600 text-sm">漫步新世界，登上大阪地标通天阁，别忘了摸一摸福神Billiken的脚底求好运。</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                             <div class="bg-rose-100 text-rose-700 p-3 rounded-full"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11.76 22.08A7.82 7.82 0 0 0 18 17.15V9A6 6 0 0 0 6 9v8.15a7.82 7.82 0 0 0 6.24 4.93Z"></path><path d="M12 2v2"></path><path d="M6 9H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h2"></path><path d="M18 9h2a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2h-2"></path></svg></div>
+                            <div>
+                                <h4 class="font-bold text-slate-700">下午：适泊温泉大世界</h4>
+                                <p class="text-slate-600 text-sm">在集合了世界各地风情的温泉大世界里彻底放松身心，享受疗愈时光。</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div class="bg-orange-100 text-orange-700 p-3 rounded-full"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path></svg></div>
+                            <div>
+                                <h4 class="font-bold text-slate-700">晚上：天神桥筋商店街</h4>
+                                <p class="text-slate-600 text-sm">逛一逛日本最长的商店街，感受大阪的市井生活气息，顺便品尝地道炸串。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Day 6 Panel -->
+            <div id="day-6" class="day-panel fade-in">
+                <div class="bg-white p-6 rounded-2xl shadow-lg">
+                    <h2 class="text-2xl font-bold text-slate-800 mb-1">Day 6 (周五): 海洋世界与湾区风光</h2>
+                    <p class="text-slate-500 mb-6">与可爱的海洋生物相遇，从摩天轮和观光船上欣赏大阪港的壮阔景色。</p>
+                    <div class="space-y-4">
+                        <div class="flex items-start gap-4">
+                            <div class="bg-teal-100 text-teal-700 p-3 rounded-full"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 12.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"></path><path d="m5 12-2 3h18l-2-3"></path><path d="m14 12-2-3-2 3"></path></svg></div>
+                            <div>
+                                <h4 class="font-bold text-slate-700">上午：海游馆探秘</h4>
+                                <p class="text-slate-600 text-sm">参观世界级的水族馆——海游馆，观赏巨大的鲸鲨和可爱的企鹅。</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                             <div class="bg-blue-100 text-blue-700 p-3 rounded-full"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2Z"></path><path d="m12 15-3.13 3.13a3.34 3.34 0 0 1-4.71-4.71L7.29 10.29a3.34 3.34 0 0 1 4.71 0l3.13-3.13a3.34 3.34 0 0 1 4.71 4.71L16.71 14.7a3.34 3.34 0 0 1-4.71 0Z"></path><circle cx="12" cy="12" r="2"></circle></svg></div>
+                            <div>
+                                <h4 class="font-bold text-slate-700">下午：天保山摩天轮</h4>
+                                <p class="text-slate-600 text-sm">乘坐天保山大摩天轮，从高空俯瞰大阪港和城市天际线。</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                           <div class="bg-indigo-100 text-indigo-700 p-3 rounded-full"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.15 17.2a2.43 2.43 0 0 0 2.66 2.66L22 5"></path><path d="m5 22 1-1"></path><path d="M14 8v2h2"></path><path d="M17 5v2h2"></path><path d="M8 14v2h2"></path></svg></div>
+                            <div>
+                                <h4 class="font-bold text-slate-700">傍晚：圣玛利亚号观光船</h4>
+                                <p class="text-slate-600 text-sm">搭乘仿古帆船圣玛利亚号，在大阪湾巡游，享受海风拂面的惬意。</p>
+                            </div>
+                        </div>
+                        <img src="https://placehold.co/800x400/ccfbf1/0f766e?text=海游馆与天保山摩天轮" class="rounded-xl mt-4 w-full h-auto object-cover" alt="海游馆与天保山摩天轮">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Day 7 Panel -->
+            <div id="day-7" class="day-panel fade-in">
+                <div class="bg-white p-6 rounded-2xl shadow-lg">
+                    <h2 class="text-2xl font-bold text-slate-800 mb-1">Day 7 (周六): 告别大阪，满载而归</h2>
+                    <p class="text-slate-500 mb-6">根据航班时间灵活安排，进行最后的购物或文化体验。</p>
+                     <div class="space-y-4">
+                        <div class="flex items-start gap-4">
+                            <div class="bg-emerald-100 text-emerald-700 p-3 rounded-full"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7.5 4.27 9 5.15"></path><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"></path><path d="M3.27 6.96 12 12.01l8.73-5.05"></path><path d="M12 22.08V12"></path></svg></div>
+                            <div>
+                                <h4 class="font-bold text-slate-700">上午：自由选择</h4>
+                                <p class="text-slate-600 text-sm"><strong>购物冲刺：</strong>返回心斋桥或梅田，查漏补缺。<br><strong>文化体验：</strong>探访日本最古老的神社之一——住吉大社。</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                             <div class="bg-pink-100 text-pink-700 p-3 rounded-full"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 10V6a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v4"></path><path d="M12 10v12"></path><path d="M12 22a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"></path><path d="M4 10a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"></path><path d="M20 10a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2"></path></svg></div>
+                            <div>
+                                <h4 class="font-bold text-slate-700">中午：最后的美味</h4>
+                                <p class="text-slate-600 text-sm">品尝大阪特色的箱寿司，或热气腾腾的乌冬面火锅，为旅途画上圆满句号。</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div class="bg-gray-100 text-gray-700 p-3 rounded-full"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2z"></path><path d="M11 12h2"></path><path d="M15 12h2"></path><path d="M7 12h2"></path><path d="M9 5V3"></path><path d="M15 5V3"></path></svg></div>
+                            <div>
+                                <h4 class="font-bold text-slate-700">下午：前往机场</h4>
+                                <p class="text-slate-600 text-sm">从难波站乘坐南海电铁返回关西国际机场，结束愉快的旅程。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+        
+         <!-- Footer -->
+        <footer class="text-center mt-12">
+            <p class="text-slate-500 text-sm">祝您和家人在大阪度过一个充满欢笑和美食的美好假期！</p>
+        </footer>
+
+    </div>
+
+    <script>
+        const tabButtons = document.getElementById('tab-buttons');
+        const dayPanels = document.querySelectorAll('.day-panel');
+
+        tabButtons.addEventListener('click', (e) => {
+            if (e.target.tagName === 'BUTTON') {
+                const targetDay = e.target.dataset.day;
+
+                // Update button styles
+                tabButtons.querySelectorAll('button').forEach(btn => {
+                    btn.classList.remove('tab-active');
+                    btn.classList.add('tab-inactive');
+                });
+                e.target.classList.add('tab-active');
+                e.target.classList.remove('tab-inactive');
+                
+                // Show the correct panel
+                dayPanels.forEach(panel => {
+                    if (panel.id === `day-${targetDay}`) {
+                        panel.style.display = 'block';
+                        // A little trick to re-trigger animation
+                        panel.classList.remove('fade-in');
+                        void panel.offsetWidth; // Trigger reflow
+                        panel.classList.add('fade-in');
+                    } else {
+                        panel.style.display = 'none';
+                    }
+                });
+            }
+        });
+        
+        // Ensure the first panel is visible on load
+        document.getElementById('day-1').style.display = 'block';
+
+    </script>
+</body>
+</html>
