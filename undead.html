@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>暗黑2重制版：召唤死灵法师终极育成指南</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700&display=swap');
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background-color: #111827;
+            color: #d1d5db;
+        }
+        .card {
+            background-color: #1f2937;
+            border: 1px solid #374151;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+        }
+        .card-header {
+            color: #f9fafb;
+            font-size: 1.5rem;
+            font-weight: 700;
+            border-bottom: 2px solid #4b5563;
+            padding-bottom: 0.75rem;
+            margin-bottom: 1rem;
+        }
+        .skill-priority {
+            font-weight: bold;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.875rem;
+        }
+        .priority-max { background-color: #991b1b; color: #fecaca; }
+        .priority-one { background-color: #065f46; color: #a7f3d0; }
+        .item-tier {
+            font-weight: bold;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+        }
+        .tier-starter { background-color: #4b5563; color: #e5e7eb; }
+        .tier-mid { background-color: #059669; color: #d1fae5; }
+        .tier-endgame { background-color: #b91c1c; color: #fee2e2; }
+    </style>
+</head>
+<body class="p-4 sm:p-6 lg:p-8">
+    <div class="max-w-4xl mx-auto">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-red-500 tracking-wider">暗黑2重制版</h1>
+            <h2 class="text-2xl font-semibold text-gray-200 mt-2">召唤死灵法师终极育成指南</h2>
+            <p class="text-gray-400 mt-2">从开荒到毕业，你所需要知道的一切</p>
+        </header>
+
+        <!-- 核心玩法 -->
+        <div class="card">
+            <h3 class="card-header">核心玩法循环：亡灵大军的指挥官</h3>
+            <p class="mb-4">召唤死灵的强大之处不在于单打独斗，而在于运筹帷幄。掌握以下节奏，你的清场效率将无可匹敌：</p>
+            <ol class="list-decimal list-inside space-y-2 text-lg">
+                <li><strong class="text-sky-400">制造引子</strong>: 指挥你的佣兵，配合 <code class="bg-gray-700 p-1 rounded">伤害加深</code> 诅咒，快速击杀第一个怪物，制造出第一具尸体。</li>
+                <li><strong class="text-amber-400">引爆战场</strong>: 对怪物最密集的地方释放 <code class="bg-gray-700 p-1 rounded">伤害加深</code>，然后对着尸体连续使用 <code class="bg-gray-700 p-1 rounded">尸体爆炸</code>。</li>
+                <li><strong class="text-red-500">连锁反应</strong>: 享受一具尸体引爆全屏的快感，形成恐怖的连锁反应，直到战场归于沉寂。</li>
+            </ol>
+        </div>
+
+        <!-- 技能与属性 -->
+        <div class="grid md:grid-cols-2 gap-6">
+            <div class="card">
+                <h3 class="card-header">技能加点 (Skills)</h3>
+                <ul class="space-y-2">
+                    <li><span class="skill-priority priority-max">加满 (20点)</span> <strong class="text-white">骷髅复苏</strong> - 你的核心肉盾与输出。</li>
+                    <li><span class="skill-priority priority-max">加满 (20点)</span> <strong class="text-white">骷髅支配</strong> - 全面强化骷髅。</li>
+                    <li><span class="skill-priority priority-max">加满 (20点)</span> <strong class="text-white">尸体爆炸</strong> - 你的主清场技能。</li>
+                    <li><span class="skill-priority priority-one">1 点</span> <strong class="text-white">黏土石魔</strong> - 最佳控场肉盾，减速Boss神技。</li>
+                    <li><span class="skill-priority priority-one">1 点</span> <strong class="text-white">石魔支配</strong> - 强化石魔。</li>
+                    <li><span class="skill-priority priority-one">1 点</span> <strong class="text-white">召唤抵抗</strong> - 提升所有仆从的抗性。</li>
+                    <li><span class="skill-priority priority-one">1 点</span> <strong class="text-white">伤害加深</strong> - 核心诅咒，放大物理伤害。</li>
+                    <li><span class="skill-priority priority-one">1 点</span> <strong class="text-white">衰老</strong> - 控制精英和Boss的王牌技能。</li>
+                    <li><span class="text-gray-400">*剩余点数可投入复活怪物或增强石魔。*</span></li>
+                </ul>
+            </div>
+            <div class="card">
+                <h3 class="card-header">属性加点 (Attributes)</h3>
+                <ul class="space-y-4">
+                    <li>
+                        <strong class="text-white text-lg">力量 (Strength)</strong>
+                        <p class="text-gray-400">加到能穿上所有装备即可。最终目标是 **156点**，为了拿起毕业盾牌“精神”统治者大盾。</p>
+                    </li>
+                    <li>
+                        <strong class="text-white text-lg">敏捷 (Dexterity)</strong>
+                        <p class="text-gray-400">**完全不加。**</p>
+                    </li>
+                    <li>
+                        <strong class="text-white text-lg">体力 (Vitality)</strong>
+                        <p class="text-gray-400">**将剩余的所有点数全部投入这里。** 血量就是生命，是你生存的根本。</p>
+                    </li>
+                    <li>
+                        <strong class="text-white text-lg">精力 (Energy)</strong>
+                        <p class="text-gray-400">**完全不加。** 依靠佣兵的“眼光”光环，你的法力将取之不尽。</p>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 装备提升路线 -->
+        <div class="card">
+            <h3 class="card-header">装备提升路线图</h3>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead class="text-gray-300">
+                        <tr>
+                            <th class="p-2">部位</th>
+                            <th class="p-2">开荒期 (Starter)</th>
+                            <th class="p-2">进阶期 (Mid-Game)</th>
+                            <th class="p-2">毕业装 (End-Game)</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-700">
+                        <tr>
+                            <td class="p-2 font-bold">武器</td>
+                            <td class="p-2"><span class="item-tier tier-starter">精神(Spirit)</span> 水晶剑/阔剑</td>
+                            <td class="p-2">同左，变量更好的精神</td>
+                            <td class="p-2"><span class="item-tier tier-endgame">野兽(Beast)</span> / <span class="item-tier tier-endgame">橡树之心(HOTO)</span></td>
+                        </tr>
+                        <tr>
+                            <td class="p-2 font-bold">盾牌</td>
+                            <td class="p-2"><span class="item-tier tier-starter">押韵(Rhyme)</span> 2孔死灵盾</td>
+                            <td class="p-2"><span class="item-tier tier-mid">精神(Spirit)</span> 统治者大盾</td>
+                            <td class="p-2">变量更好的精神 / <span class="item-tier tier-endgame">侏儒</span></td>
+                        </tr>
+                         <tr>
+                            <td class="p-2 font-bold">头盔</td>
+                            <td class="p-2"><span class="item-tier tier-starter">知识(Lore)</span> 2孔头盔</td>
+                            <td class="p-2">亮金/暗金+技能头</td>
+                            <td class="p-2"><span class="item-tier tier-endgame">军帽(Shako)</span></td>
+                        </tr>
+                        <tr>
+                            <td class="p-2 font-bold">盔甲</td>
+                            <td class="p-2"><span class="item-tier tier-starter">隐密(Stealth)</span> 2孔轻甲</td>
+                            <td class="p-2">暗金 <span class="item-tier tier-mid">海蛇皮甲</span></td>
+                            <td class="p-2"><span class="item-tier tier-endgame">谜团(Enigma)</span> - **核心质变**</td>
+                        </tr>
+                        <tr>
+                            <td class="p-2 font-bold">手套/腰带/鞋</td>
+                            <td class="p-2" colspan="2">寻找带有 <span class="text-amber-400">抗性</span>、<span class="text-red-400">生命</span>、<span class="text-sky-400">MF值</span> 的亮金(黄色)装备</td>
+                            <td class="p-2"><span class="item-tier tier-endgame">法师之拳</span>, <span class="item-tier tier-endgame">蜘蛛之网</span>, <span class="item-tier tier-endgame">骨髓行走</span></td>
+                        </tr>
+                        <tr>
+                            <td class="p-2 font-bold">戒指/项链</td>
+                            <td class="p-2" colspan="2">寻找带有 <span class="text-amber-400">抗性</span>、<span class="text-violet-400">+技能</span>、<span class="text-sky-400">FCR</span> 的亮金/蓝色装备</td>
+                            <td class="p-2"><span class="item-tier tier-endgame">乔丹之石</span>, <span class="item-tier tier-endgame">马拉的万花筒</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- 佣兵装备 -->
+        <div class="card">
+            <h3 class="card-header">佣兵：你的“第二核心”</h3>
+            <p class="mb-4">佣兵不是辅助，他是你的主要单体输出和控场核心。请给予他最好的投资。</p>
+            <p class="mb-4"><strong class="text-white">最佳选择：</strong> <span class="text-emerald-400">噩梦难度第二幕 -> 防御型 (提供“神圣冰冻”光环)</span></p>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                     <thead class="text-gray-300">
+                        <tr>
+                            <th class="p-2">部位</th>
+                            <th class="p-2">核心装备</th>
+                            <th class="p-2">毕业选择</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-700">
+                        <tr>
+                            <td class="p-2 font-bold">武器</td>
+                            <td class="p-2"><span class="item-tier tier-mid">眼光(Insight)</span> - **第一优先，解决回蓝**</td>
+                            <td class="p-2"><span class="item-tier tier-endgame">无限(Infinity)</span> 无形精英底材</td>
+                        </tr>
+                        <tr>
+                            <td class="p-2 font-bold">盔甲</td>
+                            <td class="p-2"><span class="item-tier tier-mid">背信(Treachery)</span> - **性价比之王**</td>
+                            <td class="p-2"><span class="item-tier tier-endgame">刚毅(Fortitude)</span> 无形精英底材</td>
+                        </tr>
+                         <tr>
+                            <td class="p-2 font-bold">头盔</td>
+                            <td class="p-2">任何带 <span class="text-red-400">生命窃取</span> 的头盔</td>
+                            <td class="p-2"><span class="item-tier tier-endgame">安达利尔的面容</span> / <span class="item-tier tier-endgame">吸血鬼的凝视</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 游戏策略 -->
+         <div class="card">
+            <h3 class="card-header">游戏策略：效率最大化</h3>
+            <ul class="list-disc list-inside space-y-3">
+                <li>
+                    <strong class="text-white">主号定位 - 区域清道夫:</strong> 你的死灵法师最擅长安全、稳定地清理整个高密度区域。
+                    <p class="text-gray-400 pl-4"><strong>最佳Farm地点:</strong> 地狱第一幕 <span class="font-bold text-amber-300">地穴(The Pit)</span>, 噩梦/地狱 <span class="font-bold text-amber-300">秘密牛场</span>。</p>
+                </li>
+                <li>
+                    <strong class="text-white">“法师养家”策略:</strong> 强烈建议培养一个专门MF的巫师（法师）小号。
+                    <p class="text-gray-400 pl-4">利用法师的 <code class="bg-gray-700 p-1 rounded">传送</code> 技能，高效击杀 <span class="font-bold text-red-400">地狱墨菲斯托</span> 等Boss，为你的死灵主号快速积累核心装备和符文。这是整个游戏最高效的玩法策略。</p>
+                </li>
+            </ul>
+        </div>
+        
+        <footer class="text-center text-gray-500 mt-8 pb-4">
+            <p>愿你的亡灵大军所向披靡。</p>
+        </footer>
+    </div>
+</body>
+</html>
