@@ -446,20 +446,31 @@
                     });
 
                     const result = await response.json();
+                    console.log('N8N响应:', result);
 
                     if (result.success) {
+                        // 兼容N8N当前响应格式：处理未解析的模板变量
+                        const fileName = (result.fileName && !result.fileName.includes('={{')) ? 
+                            result.fileName : formData.fileName;
+                        const baseUrl = config.pagesUrl || 'https://pkm365.github.io/pages';
+                        const previewUrl = `${baseUrl}/${fileName}`;
+                        const indexUrl = baseUrl;
+                        const githubUrl = `https://github.com/${config.githubOwner}/${config.githubRepo}/blob/main/${fileName}`;
+                        const timestamp = (result.timestamp && !result.timestamp.includes('={{')) ? 
+                            result.timestamp : new Date().toISOString();
+                        
                         showStatus('success', `
                             <strong>🎉 发布成功！</strong><br>
                             <div class="mt-2 space-y-1">
-                                <div>📁 文件: ${result.details.fileName}</div>
-                                <div>📝 提交: ${result.details.commitMessage}</div>
+                                <div>📁 文件: ${fileName}</div>
+                                <div>📝 发布时间: ${new Date(timestamp).toLocaleString('zh-CN')}</div>
                                 <div class="mt-3">
-                                    <a href="${result.details.previewUrl}" target="_blank" class="text-blue-600 hover:underline">🔗 查看页面</a> |
-                                    <a href="${result.details.indexUrl}" target="_blank" class="text-blue-600 hover:underline">🏠 返回首页</a> |
-                                    <a href="${result.details.githubUrl}" target="_blank" class="text-blue-600 hover:underline">📋 GitHub源码</a>
+                                    <a href="${previewUrl}" target="_blank" class="text-blue-600 hover:underline">🔗 查看页面</a> |
+                                    <a href="${indexUrl}" target="_blank" class="text-blue-600 hover:underline">🏠 返回首页</a> |
+                                    <a href="${githubUrl}" target="_blank" class="text-blue-600 hover:underline">📋 GitHub源码</a>
                                 </div>
                             </div>
-                            <div class="mt-2 text-sm opacity-75">${result.note}</div>
+                            <div class="mt-2 text-sm opacity-75">内容将在1-2分钟内可用</div>
                         `);
                         
                         // 保存成功的配置

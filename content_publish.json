@@ -1,0 +1,164 @@
+{
+  "name": "content-publish",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "content-publisher",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "8287fad0-8c09-4de8-87f2-4b7181cbcf70",
+      "name": "Webhook",
+      "webhookId": "77661673-6093-48ec-b07b-7e1d8e56c2e9"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get input data - handle different formats\n  let data = $input.first().json;\n\n  // If data comes from webhook body, it might be in body property\n  if (data.body) {\n    try {\n      data = JSON.parse(data.body);\n    } catch (e) {\n      // If body is not JSON, use it as is\n      data = data.body;\n    }\n  }\n\n  // Extract fields with fallbacks\n  const htmlContent = data.htmlContent || data.html || '';\n  const fileName = data.fileName || data.filename || 'default.html';\n\n  // Validate we have content\n  if (!htmlContent) {\n    throw new Error('No HTML content provided');\n  }\n\n  // Convert to base64\n  const base64Content = Buffer.from(htmlContent, 'utf8').toString('base64');\n\n  return {\n    fileName: fileName,\n    base64Content: base64Content,\n    commitMessage: 'Add new page via N8N - ' + new Date().toISOString()\n  };"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        220,
+        0
+      ],
+      "id": "249ad2f3-ad21-4b9a-919a-9fd050e11636",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "owner": {
+          "__rl": true,
+          "value": "https://github.com/pkm365",
+          "mode": "url"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "pages",
+          "mode": "list",
+          "cachedResultName": "pages",
+          "cachedResultUrl": "https://github.com/pkm365/pages"
+        },
+        "filePath": "={{ $('Code').first().json.fileName }}",
+        "fileContent": "={{ $('Code').first().json.base64Content }}",
+        "commitMessage": "={{ $('Code').first().json.commitMessage }}"
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        440,
+        0
+      ],
+      "id": "d49bd234-100d-4128-8590-722860a9a1f7",
+      "name": "Create a file",
+      "webhookId": "0cd11d8c-ced4-4462-8344-b999180eedd5",
+      "credentials": {
+        "githubApi": {
+          "id": "qwBq0YyB9G0TceSa",
+          "name": "GitHub account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "  {\n    \"success\": true,\n    \"message\": \"Content published successfully!\",\n    \"fileName\": \"={{ $('Code').first().json.fileName }}\",\n    \"timestamp\": \"={{ new Date().toISOString() }}\"\n  }",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        660,
+        0
+      ],
+      "id": "7b86b774-9191-474e-b52a-0010755809f7",
+      "name": "Respond to Webhook"
+    }
+  ],
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "connection": "upgrade",
+            "host": "n8n.pkm365.com",
+            "x-real-ip": "162.158.187.146",
+            "x-forwarded-for": "111.243.125.204, 162.158.187.146",
+            "x-forwarded-proto": "https",
+            "content-length": "107",
+            "accept-encoding": "gzip, br",
+            "user-agent": "curl/8.5.0",
+            "content-type": "application/json",
+            "accept": "*/*",
+            "cf-ray": "96442bfbdeef262b-LAX",
+            "cdn-loop": "cloudflare; loops=1",
+            "cf-connecting-ip": "111.243.125.204",
+            "cf-ipcountry": "TW",
+            "cf-visitor": "{\"scheme\":\"https\"}"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "htmlContent": "<html><body><h1>Test Page2</h1></body></html>",
+            "fileName": "test.html"
+          },
+          "webhookUrl": "https://n8n.pkm365.com/webhook/content-publisher",
+          "executionMode": "production"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Create a file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a file": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "816bbd5f-653a-42d4-97f8-9e26b32e1b81",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "bf73d36195f3d7b40b6ea5b3383d3351580b5d4469e2747524eb6335f7e8f9d3"
+  },
+  "id": "oavhCblC0rZDkn7x",
+  "tags": []
+}

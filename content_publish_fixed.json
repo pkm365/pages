@@ -1,0 +1,194 @@
+{
+  "name": "content-publish",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "content-publisher",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "8287fad0-8c09-4de8-87f2-4b7181cbcf70",
+      "name": "Webhook",
+      "webhookId": "77661673-6093-48ec-b07b-7e1d8e56c2e9"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get input data - handle different formats\n  let data = $input.first().json;\n\n  // If data comes from webhook body, it might be in body property\n  if (data.body) {\n    try {\n      data = JSON.parse(data.body);\n    } catch (e) {\n      // If body is not JSON, use it as is\n      data = data.body;\n    }\n  }\n\n  // Extract fields with fallbacks\n  const htmlContent = data.htmlContent || data.html || '';\n  const fileName = data.fileName || data.filename || 'default.html';\n\n  // Validate we have content\n  if (!htmlContent) {\n    throw new Error('No HTML content provided');\n  }\n\n  // Convert to base64\n  const base64Content = Buffer.from(htmlContent, 'utf8').toString('base64');\n\n  return {\n    fileName: fileName,\n    base64Content: base64Content,\n    commitMessage: 'Add new page via N8N - ' + new Date().toISOString()\n  };"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        220,
+        0
+      ],
+      "id": "249ad2f3-ad21-4b9a-919a-9fd050e11636",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "owner": {
+          "__rl": true,
+          "value": "https://github.com/pkm365",
+          "mode": "url"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "pages",
+          "mode": "list",
+          "cachedResultName": "pages",
+          "cachedResultUrl": "https://github.com/pkm365/pages"
+        },
+        "filePath": "={{ $('Code').first().json.fileName }}",
+        "fileContent": "={{ $('Code').first().json.base64Content }}",
+        "commitMessage": "={{ $('Code').first().json.commitMessage }}"
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        440,
+        0
+      ],
+      "id": "d49bd234-100d-4128-8590-722860a9a1f7",
+      "name": "Create a file",
+      "webhookId": "0cd11d8c-ced4-4462-8344-b999180eedd5",
+      "credentials": {
+        "githubApi": {
+          "id": "qwBq0YyB9G0TceSa",
+          "name": "GitHub account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Update navigation by triggering the Python script\n// This creates a commit to run generate_nav.py via GitHub Actions\n\nconst fileName = $('Code').first().json.fileName;\nconst timestamp = new Date().toISOString();\n\n// Create a dummy commit to trigger navigation update\nconst updateScript = `# Navigation Update Trigger\\n# File: ${fileName}\\n# Time: ${timestamp}\\n# This file triggers generate_nav.py execution`;\n\nreturn {\n  fileName: fileName,\n  timestamp: timestamp,\n  updateTrigger: Buffer.from(updateScript).toString('base64'),\n  triggerFile: '.nav-update-trigger'\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        660,
+        0
+      ],
+      "id": "nav-update-code",
+      "name": "Generate Nav Update"
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "edit",
+        "owner": {
+          "__rl": true,
+          "value": "https://github.com/pkm365",
+          "mode": "url"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "pages",
+          "mode": "list",
+          "cachedResultName": "pages",
+          "cachedResultUrl": "https://github.com/pkm365/pages"
+        },
+        "filePath": "={{ $('Generate Nav Update').first().json.triggerFile }}",
+        "fileContent": "={{ $('Generate Nav Update').first().json.updateTrigger }}",
+        "commitMessage": "Update navigation for new file: ={{ $('Generate Nav Update').first().json.fileName }}"
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        880,
+        0
+      ],
+      "id": "trigger-nav-update",
+      "name": "Trigger Nav Update",
+      "credentials": {
+        "githubApi": {
+          "id": "qwBq0YyB9G0TceSa",
+          "name": "GitHub account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n    \"success\": true,\n    \"message\": \"Content published successfully!\",\n    \"fileName\": \"={{ $('Generate Nav Update').first().json.fileName }}\",\n    \"timestamp\": \"={{ $('Generate Nav Update').first().json.timestamp }}\",\n    \"details\": {\n      \"fileName\": \"={{ $('Generate Nav Update').first().json.fileName }}\",\n      \"commitMessage\": \"={{ $('Code').first().json.commitMessage }}\",\n      \"previewUrl\": \"https://pkm365.github.io/pages/={{ $('Generate Nav Update').first().json.fileName }}\",\n      \"indexUrl\": \"https://pkm365.github.io/pages/\",\n      \"githubUrl\": \"https://github.com/pkm365/pages/blob/main/={{ $('Generate Nav Update').first().json.fileName }}\"\n    },\n    \"note\": \"Content published and navigation updated automatically\"\n  }",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        1100,
+        0
+      ],
+      "id": "7b86b774-9191-474e-b52a-0010755809f7",
+      "name": "Respond to Webhook"
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Create a file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a file": {
+      "main": [
+        [
+          {
+            "node": "Generate Nav Update",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Nav Update": {
+      "main": [
+        [
+          {
+            "node": "Trigger Nav Update",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Trigger Nav Update": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  }
+}
