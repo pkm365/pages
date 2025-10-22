@@ -6,6 +6,13 @@
   "maxFileSize": 1024,
   "maxRequestsPerHour": 50,
   "version": "2.0-mvp",
+  "paths": {
+    "content": "content",
+    "assets": "assets",
+    "scripts": "scripts",
+    "workflows": "workflows",
+    "docs": "docs"
+  },
   "features": {
     "securityValidation": false,
     "rateLimiting": false,

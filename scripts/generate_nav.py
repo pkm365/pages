@@ -5,8 +5,12 @@ import html
 
 # --- Configuration ---
 
-# Root directory is the script's directory
-ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+# Root directory is the project root (parent of scripts/ directory)
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+ROOT_DIR = os.path.dirname(SCRIPT_DIR)
+
+# Content directory where HTML files are stored
+CONTENT_DIR = os.path.join(ROOT_DIR, "content")
 
 # Output file for the navigation page
 OUTPUT_FILE = os.path.join(ROOT_DIR, "index.html")
@@ -58,20 +62,20 @@ def extract_title(file_path: str) -> str:
 def generate_navigation_page():
     """Scans for HTML files, categorizes them, and generates a new navigation page."""
     print("Starting navigation page generation...")
-    
+
     # 1. Collect and categorize all HTML files
     categorized_files = {category: [] for category in CATEGORIES}
     categorized_files[UNCATEGORIZED_LABEL] = []
 
-    for filename in os.listdir(ROOT_DIR):
+    for filename in os.listdir(CONTENT_DIR):
         if filename.endswith('.html') and filename not in EXCLUDE_FILES:
-            file_path = os.path.join(ROOT_DIR, filename)
+            file_path = os.path.join(CONTENT_DIR, filename)
             mtime = os.path.getmtime(file_path)
             title = extract_title(file_path)
             category = get_category(title)
-            
+
             file_info = {
-                'path': filename,
+                'path': f"content/{filename}",  # Include content/ prefix for proper links
                 'title': title,
                 'mtime': mtime,
                 'date': datetime.datetime.fromtimestamp(mtime).strftime('%Y-%m-%d')
