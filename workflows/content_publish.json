@@ -46,7 +46,7 @@
           "cachedResultName": "pages",
           "cachedResultUrl": "https://github.com/pkm365/pages"
         },
-        "filePath": "={{ $('Code').first().json.fileName }}",
+        "filePath": "=content/{{ $('Code').first().json.fileName }}",
         "fileContent": "={{ $('Code').first().json.base64Content }}",
         "commitMessage": "={{ $('Code').first().json.commitMessage }}"
       },
