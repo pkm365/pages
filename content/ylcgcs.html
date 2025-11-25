@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>榆林创新院成果超市可视化看板</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .custom-tooltip {
+            background: white;
+            padding: 8px 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-slate-50 p-4 md:p-8 font-sans text-slate-800">
+    <div class="max-w-6xl mx-auto">
+        <header class="mb-8">
+            <h1 class="text-2xl md:text-3xl font-bold text-slate-900 flex items-center gap-3">
+                <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center text-white">
+                    <i class="fas fa-store w-6 h-6"></i>
+                </div>
+                榆林创新院成果超市可视化看板
+            </h1>
+            <p class="mt-2 text-slate-500 ml-14">
+                基于《线上及线下成果超市实施方案（讨论稿）V2》生成的交互式分析
+            </p>
+        </header>
+
+        <!-- Tab Navigation -->
+        <div class="flex flex-wrap gap-2 mb-6 bg-white p-1 rounded-lg border border-slate-200 inline-flex shadow-sm">
+            <button onclick="switchTab('overview')" class="tab-btn flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all bg-blue-600 text-white shadow" data-tab="overview">
+                <i class="fas fa-th-large w-4 h-4"></i>
+                核心架构
+            </button>
+            <button onclick="switchTab('timeline')" class="tab-btn flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all text-slate-600 hover:bg-slate-100" data-tab="timeline">
+                <i class="fas fa-calendar w-4 h-4"></i>
+                实施进度
+            </button>
+            <button onclick="switchTab('budget')" class="tab-btn flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all text-slate-600 hover:bg-slate-100" data-tab="budget">
+                <i class="fas fa-coins w-4 h-4"></i>
+                资金与空间
+            </button>
+            <button onclick="switchTab('kpi')" class="tab-btn flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all text-slate-600 hover:bg-slate-100" data-tab="kpi">
+                <i class="fas fa-bullseye w-4 h-4"></i>
+                预期目标
+            </button>
+        </div>
+
+        <!-- Content Area -->
+        <div class="transition-all duration-300 ease-in-out">
+            <!-- Overview Tab -->
+            <div id="overview" class="tab-content active">
+                <div class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="bg-blue-50 p-4 rounded-lg border border-blue-100 flex items-center gap-4">
+                            <div class="bg-blue-100 p-3 rounded-full text-blue-600">
+                                <i class="fas fa-globe"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-blue-900">核心背景</h4>
+                                <p class="text-sm text-blue-700">借鉴六盘水、深圳、天津经验，解决"两张皮"问题</p>
+                            </div>
+                        </div>
+                        <div class="bg-indigo-50 p-4 rounded-lg border border-indigo-100 flex items-center gap-4">
+                            <div class="bg-indigo-100 p-3 rounded-full text-indigo-600">
+                                <i class="fas fa-bullseye"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-indigo-900">建设目标</h4>
+                                <p class="text-sm text-indigo-700">打造集展示、交易、服务于一体的转化平台</p>
+                            </div>
+                        </div>
+                        <div class="bg-emerald-50 p-4 rounded-lg border border-emerald-100 flex items-center gap-4">
+                            <div class="bg-emerald-100 p-3 rounded-full text-emerald-600">
+                                <i class="fas fa-bolt"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-emerald-900">主要模式</h4>
+                                <p class="text-sm text-emerald-700">线上核心 + 线下辅助 = 双轮驱动</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+                        <div class="flex items-center gap-2 mb-4 border-b border-slate-100 pb-3">
+                            <i class="fas fa-th-large w-5 h-5 text-blue-600"></i>
+                            <h3 class="font-bold text-slate-800 text-lg">双轮驱动运营架构</h3>
+                        </div>
+                        <div class="flex flex-col md:flex-row gap-8 items-center justify-center p-4">
+                            <!-- Online Side -->
+                            <div class="flex-1 w-full border-2 border-dashed border-blue-200 rounded-xl p-4 bg-blue-50/50">
+                                <div class="flex items-center justify-center mb-4 gap-2 text-blue-700 font-bold text-lg">
+                                    <i class="fas fa-globe w-6 h-6"></i> 线上成果超市
+                                </div>
+                                <div class="grid grid-cols-2 gap-2 text-sm">
+                                    <div class="bg-white p-2 rounded shadow-sm text-center">成果展示与分类</div>
+                                    <div class="bg-white p-2 rounded shadow-sm text-center">技术需求发布</div>
+                                    <div class="bg-white p-2 rounded shadow-sm text-center">智能匹配推荐</div>
+                                    <div class="bg-white p-2 rounded shadow-sm text-center">在线交易服务</div>
+                                </div>
+                                <div class="mt-3 text-xs text-center text-slate-500">数据驱动：浏览、咨询、交易热度指数</div>
+                            </div>
+
+                            <!-- Connector -->
+                            <div class="hidden md:flex flex-col items-center justify-center text-slate-400">
+                                <div class="font-bold text-xs mb-1">数据互通</div>
+                                <i class="fas fa-arrow-right w-8 h-8"></i>
+                                <div class="font-bold text-xs mt-1">业务协同</div>
+                            </div>
+
+                            <!-- Offline Side -->
+                            <div class="flex-1 w-full border-2 border-dashed border-emerald-200 rounded-xl p-4 bg-emerald-50/50">
+                                <div class="flex items-center justify-center mb-4 gap-2 text-emerald-700 font-bold text-lg">
+                                    <i class="fas fa-store w-6 h-6"></i> 线下实体中心
+                                </div>
+                                <div class="grid grid-cols-2 gap-2 text-sm">
+                                    <div class="bg-white p-2 rounded shadow-sm text-center">300㎡ 实体展示</div>
+                                    <div class="bg-white p-2 rounded shadow-sm text-center">路演与体验</div>
+                                    <div class="bg-white p-2 rounded shadow-sm text-center">商务洽谈</div>
+                                    <div class="bg-white p-2 rounded shadow-sm text-center">服务支持 (法律/金融)</div>
+                                </div>
+                                <div class="mt-3 text-xs text-center text-slate-500">实体支撑：每周5天开放 + 主题活动</div>
+                            </div>
+                        </div>
+
+                        <div class="mt-6 border-t pt-4">
+                             <h4 class="text-sm font-bold text-slate-600 mb-2 text-center">转化出口与成效</h4>
+                             <div class="flex justify-center gap-4 text-sm">
+                                <span class="px-3 py-1 bg-slate-100 rounded-full text-slate-600">技术许可</span>
+                                <span class="px-3 py-1 bg-slate-100 rounded-full text-slate-600">作价入股</span>
+                                <span class="px-3 py-1 bg-slate-100 rounded-full text-slate-600">联合开发</span>
+                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Timeline Tab -->
+            <div id="timeline" class="tab-content">
+                <div class="space-y-6">
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+                        <div class="flex items-center gap-2 mb-4 border-b border-slate-100 pb-3">
+                            <i class="fas fa-calendar w-5 h-5 text-blue-600"></i>
+                            <h3 class="font-bold text-slate-800 text-lg">项目实施时间表</h3>
+                        </div>
+                        <div class="relative border-l-4 border-blue-100 ml-3 space-y-8 py-4">
+                            <div class="ml-6 relative">
+                                <div class="absolute -left-[34px] bg-blue-500 h-4 w-4 rounded-full border-4 border-white shadow-sm"></div>
+                                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-2">
+                                   <h4 class="text-lg font-bold text-slate-800">筹建期</h4>
+                                   <span class="text-sm font-mono text-blue-600 font-semibold bg-blue-50 px-2 py-1 rounded">2025.09-11</span>
+                                </div>
+                                <div class="bg-slate-50 p-4 rounded-lg border border-slate-100">
+                                  <p class="text-slate-600">团队组建、方案细化、装修、开发</p>
+                                </div>
+                            </div>
+                            <div class="ml-6 relative">
+                                <div class="absolute -left-[34px] bg-blue-500 h-4 w-4 rounded-full border-4 border-white shadow-sm"></div>
+                                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-2">
+                                   <h4 class="text-lg font-bold text-slate-800">试运营</h4>
+                                   <span class="text-sm font-mono text-blue-600 font-semibold bg-blue-50 px-2 py-1 rounded">2025.12</span>
+                                </div>
+                                <div class="bg-slate-50 p-4 rounded-lg border border-slate-100">
+                                  <p class="text-slate-600">双线试运行、首场发布会</p>
+                                </div>
+                            </div>
+                            <div class="ml-6 relative">
+                                <div class="absolute -left-[34px] bg-blue-500 h-4 w-4 rounded-full border-4 border-white shadow-sm"></div>
+                                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-2">
+                                   <h4 class="text-lg font-bold text-slate-800">正式运营</h4>
+                                   <span class="text-sm font-mono text-blue-600 font-semibold bg-blue-50 px-2 py-1 rounded">2026.01起</span>
+                                </div>
+                                <div class="bg-slate-50 p-4 rounded-lg border border-slate-100">
+                                  <p class="text-slate-600">全面开放、常态化运营、季度评估</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                       <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+                         <div class="flex items-center gap-2 mb-4 border-b border-slate-100 pb-3">
+                             <i class="fas fa-briefcase w-5 h-5 text-blue-600"></i>
+                             <h3 class="font-bold text-slate-800 text-lg">保障措施</h3>
+                         </div>
+                         <ul class="space-y-2 text-sm text-slate-600">
+                           <li class="flex gap-2"><div class="min-w-1.5 h-1.5 rounded-full bg-blue-500 mt-2"></div>组织：成立研究院领导小组，统筹协调。</li>
+                           <li class="flex gap-2"><div class="min-w-1.5 h-1.5 rounded-full bg-blue-500 mt-2"></div>人才：市场化招聘运营团队 + 内部培训。</li>
+                           <li class="flex gap-2"><div class="min-w-1.5 h-1.5 rounded-full bg-blue-500 mt-2"></div>政策：争取政府资金与人才政策倾斜。</li>
+                           <li class="flex gap-2"><div class="min-w-1.5 h-1.5 rounded-full bg-blue-500 mt-2"></div>激励：成效与绩效挂钩，调动积极性。</li>
+                         </ul>
+                       </div>
+                       <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+                         <div class="flex items-center gap-2 mb-4 border-b border-slate-100 pb-3">
+                             <i class="fas fa-users w-5 h-5 text-blue-600"></i>
+                             <h3 class="font-bold text-slate-800 text-lg">运营活动规划</h3>
+                         </div>
+                         <div class="space-y-3">
+                            <div class="flex items-center justify-between border-b pb-2">
+                              <span class="text-sm font-medium">日常运营</span>
+                              <span class="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded">每周5天开放</span>
+                            </div>
+                            <div class="flex items-center justify-between border-b pb-2">
+                              <span class="text-sm font-medium">定期活动</span>
+                              <span class="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded">主题技术周/沙龙</span>
+                            </div>
+                            <div class="flex items-center justify-between border-b pb-2">
+                              <span class="text-sm font-medium">大型活动</span>
+                              <span class="text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded">季度发布会</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                              <span class="text-sm font-medium">特别策划</span>
+                              <span class="text-xs bg-orange-100 text-orange-700 px-2 py-0.5 rounded">成果转化双11</span>
+                            </div>
+                         </div>
+                       </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Budget Tab -->
+            <div id="budget" class="tab-content">
+                <div class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+                            <div class="flex items-center gap-2 mb-4 border-b border-slate-100 pb-3">
+                                <i class="fas fa-coins w-5 h-5 text-blue-600"></i>
+                                <h3 class="font-bold text-slate-800 text-lg">初期投资预算 (150万元)</h3>
+                            </div>
+                            <div class="h-64">
+                                <canvas id="budgetInitialChart"></canvas>
+                            </div>
+                            <p class="text-xs text-slate-500 text-center mt-2">资金来源：政府专项资金 + 研究院自筹</p>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+                            <div class="flex items-center gap-2 mb-4 border-b border-slate-100 pb-3">
+                                <i class="fas fa-coins w-5 h-5 text-blue-600"></i>
+                                <h3 class="font-bold text-slate-800 text-lg">年度运营预算 (50万元/年)</h3>
+                            </div>
+                            <div class="h-64">
+                                <canvas id="budgetOperatingChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+                        <div class="flex items-center gap-2 mb-4 border-b border-slate-100 pb-3">
+                            <i class="fas fa-th-large w-5 h-5 text-blue-600"></i>
+                            <h3 class="font-bold text-slate-800 text-lg">线下空间规划 (300㎡)</h3>
+                        </div>
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            <div class="lg:col-span-1 h-64">
+                                 <canvas id="spaceAllocationChart"></canvas>
+                            </div>
+                            <div class="lg:col-span-2 grid grid-cols-2 gap-4">
+                                 <!-- Simple visual map representation -->
+                                 <div class="col-span-2 bg-slate-50 border border-slate-200 rounded-lg p-4 relative h-64">
+                                    <div class="absolute top-2 left-2 text-xs font-bold text-slate-400">平面布局示意</div>
+                                    <div class="grid grid-cols-4 grid-rows-3 gap-2 h-full pt-4">
+                                        <!-- Entrance -->
+                                        <div class="col-span-1 row-span-3 bg-blue-100 rounded flex items-center justify-center text-center text-xs font-bold text-blue-800 p-2">
+                                            入口/形象墙<br/>动线起点
+                                        </div>
+                                        <!-- Roadshow - Largest -->
+                                        <div class="col-span-2 row-span-2 bg-indigo-100 rounded flex items-center justify-center text-xs font-bold text-indigo-800">
+                                            路演与体验区 (100㎡)<br/>发布会/互动装置
+                                        </div>
+                                        <!-- Showcase -->
+                                        <div class="col-span-1 row-span-1 bg-sky-100 rounded flex items-center justify-center text-xs font-bold text-sky-800">
+                                            成果展示 (50㎡)
+                                        </div>
+                                        <!-- Needs -->
+                                        <div class="col-span-1 row-span-1 bg-cyan-100 rounded flex items-center justify-center text-xs font-bold text-cyan-800">
+                                            需求展示 (50㎡)
+                                        </div>
+                                        <!-- Talk & Service -->
+                                        <div class="col-span-2 row-span-1 bg-teal-50 rounded flex gap-2 p-1">
+                                            <div class="flex-1 bg-teal-100 rounded flex items-center justify-center text-xs font-bold text-teal-800">商务洽谈 (50㎡)</div>
+                                            <div class="flex-1 bg-emerald-100 rounded flex items-center justify-center text-xs font-bold text-emerald-800">服务支持 (50㎡)</div>
+                                        </div>
+                                        <!-- Rest of space -->
+                                        <div class="col-span-1 row-span-1 bg-slate-100 rounded flex items-center justify-center text-xs text-slate-400">
+                                           走廊/公共
+                                        </div>
+                                    </div>
+                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- KPI Tab -->
+            <div id="kpi" class="tab-content">
+                <div class="space-y-6">
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+                        <div class="flex items-center gap-2 mb-4 border-b border-slate-100 pb-3">
+                            <i class="fas fa-bullseye w-5 h-5 text-blue-600"></i>
+                            <h3 class="font-bold text-slate-800 text-lg">预期成效指标对比 (近期 vs 远期)</h3>
+                        </div>
+                        <div class="h-80">
+                            <canvas id="kpiChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-6 text-white shadow-md">
+                            <h3 class="text-lg font-bold opacity-90 mb-4">近期合同金额目标</h3>
+                            <div class="flex items-end gap-2">
+                                <span class="text-5xl font-bold">2000</span>
+                                <span class="text-xl mb-1 opacity-80">万元</span>
+                            </div>
+                            <div class="mt-4 pt-4 border-t border-blue-400/30 text-sm opacity-80">
+                                重点培育 2-3 个产业化项目
+                            </div>
+                        </div>
+                        <div class="bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl p-6 text-white shadow-md">
+                            <h3 class="text-lg font-bold opacity-90 mb-4">远期合同金额目标</h3>
+                            <div class="flex items-end gap-2">
+                                <span class="text-5xl font-bold">5000</span>
+                                <span class="text-xl mb-1 opacity-80">万元</span>
+                            </div>
+                            <div class="mt-4 pt-4 border-t border-emerald-400/30 text-sm opacity-80">
+                                重点培育 10 个产业化项目
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data constants
+        const budgetInitial = [
+            { name: '线上平台开发', value: 50, color: '#3B82F6' },
+            { name: '线下场地装修', value: 40, color: '#10B981' },
+            { name: '设备采购', value: 50, color: '#F59E0B' },
+            { name: '人员培训', value: 10, color: '#6366F1' },
+        ];
+
+        const budgetOperating = [
+            { name: '市场推广', value: 20, color: '#EC4899' },
+            { name: '人员费用(2人)', value: 15, color: '#8B5CF6' },
+            { name: '专家咨询', value: 10, color: '#F97316' },
+            { name: '线上维护', value: 5, color: '#64748B' },
+        ];
+
+        const spaceAllocation = [
+            { name: '路演与体验区', size: 100, fill: '#8884d8' },
+            { name: '成果展示区', size: 50, fill: '#83a6ed' },
+            { name: '技术需求区', size: 50, fill: '#8dd1e1' },
+            { name: '商务洽谈区', size: 50, fill: '#82ca9d' },
+            { name: '服务支持区', size: 50, fill: '#a4de6c' },
+        ];
+
+        const kpiData = {
+            labels: ['上线成果(项)', '服务需求(项)', '对接活动(场)', '促成交易(项)'],
+            short: [100, 50, 10, 5],
+            long: [300, 100, 100, 50]
+        };
+
+        // Tab switching function
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Remove active styling from all buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('bg-blue-600', 'text-white', 'shadow');
+                btn.classList.add('text-slate-600', 'hover:bg-slate-100');
+            });
+
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+
+            // Add active styling to selected button
+            const activeBtn = document.querySelector(`[data-tab="${tabName}"]`);
+            activeBtn.classList.remove('text-slate-600', 'hover:bg-slate-100');
+            activeBtn.classList.add('bg-blue-600', 'text-white', 'shadow');
+
+            // Initialize charts when budget or kpi tabs are opened
+            if (tabName === 'budget') {
+                setTimeout(() => initBudgetCharts(), 100);
+            } else if (tabName === 'kpi') {
+                setTimeout(() => initKpiChart(), 100);
+            }
+        }
+
+        // Chart initialization functions
+        function initBudgetCharts() {
+            // Initial Budget Chart
+            const budgetInitialCtx = document.getElementById('budgetInitialChart');
+            if (budgetInitialCtx && !budgetInitialCtx.chart) {
+                budgetInitialCtx.chart = new Chart(budgetInitialCtx, {
+                    type: 'pie',
+                    data: {
+                        labels: budgetInitial.map(item => item.name),
+                        datasets: [{
+                            data: budgetInitial.map(item => item.value),
+                            backgroundColor: budgetInitial.map(item => item.color),
+                            borderWidth: 2,
+                            borderColor: '#fff'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom'
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return context.label + ': ' + context.parsed + ' 万元';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Operating Budget Chart
+            const budgetOperatingCtx = document.getElementById('budgetOperatingChart');
+            if (budgetOperatingCtx && !budgetOperatingCtx.chart) {
+                budgetOperatingCtx.chart = new Chart(budgetOperatingCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: budgetOperating.map(item => item.name),
+                        datasets: [{
+                            data: budgetOperating.map(item => item.value),
+                            backgroundColor: budgetOperating.map(item => item.color),
+                            borderRadius: 4
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return context.parsed.x + ' 万元';
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: '万元'
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Space Allocation Chart
+            const spaceAllocationCtx = document.getElementById('spaceAllocationChart');
+            if (spaceAllocationCtx && !spaceAllocationCtx.chart) {
+                spaceAllocationCtx.chart = new Chart(spaceAllocationCtx, {
+                    type: 'pie',
+                    data: {
+                        labels: spaceAllocation.map(item => item.name),
+                        datasets: [{
+                            data: spaceAllocation.map(item => item.size),
+                            backgroundColor: spaceAllocation.map(item => item.fill),
+                            borderWidth: 2,
+                            borderColor: '#fff'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                        const percentage = ((context.parsed / total) * 100).toFixed(0);
+                                        return context.label + ': ' + context.parsed + '㎡ (' + percentage + '%)';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        function initKpiChart() {
+            const kpiCtx = document.getElementById('kpiChart');
+            if (kpiCtx && !kpiCtx.chart) {
+                kpiCtx.chart = new Chart(kpiCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: kpiData.labels,
+                        datasets: [
+                            {
+                                label: '近期目标 (2026)',
+                                data: kpiData.short,
+                                backgroundColor: '#3B82F6',
+                                borderRadius: 4
+                            },
+                            {
+                                label: '中远期目标',
+                                data: kpiData.long,
+                                backgroundColor: '#10B981',
+                                borderRadius: 4
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'top'
+                            },
+                            tooltip: {
+                                mode: 'index',
+                                intersect: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            }
+        }
+    </script>
+</body>
+</html>
