@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agentic Coding 智能体开发架构蓝图</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f0f4f8;
+        }
+
+        .layer-card {
+            transition: all 0.3s ease;
+        }
+
+        .layer-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+
+        .connector-line {
+            width: 4px;
+            height: 40px;
+            background: #cbd5e1;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .connector-line::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: -6px;
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-top: 10px solid #cbd5e1;
+        }
+
+        .phase-badge {
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .item-chip {
+            background: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            transition: background 0.2s;
+        }
+
+        .item-chip:hover {
+            background: rgba(255, 255, 255, 0.9);
+        }
+    </style>
+</head>
+
+<body class="text-slate-800 pb-20">
+
+    <!-- Header -->
+    <header class="bg-slate-900 text-white py-12 text-center shadow-lg relative overflow-hidden">
+        <div
+            class="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/circuit-board.png')]">
+        </div>
+        <div class="container mx-auto px-4 relative z-10">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">Agentic Coding <span class="text-blue-400">智能体开发</span></h1>
+            <p class="text-xl text-slate-300 max-w-2xl mx-auto">软件与 AI 合力升级的完整架构蓝图</p>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-10 max-w-5xl">
+
+        <!-- 架构图主体 -->
+        <div class="flex flex-col items-center space-y-2">
+
+            <!-- LEVEL 4: Vision (Top) -->
+            <div
+                class="w-full relative layer-card bg-gradient-to-r from-blue-600 to-indigo-700 rounded-xl shadow-xl text-white p-8 border-t-4 border-blue-300">
+                <span class="phase-badge bg-white text-blue-700">顶层愿景 (Vision)</span>
+                <div class="flex flex-col md:flex-row items-center justify-between">
+                    <div class="md:w-1/3 text-center md:text-left mb-6 md:mb-0">
+                        <div class="text-3xl font-bold mb-2"><i class="fas fa-rocket mr-2"></i> 融会贯通</div>
+                        <div class="text-blue-100">端到端全流程提效</div>
+                    </div>
+                    <div class="md:w-2/3 grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="bg-white/10 p-4 rounded-lg backdrop-blur-sm text-center">
+                            <i class="fas fa-magic text-2xl mb-2 text-yellow-300"></i>
+                            <div class="font-semibold">AI Native 开发</div>
+                        </div>
+                        <div class="bg-white/10 p-4 rounded-lg backdrop-blur-sm text-center">
+                            <i class="fas fa-robot text-2xl mb-2 text-yellow-300"></i>
+                            <div class="font-semibold">无人流水线</div>
+                        </div>
+                        <div class="bg-white/10 p-4 rounded-lg backdrop-blur-sm text-center">
+                            <i class="fas fa-chart-line text-2xl mb-2 text-yellow-300"></i>
+                            <div class="font-semibold">10x 效能跃迁</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Connector -->
+            <div class="connector-line"></div>
+
+            <!-- LEVEL 3: Workflow -->
+            <div
+                class="w-full md:w-[95%] relative layer-card bg-gradient-to-r from-amber-50 to-orange-50 rounded-xl shadow-md border-l-4 border-orange-400 p-6">
+                <span class="phase-badge bg-orange-500 text-white">流程编排 (Workflow)</span>
+                <h3 class="text-xl font-bold text-orange-800 mb-4 flex items-center">
+                    <i class="fas fa-project-diagram mr-3"></i> Agentic Workflow & SOP
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white p-4 rounded-lg shadow-sm border border-orange-100">
+                        <h4 class="font-bold text-orange-700 mb-2 border-b border-orange-100 pb-2">Orchestrator (主控大脑)
+                        </h4>
+                        <p class="text-sm text-slate-600">负责理解模糊需求，拆解任务，并调度下层的 Sub-Agents 协同工作。</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow-sm border border-orange-100">
+                        <h4 class="font-bold text-orange-700 mb-2 border-b border-orange-100 pb-2">SOP as Code (流程数字化)
+                        </h4>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="item-chip px-2 py-1 rounded text-xs text-orange-800">需求 -> 设计</span>
+                            <span class="item-chip px-2 py-1 rounded text-xs text-orange-800">代码 -> 测试</span>
+                            <span class="item-chip px-2 py-1 rounded text-xs text-orange-800">部署 -> 运维</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Connector -->
+            <div class="connector-line"></div>
+
+            <!-- LEVEL 2: Capabilities -->
+            <div
+                class="w-full md:w-[95%] relative layer-card bg-gradient-to-r from-emerald-50 to-teal-50 rounded-xl shadow-md border-l-4 border-emerald-500 p-6">
+                <span class="phase-badge bg-emerald-600 text-white">能力层 (Capabilities)</span>
+                <h3 class="text-xl font-bold text-emerald-800 mb-4 flex items-center">
+                    <i class="fas fa-tools mr-3"></i> Tools, Skills & Sub-Agents
+                </h3>
+
+                <div class="flex flex-col md:flex-row gap-6">
+                    <!-- Sub-Agents -->
+                    <div class="flex-1 bg-white p-4 rounded-lg shadow-sm border border-emerald-100">
+                        <h4 class="font-bold text-emerald-700 mb-3 flex items-center"><i
+                                class="fas fa-users-cog mr-2"></i> Sub-Agents (专职子智能体)</h4>
+                        <ul class="space-y-2 text-sm">
+                            <li class="flex items-center"><span
+                                    class="w-2 h-2 bg-emerald-400 rounded-full mr-2"></span>文档转换 Agent (格式互转)</li>
+                            <li class="flex items-center"><span
+                                    class="w-2 h-2 bg-emerald-400 rounded-full mr-2"></span>Code Review Agent (代码审查)
+                            </li>
+                            <li class="flex items-center"><span
+                                    class="w-2 h-2 bg-emerald-400 rounded-full mr-2"></span>Unit Test Agent (测试生成)</li>
+                        </ul>
+                    </div>
+
+                    <!-- Atomic Skills -->
+                    <div class="flex-1 bg-white p-4 rounded-lg shadow-sm border border-emerald-100">
+                        <h4 class="font-bold text-emerald-700 mb-3 flex items-center"><i class="fas fa-cogs mr-2"></i>
+                            Atomic Skills (原子技能/指令)</h4>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div class="item-chip px-3 py-2 rounded text-center text-xs font-medium text-emerald-800">
+                                Format Converter</div>
+                            <div class="item-chip px-3 py-2 rounded text-center text-xs font-medium text-emerald-800">DB
+                                Migration</div>
+                            <div class="item-chip px-3 py-2 rounded text-center text-xs font-medium text-emerald-800">
+                                Scaffold CLI</div>
+                            <div class="item-chip px-3 py-2 rounded text-center text-xs font-medium text-emerald-800">
+                                API Generator</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Connector -->
+            <div class="connector-line"></div>
+
+            <!-- LEVEL 1: Grounding (Bottom) -->
+            <div
+                class="w-full relative layer-card bg-gradient-to-r from-slate-100 to-purple-50 rounded-xl shadow-lg border-b-8 border-purple-600 p-8">
+                <span class="phase-badge bg-purple-600 text-white">基座 (Grounding)</span>
+                <div class="text-center mb-6">
+                    <h3 class="text-2xl font-bold text-purple-900 flex justify-center items-center">
+                        <i class="fas fa-database mr-3"></i> 知识库与共识 (Grounding)
+                    </h3>
+                    <p class="text-purple-600 mt-2">Agentic Coding 的根基，确保 AI "懂" 我们的上下文</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+                    <div class="p-4 bg-white rounded-lg shadow-sm border-t-2 border-purple-300">
+                        <div class="text-3xl mb-2 text-purple-500"><i class="fas fa-book-reader"></i></div>
+                        <h4 class="font-bold text-slate-700">企业私有知识库</h4>
+                        <p class="text-xs text-slate-500 mt-1">业务逻辑、历史代码资产 (RAG)</p>
+                    </div>
+                    <div class="p-4 bg-white rounded-lg shadow-sm border-t-2 border-purple-300">
+                        <div class="text-3xl mb-2 text-purple-500"><i class="fas fa-handshake"></i></div>
+                        <h4 class="font-bold text-slate-700">技术栈共识</h4>
+                        <p class="text-xs text-slate-500 mt-1">统一框架版本、依赖管理</p>
+                    </div>
+                    <div class="p-4 bg-white rounded-lg shadow-sm border-t-2 border-purple-300">
+                        <div class="text-3xl mb-2 text-purple-500"><i class="fas fa-ruler-combined"></i></div>
+                        <h4 class="font-bold text-slate-700">规范与脚手架</h4>
+                        <p class="text-xs text-slate-500 mt-1">Linting Rules, Project Templates</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Roadmap Timeline Section -->
+        <div class="mt-20">
+            <h2 class="text-3xl font-bold text-center mb-10 text-slate-800">实施路线图 Roadmap</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+                <!-- Connecting Line for Desktop -->
+                <div
+                    class="hidden md:block absolute top-1/2 left-0 w-full h-1 bg-slate-200 -z-10 transform -translate-y-1/2">
+                </div>
+
+                <!-- Phase 1 -->
+                <div
+                    class="bg-white p-6 rounded-xl shadow-lg border-t-4 border-purple-500 relative hover:scale-105 transition-transform">
+                    <div
+                        class="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-purple-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold">
+                        1</div>
+                    <h3 class="text-xl font-bold text-center mt-4 mb-2">夯实地基</h3>
+                    <div class="text-center text-sm text-purple-600 font-semibold mb-4">Grounding & Consensus</div>
+                    <ul class="text-sm space-y-2 text-slate-600">
+                        <li class="flex items-start"><i class="fas fa-check text-green-500 mt-1 mr-2"></i> 构建私有知识库 RAG
+                        </li>
+                        <li class="flex items-start"><i class="fas fa-check text-green-500 mt-1 mr-2"></i> 统一依赖与脚手架</li>
+                        <li class="flex items-start"><i class="fas fa-check text-green-500 mt-1 mr-2"></i> 确立代码规范 Prompt
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Phase 2 -->
+                <div
+                    class="bg-white p-6 rounded-xl shadow-lg border-t-4 border-emerald-500 relative hover:scale-105 transition-transform">
+                    <div
+                        class="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-emerald-500 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold">
+                        2</div>
+                    <h3 class="text-xl font-bold text-center mt-4 mb-2">武装牙齿</h3>
+                    <div class="text-center text-sm text-emerald-600 font-semibold mb-4">Tools & Sub-Agents</div>
+                    <ul class="text-sm space-y-2 text-slate-600">
+                        <li class="flex items-start"><i class="fas fa-check text-green-500 mt-1 mr-2"></i> 开发格式转换工具</li>
+                        <li class="flex items-start"><i class="fas fa-check text-green-500 mt-1 mr-2"></i> 部署 Code
+                            Review Agent</li>
+                        <li class="flex items-start"><i class="fas fa-check text-green-500 mt-1 mr-2"></i> IDE 指令集
+                            (Commands)</li>
+                    </ul>
+                </div>
+
+                <!-- Phase 3 -->
+                <div
+                    class="bg-white p-6 rounded-xl shadow-lg border-t-4 border-blue-500 relative hover:scale-105 transition-transform">
+                    <div
+                        class="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold">
+                        3</div>
+                    <h3 class="text-xl font-bold text-center mt-4 mb-2">融会贯通</h3>
+                    <div class="text-center text-sm text-blue-600 font-semibold mb-4">E2E Vision</div>
+                    <ul class="text-sm space-y-2 text-slate-600">
+                        <li class="flex items-start"><i class="fas fa-check text-green-500 mt-1 mr-2"></i> SOP 流程代码化
+                        </li>
+                        <li class="flex items-start"><i class="fas fa-check text-green-500 mt-1 mr-2"></i> 主控智能体
+                            (Orchestrator)</li>
+                        <li class="flex items-start"><i class="fas fa-check text-green-500 mt-1 mr-2"></i> 自动纠错与闭环</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="bg-slate-800 text-slate-400 py-6 text-center text-sm">
+        <p>Agentic Coding Infrastructure Blueprint &copy; 2024</p>
+    </footer>
+
+</body>
+
+</html>
