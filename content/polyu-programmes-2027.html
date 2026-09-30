@@ -696,6 +696,20 @@ document.addEventListener("keydown", e => {
   if (!$("#sheet").hidden) closeSheet(); else if (!$("#drawer").hidden) closeDetail();
 });
 
+// 有新版本时自动重新加载：浏览器和微信会缓存旧页面
+const BUILD = "20260930231952";
+if (/github\.io$/.test(location.hostname)) {
+  fetch(location.pathname.replace(/\.html$/, ".version.json") + "?t=" + Date.now(), {cache: "no-store"})
+    .then(r => r.ok ? r.json() : null)
+    .then(v => {
+      if (!v || !v.build || v.build === BUILD) return;
+      const u = new URL(location.href);
+      if (u.searchParams.get("v") === v.build) return;   // 已经试过一次，避免循环
+      u.searchParams.set("v", v.build);
+      location.replace(u.toString());
+    }).catch(() => {});
+}
+
 shared = readShared();
 if (shared) state.view = "like";
 else if (my.prefs && !SL) state.view = "todo";
