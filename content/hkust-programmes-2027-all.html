@@ -273,7 +273,7 @@ const SL = DATA.shortlist;
 if (SL) {
   $("#eyebrow").textContent = "香港科技大学 · 2027年9月入学 · 内地高考生 · 筛选后的候选";
   $("#lede").textContent = `筛选后留下的 ${SL.n} 个候选专业，排除掉的已经不再显示。看完在卡片下面标「感兴趣」或「不考虑」，选完点底部「发给爸爸」。`;
-  if (SL.guide) $("#lede").insertAdjacentHTML("afterend", `<a class="guide-link" href="${SL.guide}"><b>先读这篇 → ${SL.n} 个候选专业，一篇讲清楚</b><span>学什么、怎么报、毕业做什么、志愿怎么填</span></a>`);
+  if (SL.guide) $("#lede").insertAdjacentHTML("afterend", `<a class="guide-link" href="${SL.guide}"><b>志愿对照清单 → 只能填一个，先比清楚</b><span>每个志愿能读哪些主修、选考要求、何时定主修、调剂、学科排名</span></a>`);
 }
 
 const state = {by:"field", q:"", arts:false, second:false, ai:false, view:"all"};
@@ -681,7 +681,7 @@ document.addEventListener("keydown", e => {
 });
 
 // 有新版本时自动重新加载：浏览器和微信会缓存旧页面
-const BUILD = "20261003224453";
+const BUILD = "20261003231311";
 if (/github\.io$/.test(location.hostname)) {
   fetch(location.pathname.replace(/\.html$/, ".version.json") + "?t=" + Date.now(), {cache: "no-store"})
     .then(r => r.ok ? r.json() : null)
